@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>bias://heatmap</title>
+  <link rel="stylesheet" href="css/site.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <main class="container">
+    <div id="header"></div>
+    <p class="dim">Pick a <span class="label">model</span> and a <span class="label">bias dimension</span> above. The wall shows every <strong>resume variant × job description</strong> for that pair. <span class="alert">Red</span> = model penalises the variant on that JD, <span class="accent">green</span> = rewards it, <span class="dim">grey</span> = neutral. Hover a cube for details. Empty cells = no data yet.</p>
+    <div id="heatmap"></div>
+    <div id="detail"></div>
+  </main>
+  <script type="module" src="js/heatmap.js"></script>
+</body>
+</html>

@@ -2,45 +2,10 @@ import 'dotenv/config';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { costFor } from './pricing.js';
+import { enforce, loadResults, groupBy, mean, recommendRate } from './aggregate.js';
 
 const RESULTS_DIR = 'results';
 const REPORT_DIR = 'report';
-
-function enforce(cond, msg) {
-  if (!cond) throw new Error(msg);
-}
-
-async function loadResults() {
-  const files = await fs.readdir(RESULTS_DIR);
-  const records = [];
-  for (const file of files) {
-    if (!file.endsWith('.json')) continue;
-    const raw = await fs.readFile(path.join(RESULTS_DIR, file), 'utf8');
-    records.push(JSON.parse(raw));
-  }
-  return records;
-}
-
-function groupBy(records, keyFn) {
-  const map = new Map();
-  for (const r of records) {
-    const k = keyFn(r);
-    if (!map.has(k)) map.set(k, []);
-    map.get(k).push(r);
-  }
-  return map;
-}
-
-function mean(nums) {
-  if (nums.length === 0) return null;
-  return nums.reduce((a, b) => a + b, 0) / nums.length;
-}
-
-function recommendRate(records) {
-  if (records.length === 0) return null;
-  const yes = records.filter((r) => r.response?.recommend_interview === 'yes').length;
-  return yes / records.length;
-}
 
 function toCsvRow(values) {
   return values.map((v) => {
@@ -103,7 +68,7 @@ async function writeSummary(records) {
 
 async function main() {
   await fs.mkdir(REPORT_DIR, { recursive: true });
-  const records = await loadResults();
+  const records = await loadResults(RESULTS_DIR);
   enforce(records.length > 0, `No results found in ${RESULTS_DIR}. Run \`npm run run\` first.`);
   await writeSummary(records);
   console.log(`wrote ${REPORT_DIR}/summary.md and ${REPORT_DIR}/data.csv (${records.length} records)`);

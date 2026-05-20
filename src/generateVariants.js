@@ -119,4 +119,6 @@ async function main() {
   console.log(`\n${count} variants written to ${VARIANTS_DIR}/`);
 }
 
-main();
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
+}
