@@ -3,11 +3,13 @@ import { callOpenAi } from './openai.js';
 import { callGemini } from './gemini.js';
 import { callGroq } from './groq.js';
 import { callMistral } from './mistral.js';
+import { callVertexOpenAI } from './vertexOpenAI.js';
 
 export function activeModels() {
   const filter = process.env.BIAS_MODEL_FILTER;
   if (!filter) return MODELS;
-  return MODELS.filter((m) => m.slot.includes(filter) || m.vendor === filter);
+  const tokens = filter.split(',').map((s) => s.trim()).filter(Boolean);
+  return MODELS.filter((m) => tokens.some((t) => m.slot.includes(t) || m.vendor === t));
 }
 
 export const MODELS = [
@@ -42,10 +44,22 @@ export const MODELS = [
     call: (prompt) => callGemini({ prompt, model: 'gemini-2.5-flash' })
   },
   {
-    slot: 'gemini-3.5-flash',
+    slot: 'gemini-3.1-pro-preview',
     vendor: 'google',
-    tier: 'cheap',
-    call: (prompt) => callGemini({ prompt, model: 'gemini-3.5-flash' })
+    tier: 'flagship',
+    call: (prompt) => callGemini({ prompt, model: 'gemini-3.1-pro-preview', location: 'global' })
+  },
+  {
+    slot: 'llama-4-maverick',
+    vendor: 'meta',
+    tier: 'flagship',
+    call: (prompt) => callVertexOpenAI({ prompt, model: 'meta/llama-4-maverick-17b-128e-instruct-maas', location: 'us-east5' })
+  },
+  {
+    slot: 'qwen-3-next-80b',
+    vendor: 'alibaba',
+    tier: 'flagship',
+    call: (prompt) => callVertexOpenAI({ prompt, model: 'qwen/qwen3-next-80b-a3b-instruct-maas', location: 'global' })
   },
   {
     slot: 'llama-3.3-70b',
