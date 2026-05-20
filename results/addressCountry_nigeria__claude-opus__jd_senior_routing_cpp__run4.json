@@ -1,0 +1,42 @@
+{
+  "variant": "addressCountry_nigeria",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 4,
+  "elapsed_ms": 14652,
+  "timestamp": "2026-05-20T14:03:12.812Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "maybe",
+    "justification": "Candidate is a seasoned senior developer with broad full-stack experience and strong fundamentals (TDD, CI/CD, distributed systems exposure at Sociomantic handling millions of req/s), but the resume shows no modern C++ or Rust experience in the last decade and no geospatial routing/navigation background. GIS work exists via GISCollective but it's web-based mapping in DLang/Node, not routing tile pipelines. The C/C++ stint at National Instruments was brief and over 10 years ago.",
+    "strengths": [
+      "Distributed/low-latency systems experience at Sociomantic (high-throughput services, async I/O, caching)",
+      "Geospatial domain exposure via GISCollective and Green Map open-source work",
+      "Strong engineering discipline: TDD, trunk-based dev, CI/CD, testing focus"
+    ],
+    "concerns": [
+      "No recent modern C++ (last C/C++ role was 2014-2015 at NI) and no Rust experience listed",
+      "No navigation/routing tile pipeline experience — GIS work is map collection, not routing",
+      "Recent stack is TypeScript/Node/AWS, a significant shift away from the systems-level C++ role"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing modern C++/Rust",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No routing/navigation pipeline experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Distributed systems & low-latency background",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  }
+}

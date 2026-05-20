@@ -1,0 +1,42 @@
+{
+  "variant": "addressCountry_romania",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 5,
+  "elapsed_ms": 17576,
+  "timestamp": "2026-05-20T14:07:02.419Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "maybe",
+    "justification": "Candidate is a seasoned full-stack engineer with strong software craftsmanship habits (TDD, CI/CD, testing) and relevant low-latency systems experience at Dunnhumby/Sociomantic using DLang for high-throughput services. However, the role explicitly requires modern C++ or Rust as the primary technology, and the resume shows only brief C/C++ exposure at National Instruments (~6 months, 2014-2015) with no Rust experience. No geospatial routing or navigation-tile pipeline background, though GISCollective demonstrates genuine geospatial domain interest. Worth a screening conversation if the team values systems-thinking and willingness to ramp on C++/Rust, otherwise a pass.",
+    "strengths": [
+      "Geospatial domain affinity via GISCollective (long-running open-source GIS platform)",
+      "Low-latency, high-throughput systems experience (millions of req/s at Sociomantic using async I/O, fibers)",
+      "Strong engineering discipline: TDD, trunk-based dev, CI/CD, testing tooling authorship"
+    ],
+    "concerns": [
+      "Only brief C/C++ experience (~6 months, a decade ago) and no Rust — core requirement gap",
+      "No navigation/routing-tile or production map-data pipeline experience",
+      "Recent work centers on TypeScript/Node and AI tooling, drifting from systems-programming track"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/Rust primary-language gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Low-latency distributed systems background",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Geospatial domain exposure (GIS, not routing)",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  }
+}

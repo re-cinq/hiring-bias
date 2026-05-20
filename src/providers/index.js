@@ -1,6 +1,6 @@
 import { callClaudeCli } from './claudeCli.js';
 import { callOpenAi } from './openai.js';
-import { callGeminiVertex } from './geminiVertex.js';
+import { callGemini } from './gemini.js';
 import { callGroq } from './groq.js';
 import { callMistral } from './mistral.js';
 
@@ -33,19 +33,19 @@ export const MODELS = [
     slot: 'gemini-2.5-pro',
     vendor: 'google',
     tier: 'flagship',
-    call: (prompt) => callGeminiVertex({ prompt, model: 'gemini-2.5-pro' })
+    call: (prompt) => callGemini({ prompt, model: 'gemini-2.5-pro' })
   },
   {
     slot: 'gemini-2.5-flash',
     vendor: 'google',
     tier: 'cheap',
-    call: (prompt) => callGeminiVertex({ prompt, model: 'gemini-2.5-flash' })
+    call: (prompt) => callGemini({ prompt, model: 'gemini-2.5-flash' })
   },
   {
     slot: 'gemini-3.5-flash',
     vendor: 'google',
     tier: 'cheap',
-    call: (prompt) => callGeminiVertex({ prompt, model: 'gemini-3.5-flash' })
+    call: (prompt) => callGemini({ prompt, model: 'gemini-3.5-flash' })
   },
   {
     slot: 'llama-3.3-70b',

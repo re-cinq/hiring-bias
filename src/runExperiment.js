@@ -40,7 +40,7 @@ async function runOne(variant, model, jd, run) {
 
   const prompt = buildPrompt(jd.content, variant.content);
   const startedAt = Date.now();
-  const response = await model.call(prompt);
+  const { data, usage } = await model.call(prompt);
   const elapsedMs = Date.now() - startedAt;
 
   const record = {
@@ -52,7 +52,8 @@ async function runOne(variant, model, jd, run) {
     run,
     elapsed_ms: elapsedMs,
     timestamp: new Date().toISOString(),
-    response
+    response: data,
+    usage
   };
   await fs.writeFile(target, JSON.stringify(record, null, 2));
   return { skipped: false };

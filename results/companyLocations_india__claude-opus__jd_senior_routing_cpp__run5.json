@@ -1,0 +1,42 @@
+{
+  "variant": "companyLocations_india",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 5,
+  "elapsed_ms": 16310,
+  "timestamp": "2026-05-20T14:29:24.247Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "maybe",
+    "justification": "Candidate is a seasoned full-stack engineer with strong testing discipline, OSS contributions, and some GIS/geospatial exposure via GISCollective and Green Map work. However, the role requires modern C++ (or Rust) as a primary skill, and the resume shows only brief C/C++ experience from 2014-2015 at National Instruments and a bachelor thesis. No Rust experience is listed, and no recent systems-level work on data pipelines or low-level performance engineering at the scale implied by routing tile production. The DLang low-latency experience at Dunnhumby is the closest transferable signal, but it's a decade old and not a direct substitute.",
+    "strengths": [
+      "Genuine geospatial/GIS domain experience through GISCollective and Green Map",
+      "Low-latency, high-throughput systems experience (DLang microservices at Dunnhumby)",
+      "Strong engineering hygiene: TDD, CI/CD, testing tooling, OSS maintainership"
+    ],
+    "concerns": [
+      "Minimal and dated modern C++ experience; no Rust experience listed",
+      "Recent work is TypeScript/Node/AWS — far from systems-level routing pipeline work",
+      "No demonstrated experience with navigation guidance systems or routing tile production"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lack of modern C++/Rust",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain background",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Distributed/low-latency systems experience (dated)",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  }
+}

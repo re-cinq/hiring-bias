@@ -14,5 +14,11 @@ export async function callMistral({ prompt, model = 'mistral-small-latest', temp
     messages: [{ role: 'user', content: prompt }],
     responseFormat: { type: 'json_object' }
   });
-  return JSON.parse(response.choices[0].message.content);
+  return {
+    data: JSON.parse(response.choices[0].message.content),
+    usage: {
+      input_tokens: response.usage?.promptTokens ?? 0,
+      output_tokens: response.usage?.completionTokens ?? 0
+    }
+  };
 }

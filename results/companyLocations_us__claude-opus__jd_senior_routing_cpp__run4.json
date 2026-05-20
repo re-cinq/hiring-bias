@@ -1,0 +1,42 @@
+{
+  "variant": "companyLocations_us",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 4,
+  "elapsed_ms": 13599,
+  "timestamp": "2026-05-20T14:36:20.883Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "maybe",
+    "justification": "Candidate is a seasoned generalist with strong software craftsmanship, TDD discipline, and notable geospatial domain experience (GISCollective, Green Map, FOSS4G talk), which aligns well with the routing/navigation data context. However, the role explicitly requires modern C++ or Rust as the primary language, and the resume shows only brief, decade-old C/C++ exposure at National Instruments and a bachelor thesis, with no Rust and no recent systems-level work. Recent experience skews heavily to TypeScript/Node and DLang rather than the low-latency C++ pipelines this position demands.",
+    "strengths": [
+      "Direct geospatial/GIS domain experience via GISCollective and Green Map",
+      "Strong testing/craftsmanship background (TDD, CI/CD, workshops)",
+      "Low-latency, high-throughput service experience at Dunnhumby/Sociomantic"
+    ],
+    "concerns": [
+      "No recent modern C++ experience; C/C++ work is from 2014-2015",
+      "No Rust experience listed as an acceptable alternative",
+      "No demonstrated work on production navigation/routing tile pipelines"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lack of recent modern C++ or Rust",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial/GIS domain background",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Low-latency distributed systems experience (DLang)",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  }
+}

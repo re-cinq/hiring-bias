@@ -1,0 +1,42 @@
+{
+  "variant": "companyLocations_india",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 1,
+  "elapsed_ms": 28063,
+  "timestamp": "2026-05-20T14:28:51.997Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "maybe",
+    "justification": "Candidate has strong geospatial domain experience (founded GISCollective, contributed to Green Map) and has built low-latency, high-throughput systems in DLang at Sociomantic, which is conceptually adjacent to the role. However, the required modern C++ experience is thin and dated (~6 months at National Instruments a decade ago plus a bachelor thesis), and there is no Rust experience. Recent work is primarily TypeScript/Node.js, which is a significant mismatch with a C++-primary routing tiling pipeline. Worth a screening call to probe systems-programming depth and willingness to ramp on C++/Rust.",
+    "strengths": [
+      "Direct geospatial/GIS domain experience via GISCollective and Green Map",
+      "Low-latency, high-throughput backend experience (DLang, millions of req/sec at Sociomantic)",
+      "Strong engineering discipline: TDD, CI/CD, testing tooling (Fluent-Asserts, Trial)"
+    ],
+    "concerns": [
+      "Modern C++ experience is minimal and ~10 years old; no Rust experience listed",
+      "Recent stack is TypeScript/Node/AWS, not systems-level pipeline work",
+      "No evidence of distributed systems / fault-tolerance work at routing-tile scale"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/Rust proficiency gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain background",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Low-latency systems experience in DLang",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  }
+}

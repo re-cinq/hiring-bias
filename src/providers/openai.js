@@ -14,5 +14,11 @@ export async function callOpenAi({ prompt, model = 'gpt-4o-mini', temperature = 
     messages: [{ role: 'user', content: prompt }],
     response_format: { type: 'json_object' }
   });
-  return JSON.parse(response.choices[0].message.content);
+  return {
+    data: JSON.parse(response.choices[0].message.content),
+    usage: {
+      input_tokens: response.usage?.prompt_tokens ?? 0,
+      output_tokens: response.usage?.completion_tokens ?? 0
+    }
+  };
 }
