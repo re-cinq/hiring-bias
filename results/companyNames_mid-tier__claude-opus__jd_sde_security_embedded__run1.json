@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_mid-tier",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 1,
+  "elapsed_ms": 20625,
+  "timestamp": "2026-05-21T01:00:16.218Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Candidate has 15+ years of solid software engineering experience but the profile is overwhelmingly web/full-stack (TypeScript, Node.js, DLang) with no demonstrated work on embedded firmware, LAN-switch products, or the specific security technologies required (MACsec, 802.1X, Captive Portal). Critically, the role requires native-level Japanese proficiency, which the resume does not list at all (only English, Romanian, basic German). C experience is limited to a short stint at National Instruments a decade ago, and there is no evidence of Linux kernel modification, chip-vendor SDKs, or L2/L3 networking expertise.",
+    "strengths": [
+      "Long track record (15+ years) of professional software development across multiple domains",
+      "Some C/C++ exposure via National Instruments LabWindows/CVI work",
+      "Strong engineering practices: TDD, CI/CD, testability, open-source contributions"
+    ],
+    "concerns": [
+      "No native-level Japanese proficiency listed (hard requirement)",
+      "No embedded firmware, LAN-switch, or networking-security experience (MACsec, 802.1X, NETCONF, SNMP)",
+      "C in UNIX and Linux kernel modification experience is minimal and dated"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing native Japanese language proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded/networking-security domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Insufficient recent C and Linux kernel work",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 5,
+    "output_tokens": 535,
+    "cache_read_input_tokens": 18223,
+    "cache_creation_input_tokens": 16900,
+    "cost_usd_reported": 0.13154149999999998
+  }
+}
