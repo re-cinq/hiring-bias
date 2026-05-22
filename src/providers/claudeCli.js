@@ -5,8 +5,14 @@ const MAX_BUFFER = 10 * 1024 * 1024;
 // stdin: 'ignore' hands claude an immediate EOF — otherwise the CLI waits ~3s per call
 // for stdin that never comes ("no stdin data received in 3s, proceeding without it").
 function runClaude(args) {
+  // Run the claude CLI under its own session login (subscription), not a metered API key.
+  // `npm run` loads dotenv, which puts ANTHROPIC_API_KEY in the env; if the CLI sees it,
+  // it bills the API credit balance ("Credit balance is too low") instead of the CLI session.
+  const env = { ...process.env };
+  delete env.ANTHROPIC_API_KEY;
+  delete env.ANTHROPIC_AUTH_TOKEN;
   return new Promise((resolve, reject) => {
-    const child = spawn('claude', args, { stdio: ['ignore', 'pipe', 'pipe'] });
+    const child = spawn('claude', args, { stdio: ['ignore', 'pipe', 'pipe'], env });
     let stdout = '', stderr = '';
     child.stdout.on('data', (d) => {
       stdout += d;
