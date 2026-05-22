@@ -1,6 +1,6 @@
 import { mountChrome } from './nav.js';
 import { loadJson, el, header, params, setParam, badges, pill, fmtNum, fmtSignedDelta, deltaClass, copyLinkButton } from './lib.js';
-import { diffLines } from './linediff.js';
+import { diffLines, wordDiff } from './linediff.js';
 
 await mountChrome();
 document.getElementById('header').append(header('COUNTERFACTUAL DIFF', 'one line changes on the résumé — read what the model said about each version'));
@@ -145,7 +145,7 @@ function renderVerdictCards(baseline, variantData, variant, model, jd, delta, ci
   const wrap = el('div', { class: 'grid grid-2' });
 
   wrap.append(verdictCard('Baseline (unmodified resume)', baseline));
-  wrap.append(verdictCard(`Variant — ${variantLabel(variant)}`, variantData));
+  wrap.append(verdictCard(`Variant — ${variantLabel(variant)}`, variantData, baseline.sample));
 
   const summary = el('div', { class: 'panel' });
   summary.append(el('div', { class: 'panel-head' }, el('span', {}, 'SUMMARY')));
@@ -160,7 +160,7 @@ function renderVerdictCards(baseline, variantData, variant, model, jd, delta, ci
   return both;
 }
 
-function verdictCard(title, data) {
+function verdictCard(title, data, compare = null) {
   const card = el('div', { class: 'card' });
   card.append(el('div', { class: 'head' }, [
     el('span', { class: 'label' }, title),
@@ -176,18 +176,18 @@ function verdictCard(title, data) {
 
   if (data.sample?.justification) {
     card.append(el('h4', {}, 'Justification'));
-    card.append(el('p', { class: 'dim' }, data.sample.justification));
+    card.append(el('p', { class: 'dim' }, diffText(compare?.justification, data.sample.justification)));
   }
   if (data.sample?.strengths?.length) {
     card.append(el('h4', {}, 'Strengths'));
     const ul = el('ul');
-    for (const s of data.sample.strengths) ul.append(el('li', {}, s));
+    for (const s of data.sample.strengths) ul.append(el('li', {}, diffText(bestMatch(s, compare?.strengths), s)));
     card.append(ul);
   }
   if (data.sample?.concerns?.length) {
     card.append(el('h4', {}, 'Concerns'));
     const ul = el('ul');
-    for (const c of data.sample.concerns) ul.append(el('li', {}, c));
+    for (const c of data.sample.concerns) ul.append(el('li', {}, diffText(bestMatch(c, compare?.concerns), c)));
     card.append(ul);
   }
   if (data.sample?.key_factors?.length) {
@@ -204,6 +204,32 @@ function verdictCard(title, data) {
     card.append(ul);
   }
   return card;
+}
+
+// Render `text`, underlining in red the words inserted/changed vs `baselineText`.
+// A null baselineText means "no comparison" (the baseline card) → plain text.
+function diffText(baselineText, text) {
+  if (baselineText == null) return document.createTextNode(text);
+  const frag = document.createDocumentFragment();
+  wordDiff(baselineText, text).forEach((t, i) => {
+    if (i) frag.append(' ');
+    frag.append(t.changed ? el('span', { class: 'eval-diff' }, t.text) : document.createTextNode(t.text));
+  });
+  return frag;
+}
+
+// Pick the baseline list item sharing the most words with `item`, so each
+// variant bullet is diffed against its closest baseline counterpart.
+// '' (no overlap) highlights the whole item as new; null means no comparison.
+function bestMatch(item, candidates) {
+  if (candidates == null) return null;
+  const words = new Set(item.toLowerCase().split(/\s+/).filter(Boolean));
+  let best = '', bestScore = 0;
+  for (const candidate of candidates) {
+    const score = candidate.toLowerCase().split(/\s+/).filter((w) => words.has(w)).length;
+    if (score > bestScore) { bestScore = score; best = candidate; }
+  }
+  return best;
 }
 
 function variantLabel(variant) {

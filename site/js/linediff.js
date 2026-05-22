@@ -25,6 +25,23 @@ export function diffLines(textA, textB) {
   return out;
 }
 
+// Word-level diff. Returns the textB token stream, each token flagged
+// `changed: true` when it was inserted/substituted relative to textA.
+export function wordDiff(textA, textB) {
+  const a = (textA || '').split(/\s+/).filter(Boolean);
+  const b = (textB || '').split(/\s+/).filter(Boolean);
+  const dp = lcsTable(a, b);
+  const out = [];
+  let i = 0, j = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) { out.push({ text: b[j], changed: false }); i++; j++; }
+    else if (dp[i + 1][j] >= dp[i][j + 1]) { i++; }
+    else { out.push({ text: b[j], changed: true }); j++; }
+  }
+  while (j < b.length) out.push({ text: b[j++], changed: true });
+  return out;
+}
+
 export function renderLineDiff(textA, textB, { context = 2 } = {}) {
   const lines = diffLines(textA, textB);
   const out = document.createElement('div');
