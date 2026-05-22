@@ -36,7 +36,14 @@ async function fileExists(p) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// Retry transient provider failures — CLI exit codes, rate limits, truncated/malformed JSON.
+// Billing/auth failures will never succeed on retry — fail immediately instead of hammering.
+function isFatal(err) {
+  const m = (err?.message ?? '').toLowerCase();
+  return m.includes('credit balance is too low') || m.includes('api_error_status":400')
+    || m.includes('401') || m.includes('403') || m.includes('authentication');
+}
+
+// Retry transient provider failures — rate limits, overload, truncated/malformed JSON.
 async function callWithRetry(model, prompt, retries = 2) {
   let lastErr;
   for (let attempt = 0; attempt <= retries; attempt++) {
@@ -44,7 +51,8 @@ async function callWithRetry(model, prompt, retries = 2) {
       return await model.call(prompt);
     } catch (err) {
       lastErr = err;
-      if (attempt < retries) await sleep(1500 * (attempt + 1));
+      if (isFatal(err) || attempt === retries) break;
+      await sleep(1500 * (attempt + 1));
     }
   }
   throw lastErr;
