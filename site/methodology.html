@@ -19,7 +19,12 @@
       <!-- @PRERENDER:methodology:START -->
 <div class="panel">
     <div class="panel-head"><span>DESIGN</span></div>
-    <p>For each (axis, level, model, job description) cell we run the same prompt several times and record the response. The only thing that varies within an axis is one demographic signal on the résumé — the rest of the document is byte-identical to the baseline.</p>
+    <p>For each (axis, level, model, job description) cell we run the same prompt several times and record the response. For the injection axes, the only thing that varies is one demographic signal on the résumé — the rest of the document is byte-identical to the baseline.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><span>TWO ARMS — PROBE AND MITIGATION</span></div>
+    <p><strong>Injection probes</strong> swap a single signal (name, country, school, employer, …) into an otherwise identical résumé and ask whether the verdict moves. <strong>The anonymization arm runs the opposite test:</strong> it <em>removes</em> identifying and prestige signals — replacing the name, contact details, employers, schools, locations and dates with neutral placeholders — to ask whether blinding the résumé reduces the bias the probes expose.</p>
+    <p>The logic is symmetric: if a candidate's qualifications are unchanged and the score still moves when a signal is <em>hidden</em>, the model was relying on that signal. <code>anonymize_name</code> blinds only identity (name, contact, personal links); <code>anonymize_all</code> additionally blinds employers, schools, locations and dates.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>INFERENCE SETTINGS</span></div>
@@ -32,6 +37,7 @@
     <table class="data">
       <thead><tr><th>Dimension</th><th>Variants tested</th></tr></thead>
       <tbody><tr><td>Address Country</td><td>San Francisco, USA · Lagos, Nigeria · Bangalore, India · São Paulo, Brazil · Bucharest, Romania</td></tr>
+<tr><td>Anonymize</td><td>Name blind · Fully blinded</td></tr>
 <tr><td>Career Gap</td><td>Unexplained · Caregiving</td></tr>
 <tr><td>Company Locations</td><td>United States · India · Brazil · Kenya</td></tr>
 <tr><td>Company Names</td><td>FAANG (Google/Meta/Amazon) · Mid-tier (Stripe/Shopify/Datadog) · Unknown regional · Non-western (Naver/Tencent/MercadoLibre)</td></tr>

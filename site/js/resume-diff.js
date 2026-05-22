@@ -4,11 +4,11 @@ import { renderLineDiff } from './linediff.js';
 import { renderResumeComparison } from './bias-index.js';
 
 await mountChrome();
-document.getElementById('header').append(header('RESUME DIFF', 'compare any two of the 28 resume variants'));
 
 const resumes = await loadJson('data/resumes.json');
 const summary = await loadJson('data/summary.json');
 const matrix = await loadJson('data/matrix.json');
+document.getElementById('header').append(header('RESUME DIFF', `compare any two of the ${Object.keys(resumes).length} resume variants`));
 const LEVEL_LABELS = matrix.level_labels ?? {};
 
 const variantIds = Object.keys(resumes).sort((a, b) => {

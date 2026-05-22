@@ -451,6 +451,26 @@ table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .swatch { display: inline-block; width: 14px; height: 3px; border-radius: 1px; }
 .wave-legend .swatch { width: 18px; }
 .tooltip .wave-tip-row { display: flex; align-items: center; gap: 6px; }
+
+/* Model-agreement matrix */
+table.agreement th { font-size: 11px; }
+table.agreement .agree-cell { color: var(--text); font-variant-numeric: tabular-nums; text-align: center; }
+
+/* Volcano plot */
+.vol-legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0; font-size: 11px; }
+.vol-legend-item { display: flex; align-items: center; gap: 6px; background: none; border: 0; padding: 0; color: var(--text); font-size: 11px; cursor: pointer; }
+.vol-legend-item.off { opacity: 0.35; }
+svg.volcano { width: 100%; display: block; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); margin-top: 4px; }
+.vol-axis { stroke: var(--border); stroke-width: 1; }
+.vol-grid { stroke: var(--border); stroke-width: 1; opacity: 0.25; }
+.vol-zero { stroke: var(--dim); stroke-width: 1; opacity: 0.4; }
+.vol-threshold { stroke: var(--warn); stroke-width: 1; stroke-dasharray: 4 3; opacity: 0.75; }
+.vol-label { fill: var(--dim); font-size: 10px; font-family: var(--mono); }
+/* Additive blending: overlapping model dots brighten toward white (dark) / darken (light). */
+.vol-points { mix-blend-mode: screen; }
+[data-theme="light"] .vol-points { mix-blend-mode: multiply; }
+.vol-pt { cursor: pointer; }
+.vol-pt:hover { stroke: var(--text); stroke-width: 1; }
 @media (max-width: 800px) {
   .jd-grid { grid-template-columns: 1fr; gap: 4px; }
   .jd-grid .jd-link { text-align: left; }

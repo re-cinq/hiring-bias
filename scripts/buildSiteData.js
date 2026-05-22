@@ -57,6 +57,10 @@ function camelCaseToWords(s) {
 }
 
 function levelLabel(axis, levelId) {
+  if (axis === 'anonymize') {
+    const map = { name: 'Name blind', all: 'Fully blinded' };
+    return map[levelId] ?? titleCase(levelId);
+  }
   const entry = AXIS_LEVELS[axis]?.find((l) => l.id === levelId);
   if (entry && typeof entry.value === 'string' && entry.value.length < 60 && !/^Career gap/i.test(entry.value)) {
     return entry.value;
@@ -80,10 +84,6 @@ function levelLabel(axis, levelId) {
     return map[levelId] ?? titleCase(levelId);
   }
   if (axis === 'graduationYear') return `Graduated ${levelId}`;
-  if (axis === 'anonymize') {
-    const map = { name: 'Name blind', all: 'Fully blinded' };
-    return map[levelId] ?? titleCase(levelId);
-  }
   return titleCase(levelId);
 }
 
@@ -356,6 +356,90 @@ function buildWaves(cells, axes, models, axisLabels, levelLabels, modelLabels) {
   };
 }
 
+const round3 = (x) => Math.round(x * 1000) / 1000;
+
+function pearson(a, b) {
+  const xs = [], ys = [];
+  for (let i = 0; i < a.length; i++) if (a[i] != null && b[i] != null) { xs.push(a[i]); ys.push(b[i]); }
+  if (xs.length < 3) return null;
+  const mx = mean(xs), my = mean(ys);
+  let num = 0, dx = 0, dy = 0;
+  for (let i = 0; i < xs.length; i++) { const ex = xs[i] - mx, ey = ys[i] - my; num += ex * ey; dx += ex * ex; dy += ey * ey; }
+  return (dx === 0 || dy === 0) ? null : num / Math.sqrt(dx * dy);
+}
+
+// One signed-Δ vector per model, aligned over the shared (variant, jd) keys, so two
+// models' vectors can be correlated to ask "do they react to demographics the same way?".
+function modelDeltaVectors(cells, models, axes) {
+  const used = cells.filter((c) => axes.includes(axisOf(c.variant)) && c.delta != null);
+  const keys = [...new Set(used.map((c) => `${c.variant}|${c.jd}`))].sort();
+  const idx = new Map(keys.map((k, i) => [k, i]));
+  const vec = Object.fromEntries(models.map((m) => [m, new Array(keys.length).fill(null)]));
+  for (const c of used) vec[c.model][idx.get(`${c.variant}|${c.jd}`)] = c.delta;
+  return vec;
+}
+
+function agreementColor(c) {
+  if (c == null) return 'transparent';
+  const a = Math.min(1, Math.abs(c)).toFixed(2);
+  return c >= 0 ? `rgba(111,174,114,${a})` : `rgba(184,91,91,${a})`;
+}
+
+function modelAgreementHtml(cells, axes, models) {
+  const vec = modelDeltaVectors(cells, models, axes);
+  const head = `<tr><th></th>${models.map((m) => `<th class="num">${esc(MODEL_SHORT[m] ?? m)}</th>`).join('')}</tr>`;
+  const rows = models.map((rm) => {
+    const tds = models.map((cm) => {
+      if (rm === cm) return '<td class="num agree-cell" style="background:rgba(111,174,114,1)">1.00</td>';
+      const c = pearson(vec[rm], vec[cm]);
+      const txt = c == null ? '—' : (c >= 0 ? '+' : '') + c.toFixed(2);
+      return `<td class="num agree-cell" style="background:${agreementColor(c)}">${txt}</td>`;
+    }).join('');
+    return `<tr><th>${esc(MODEL_SHORT[rm] ?? rm)}</th>${tds}</tr>`;
+  }).join('');
+  return `<div class="panel">
+    <div class="panel-head"><span>DO THE MODELS SHARE THE SAME BIASES?</span></div>
+    <p class="dim">Correlation of each model pair's signed Δ across every résumé variant × job. <span class="accent">+1</span> = the two models move scores in lockstep — a shared bias. <span class="dim">0</span> = unrelated. <span class="alert">−1</span> = opposite reactions. This is the number behind the colour-mixing waves on the jobs page.</p>
+    <table class="data agreement"><thead>${head}</thead><tbody>${rows}</tbody></table>
+  </div>`;
+}
+
+function variance(arr) {
+  const m = mean(arr);
+  return arr.length ? arr.reduce((s, x) => s + (x - m) * (x - m), 0) / arr.length : 0;
+}
+
+// Standard-normal CDF (Abramowitz & Stegun 7.1.26) — enough for a two-sided p approximation.
+function normalCdf(z) {
+  const t = 1 / (1 + 0.2316419 * Math.abs(z));
+  const d = 0.3989422804014327 * Math.exp(-z * z / 2);
+  const p = d * t * (0.319381530 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
+  return z > 0 ? 1 - p : p;
+}
+
+// Volcano data: one point per (variant, model, jd) — effect size (Δ) vs significance
+// (−log10 p of a Welch t-test, variant scores against the baseline scores for that model+jd).
+function buildVolcano(cells, baselines, axes) {
+  const points = [];
+  for (const c of cells) {
+    if (!axes.includes(axisOf(c.variant)) || c.delta == null) continue;
+    const b = baselines.get(`${c.model}|${c.jd}`);
+    if (!b?.scores?.length || !c.scores?.length) continue;
+    const se = Math.sqrt(variance(c.scores) / c.scores.length + variance(b.scores) / b.scores.length);
+    let neglog10p;
+    if (se === 0) neglog10p = c.delta === 0 ? 0 : 8;
+    else {
+      const p = Math.max(2 * (1 - normalCdf(Math.abs(c.delta / se))), 1e-8);
+      neglog10p = -Math.log10(p);
+    }
+    points.push({
+      axis: axisOf(c.variant), level: levelOf(c.variant), model: c.model, jd: c.jd,
+      delta: round3(c.delta), sig: round3(neglog10p), significant: c.significant
+    });
+  }
+  return { threshold: round3(-Math.log10(0.05)), points };
+}
+
 function buildModels(records, cells, models) {
   const byModel = groupBy(records, (r) => r.model);
   const out = [];
@@ -594,6 +678,7 @@ async function main() {
   }
 
   outputs.push(await writeJson('waves.json', buildWaves(cells, axes, models, axisLabels, levelLabels, MODEL_DISPLAY)));
+  outputs.push(await writeJson('volcano.json', buildVolcano(cells, baselines, axes)));
 
   for (const axis of axes) {
     outputs.push(await writeJson(`ngrams/${axis}.json`, buildNgrams(records, axis, baselines)));
@@ -645,6 +730,15 @@ const MODEL_DISPLAY = {
   'gemini-3.1-pro-preview': 'Gemini 3.1 Pro · Preview',
   'llama-4-maverick': 'Llama 4 Maverick',
   'qwen-3-next-80b': 'Qwen 3 Next 80B'
+};
+
+const MODEL_SHORT = {
+  'claude-opus': 'Opus',
+  'gemini-2.5-flash': '2.5 Flash',
+  'gemini-2.5-pro': '2.5 Pro',
+  'gemini-3.1-pro-preview': '3.1 Pro',
+  'llama-4-maverick': 'Llama 4',
+  'qwen-3-next-80b': 'Qwen 3'
 };
 
 function modelDisplay(m) { return MODEL_DISPLAY[m] ?? m; }
@@ -1039,7 +1133,8 @@ async function prerenderHtml({ status, matrixData, topDiffs, axes, models, jds, 
     'jds': jdsPageHtml({ matrix: matrixData, jds, jdLabels, jdShortLabels, jdTexts, cells }),
     'methodology': methodologyHtml({ matrix: matrixData, jds, jdLabels }),
     'downloads': downloadsHtml({ status, matrix: matrixData }),
-    'about': aboutHtml({ status })
+    'about': aboutHtml({ status }),
+    'model-agreement': modelAgreementHtml(cells, axes, models)
   };
 
   const siteDir = 'site';

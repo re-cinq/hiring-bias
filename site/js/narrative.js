@@ -1,6 +1,7 @@
 import { mountChrome } from './nav.js';
 import { loadJson, el, header, fmtNum, fmtPct, fmtSignedDelta, deltaClass } from './lib.js';
 import { computeBiasIndex, renderBiasIndex, renderDimensionBias } from './bias-index.js';
+import { renderVolcano } from './volcano.js';
 
 await mountChrome();
 document.getElementById('header').append(header('IDENTICAL RÉSUMÉ.  DIFFERENT NAME.  DIFFERENT VERDICT.', 'a counterfactual audit of LLM résumé scoring'));
@@ -78,6 +79,9 @@ renderBiasIndex(document.getElementById('biasindex'), matrix, {
 });
 
 renderDimensionBias(document.getElementById('dimensionbias'), matrix);
+
+const volcano = await loadJson('data/volcano.json').catch(() => null);
+if (volcano) renderVolcano(document.getElementById('volcano'), volcano, matrix, (m) => MODEL_DISPLAY[m] ?? m);
 
 const stats = document.getElementById('stats');
 stats.innerHTML = '';
