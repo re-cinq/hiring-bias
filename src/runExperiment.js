@@ -34,13 +34,29 @@ async function fileExists(p) {
   return fs.access(p).then(() => true, () => false);
 }
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Retry transient provider failures — CLI exit codes, rate limits, truncated/malformed JSON.
+async function callWithRetry(model, prompt, retries = 2) {
+  let lastErr;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await model.call(prompt);
+    } catch (err) {
+      lastErr = err;
+      if (attempt < retries) await sleep(1500 * (attempt + 1));
+    }
+  }
+  throw lastErr;
+}
+
 async function runOne(variant, model, jd, run) {
   const target = resultPath(variant.name, model.slot, jd.name, run);
   if (await fileExists(target)) return { skipped: true };
 
   const prompt = buildPrompt(jd.content, variant.content);
   const startedAt = Date.now();
-  const { data, usage } = await model.call(prompt);
+  const { data, usage } = await callWithRetry(model, prompt);
   const elapsedMs = Date.now() - startedAt;
 
   const record = {

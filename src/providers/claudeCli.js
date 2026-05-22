@@ -1,15 +1,28 @@
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
+import { spawn } from 'node:child_process';
 
-const execFileAsync = promisify(execFile);
 const MAX_BUFFER = 10 * 1024 * 1024;
 
+// stdin: 'ignore' hands claude an immediate EOF — otherwise the CLI waits ~3s per call
+// for stdin that never comes ("no stdin data received in 3s, proceeding without it").
+function runClaude(args) {
+  return new Promise((resolve, reject) => {
+    const child = spawn('claude', args, { stdio: ['ignore', 'pipe', 'pipe'] });
+    let stdout = '', stderr = '';
+    child.stdout.on('data', (d) => {
+      stdout += d;
+      if (stdout.length > MAX_BUFFER) { child.kill(); reject(new Error('claude stdout exceeded maxBuffer')); }
+    });
+    child.stderr.on('data', (d) => { stderr += d; });
+    child.on('error', reject);
+    // claude -p --output-format json writes its error payload to stdout, not stderr, so include both.
+    child.on('close', (code) => code === 0
+      ? resolve(stdout)
+      : reject(new Error(`claude exited ${code}: ${(stderr.trim() || stdout.trim() || '(no output)').slice(0, 500)}`)));
+  });
+}
+
 export async function callClaudeCli({ prompt, model = 'opus' }) {
-  const { stdout } = await execFileAsync(
-    'claude',
-    ['-p', prompt, '--model', model, '--output-format', 'json'],
-    { maxBuffer: MAX_BUFFER }
-  );
+  const stdout = await runClaude(['-p', prompt, '--model', model, '--output-format', 'json']);
   const envelope = JSON.parse(stdout);
   const text = envelope.result ?? envelope.message ?? '';
   const u = envelope.usage ?? {};

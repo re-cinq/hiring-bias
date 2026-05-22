@@ -90,7 +90,7 @@ No prose before or after the JSON."
 
   # claude -p returns an envelope; .result holds the model text. Strip code fences,
   # keep the JSON object, then merge in pair metadata.
-  if ! verdict="$(claude -p "$prompt" --model "$MODEL" --output-format json \
+  if ! verdict="$(claude -p "$prompt" --model "$MODEL" --output-format json < /dev/null \
         | jq -r '.result' \
         | sed -e 's/^```json//' -e 's/^```//' -e 's/```$//' \
         | jq -c '.')"; then
