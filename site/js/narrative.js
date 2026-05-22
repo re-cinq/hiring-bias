@@ -12,6 +12,8 @@ const diffsIndex = await loadJson('data/diffs/index.json');
 
 const MODEL_DISPLAY = {
   'claude-opus': 'Claude Opus',
+  'claude-sonnet': 'Claude Sonnet',
+  'claude-haiku': 'Claude Haiku',
   'gemini-2.5-flash': 'Gemini 2.5 Flash',
   'gemini-2.5-pro': 'Gemini 2.5 Pro',
   'gemini-3.1-pro-preview': 'Gemini 3.1 Pro · Preview',

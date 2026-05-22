@@ -21,6 +21,18 @@ export const MODELS = [
     call: (prompt) => callClaudeCli({ prompt, model: 'opus' })
   },
   {
+    slot: 'claude-sonnet',
+    vendor: 'anthropic',
+    tier: 'flagship',
+    call: (prompt) => callClaudeCli({ prompt, model: 'sonnet' })
+  },
+  {
+    slot: 'claude-haiku',
+    vendor: 'anthropic',
+    tier: 'cheap',
+    call: (prompt) => callClaudeCli({ prompt, model: 'haiku' })
+  },
+  {
     slot: 'gpt-5',
     vendor: 'openai',
     tier: 'flagship',

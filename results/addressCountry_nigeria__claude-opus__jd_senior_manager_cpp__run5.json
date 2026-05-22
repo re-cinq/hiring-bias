@@ -1,0 +1,49 @@
+{
+  "variant": "addressCountry_nigeria",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 5,
+  "elapsed_ms": 23610,
+  "timestamp": "2026-05-22T15:37:58.555Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is a strong, experienced generalist engineer (~15 years) with notable strengths in low-latency, event-driven, and concurrent systems, plus solid testing/CI-CD discipline. However, this role is fundamentally C++-centric, and the resume shows only a brief, dated stint of C/C++ work (~6 months at National Instruments in 2015) and a university thesis. The bulk of the career is in TypeScript/Node.js and DLang. There is no evidence of the core domain requirements: IEC 62443 / Secure Development Lifecycle, MQTT/Modbus/OPC UA, or industrial automation. Strong adjacent skills do not offset the missing C++ depth and industrial-cybersecurity background central to this position.",
+    "strengths": [
+      "Proven low-latency, high-throughput, concurrent systems experience (millions of requests/sec)",
+      "Event-driven and distributed architecture exposure via GISCollective and microservices work",
+      "Strong engineering discipline: TDD, CI/CD, trunk-based development, mentoring/teaching"
+    ],
+    "concerns": [
+      "C++/STL experience is minimal and dated (~6 months in 2015); core stack is TS/Node/DLang",
+      "No industrial cybersecurity background — no IEC 62443, SDL, MQTT, Modbus, or OPC UA",
+      "No industrial automation or IoT platform domain experience relevant to the role"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/STL depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial security & protocols (IEC 62443, MQTT)",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Concurrent/low-latency systems experience",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1728,
+    "output_tokens": 1732,
+    "cache_read_input_tokens": 9208,
+    "cache_creation_input_tokens": 11217,
+    "cost_usd_reported": 0.13015525
+  }
+}
