@@ -87,7 +87,9 @@ export function copyLinkButton() {
 
 export function header(title, subtitle) {
   const w = (title || '').length;
-  const horiz = '═'.repeat(Math.max(w + 4, 32));
+  const inner = Math.max(w + 4, 32);
+  const horiz = '═'.repeat(inner);
+  const rightPad = ' '.repeat(inner - 2 - w);
   const node = document.createElement('div');
   node.className = 'header-box';
   const t = document.createElement('span');
@@ -95,7 +97,7 @@ export function header(title, subtitle) {
   t.textContent = title;
   node.append('╔' + horiz + '╗\n║  ');
   node.append(t);
-  node.append('  ║\n╚' + horiz + '╝');
+  node.append(rightPad + '║\n╚' + horiz + '╝');
   if (subtitle) {
     const s = document.createElement('div');
     s.className = 'dim';

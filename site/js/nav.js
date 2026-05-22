@@ -3,11 +3,9 @@ import { loadJson, fmtPct, fmtDate, fmtNum, el } from './lib.js';
 const PAGES = [
   { href: 'index.html', label: 'story' },
   { href: 'heatmap.html', label: 'heatmap' },
-  { href: 'axis.html', label: 'axes' },
-  { href: 'models.html', label: 'models' },
-  { href: 'jd.html', label: 'jds' },
   { href: 'diff.html', label: 'diff' },
   { href: 'resume-diff.html', label: 'resume-diff' },
+  { href: 'jds.html', label: 'jobs' },
   { href: 'methodology.html', label: 'methodology' },
   { href: 'downloads.html', label: 'downloads' },
   { href: 'about.html', label: 'about' }
@@ -76,7 +74,40 @@ export async function renderStatus() {
   document.body.insertBefore(bar, document.body.firstChild);
 }
 
+const AUTHOR_LINKS = [
+  { href: 'https://re-cinq.com', label: 're:cinq' },
+  { href: 'https://szabobogdan.com/', label: 'szabobogdan.com' },
+  { href: 'https://github.com/gedaiu', label: 'GitHub' },
+  { href: 'https://www.linkedin.com/in/szabobogdan/', label: 'LinkedIn' }
+];
+
+function extLink(href, label) {
+  return el('a', { href, target: '_blank', rel: 'noopener' }, label);
+}
+
+function linkRow(prefix, links) {
+  const row = el('div', { class: 'footer-row' }, prefix ? [prefix] : []);
+  links.forEach((link, i) => {
+    if (i > 0 || prefix) row.append(el('span', { class: 'footer-sep' }, '·'));
+    row.append(extLink(link.href, link.label));
+  });
+  return row;
+}
+
+export function renderFooter() {
+  const inner = el('div', { class: 'footer-inner' });
+  inner.append(el('div', { class: 'footer-row footer-id' }, 'BIAS://research — a counterfactual audit of LLM hiring bias'));
+  inner.append(linkRow('Built by Bogdan Szabo', AUTHOR_LINKS));
+  inner.append(el('div', { class: 'footer-row footer-meta' }, [
+    `© ${new Date().getFullYear()} Bogdan Szabo`,
+    el('span', { class: 'footer-sep' }, '·'),
+    extLink('https://github.com/gedaiu', 'source on GitHub')
+  ]));
+  document.body.append(el('footer', { class: 'bottom' }, inner));
+}
+
 export async function mountChrome() {
   await renderStatus();
   renderNav();
+  renderFooter();
 }

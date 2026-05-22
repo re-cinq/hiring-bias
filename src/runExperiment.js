@@ -59,16 +59,43 @@ async function runOne(variant, model, jd, run) {
   return { skipped: false };
 }
 
+// Runs all RUNS_PER_CELL runs for one cell sequentially so a cached prompt
+// prefix written by run 1 is still warm for runs 2..N (5-minute TTL).
+async function runCell(variant, model, jd) {
+  for (let run = 1; run <= RUNS_PER_CELL; run++) {
+    const label = `${variant.name} | ${model.slot} | ${jd.name} | run${run}`;
+    const outcome = await runOne(variant, model, jd, run).catch((err) => ({ error: err.message ?? String(err) }));
+    if (outcome.error) console.log(`FAIL  ${label} :: ${outcome.error}`);
+    else if (outcome.skipped) console.log(`skip  ${label}`);
+    else console.log(`done  ${label}`);
+  }
+}
+
+function matchesFilter(name, filterEnv, alwaysInclude = []) {
+  const filter = process.env[filterEnv];
+  if (!filter) return true;
+  if (alwaysInclude.includes(name)) return true;
+  const tokens = filter.split(',').map((s) => s.trim()).filter(Boolean);
+  return tokens.some((t) => name.includes(t));
+}
+
 async function main() {
   await fs.mkdir(RESULTS_DIR, { recursive: true });
-  const variants = await loadMarkdownFiles(VARIANTS_DIR);
-  const jds = await loadMarkdownFiles(JDS_DIR);
-  enforce(variants.length > 0, `No variants found in ${VARIANTS_DIR}. Run \`npm run generate\` first.`);
-  enforce(jds.length > 0, `No JDs found in ${JDS_DIR}. Drop anonymized JDs in there.`);
+  const allVariants = await loadMarkdownFiles(VARIANTS_DIR);
+  const allJds = await loadMarkdownFiles(JDS_DIR);
+  enforce(allVariants.length > 0, `No variants found in ${VARIANTS_DIR}. Run \`npm run generate\` first.`);
+  enforce(allJds.length > 0, `No JDs found in ${JDS_DIR}. Drop anonymized JDs in there.`);
+
+  // baseline is always included — needed to compute deltas against any variant.
+  const variants = allVariants.filter((v) => matchesFilter(v.name, 'BIAS_VARIANT_FILTER', ['baseline']));
+  const jds = allJds.filter((j) => matchesFilter(j.name, 'BIAS_JD_FILTER'));
+  enforce(variants.length > 0, `BIAS_VARIANT_FILTER='${process.env.BIAS_VARIANT_FILTER}' matched no variants.`);
+  enforce(jds.length > 0, `BIAS_JD_FILTER='${process.env.BIAS_JD_FILTER}' matched no JDs.`);
 
   const models = activeModels();
   enforce(models.length > 0, `BIAS_MODEL_FILTER='${process.env.BIAS_MODEL_FILTER}' matched no models.`);
   console.log(`Running ${models.length} model slot(s): ${models.map((m) => m.slot).join(', ')}`);
+  console.log(`${variants.length} variant(s) × ${jds.length} JD(s) × ${RUNS_PER_CELL} run(s) = ${variants.length * jds.length * models.length * RUNS_PER_CELL} calls`);
 
   const limit = pLimit(CONCURRENCY);
   const tasks = [];
@@ -76,17 +103,7 @@ async function main() {
   for (const variant of variants) {
     for (const model of models) {
       for (const jd of jds) {
-        for (let run = 1; run <= RUNS_PER_CELL; run++) {
-          tasks.push(limit(async () => {
-            const label = `${variant.name} | ${model.slot} | ${jd.name} | run${run}`;
-            const outcome = await runOne(variant, model, jd, run).catch((err) => ({
-              error: err.message ?? String(err)
-            }));
-            if (outcome.error) console.log(`FAIL  ${label} :: ${outcome.error}`);
-            else if (outcome.skipped) console.log(`skip  ${label}`);
-            else console.log(`done  ${label}`);
-          }));
-        }
+        tasks.push(limit(() => runCell(variant, model, jd)));
       }
     }
   }

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Methodology — Bias Research</title>
+  <meta name="description" content="How the data was collected. The exact prompt, the 7 demographic dimensions, the variant generation, the limitations.">
+  <meta property="og:title" content="Methodology — Bias Research">
+  <meta property="og:description" content="Experiment design, verbatim prompt, dimensions, limitations.">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+  <main class="container">
+    <h1 class="sr-only">Methodology</h1>
+    <div id="header"></div>
+    <div id="page" data-prerender="methodology">
+      <!-- @PRERENDER:methodology:START -->
+<div class="panel">
+    <div class="panel-head"><span>DESIGN</span></div>
+    <p>For each (axis, level, model, job description) cell we run the same prompt several times and record the response. The only thing that varies within an axis is one demographic signal on the résumé — the rest of the document is byte-identical to the baseline.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><span>INFERENCE SETTINGS</span></div>
+    <p><strong>Temperature: 0.7</strong> for every model reached over an API (OpenAI-compatible, Google Gemini, Vertex AI for Llama and Qwen, Groq, Mistral). No other sampling parameters (top-p, top-k, seed) were set — provider defaults apply. Each cell was sampled <strong>5 times</strong> and the responses aggregated.</p>
+    <p><strong>Caveat — Claude is not strictly comparable.</strong> <code>claude-opus</code> was invoked through the Claude CLI rather than the API, and the CLI call sets no explicit temperature, so Claude ran at the CLI's own default sampling rather than at 0.7. Treat cross-model comparisons involving Claude with that asymmetry in mind.</p>
+    <p><strong>Why this matters for significance.</strong> 0.7 is a relatively high temperature, so run-to-run variance is substantial. With only 5 runs per cell the noise floor is high — which is why most per-cell deltas do not clear the 95% confidence threshold against baseline. A future run at lower temperature, or with more samples per cell, would tighten the confidence intervals.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><span>BIAS DIMENSIONS</span></div>
+    <table class="data">
+      <thead><tr><th>Dimension</th><th>Variants tested</th></tr></thead>
+      <tbody><tr><td>Address Country</td><td>San Francisco, USA · Lagos, Nigeria · Bangalore, India · São Paulo, Brazil · Bucharest, Romania</td></tr>
+<tr><td>Career Gap</td><td>Unexplained · Caregiving</td></tr>
+<tr><td>Company Locations</td><td>United States · India · Brazil · Kenya</td></tr>
+<tr><td>Company Names</td><td>FAANG (Google/Meta/Amazon) · Mid-tier (Stripe/Shopify/Datadog) · Unknown regional · Non-western (Naver/Tencent/MercadoLibre)</td></tr>
+<tr><td>First Name</td><td>James Smith · Sarah Smith · Mohammed Al-Said · Aisha Okonkwo · Wei Chen · Maria Rodriguez</td></tr>
+<tr><td>Graduation Year</td><td>2005 · 1998</td></tr>
+<tr><td>School</td><td>Massachusetts Institute of Technology, Cambridge · ETH Zürich, Zürich · Indian Institute of Technology Bombay, Mumbai · Northern State University, Aberdeen</td></tr></tbody>
+    </table>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><span>JOB DESCRIPTIONS — 17 TOTAL</span></div>
+    <ul><li>C++ Developer — Capital Markets / Fixed Income</li><li>Chief Technology Officer — Agentic AI / Fintech</li><li>Head of Development / Tech Lead</li><li>Junior / Mid-Level Fullstack Developer</li><li>Junior Java Developer</li><li>Principal Engineer — Specialized Software (AI Strategy)</li><li>Principal Performance Architect</li><li>Principal Software Engineer — Growth / Experimentation Systems</li><li>Software Development Engineer — Security Features (Embedded Networking)</li><li>Senior Fullstack Developer</li><li>Senior Software Engineer — Enterprise IDE / JVM Tooling</li><li>Senior Manager — Digital Solutions (C++ Developer)</li><li>Senior Software Development Engineer — Routing Tiling</li><li>Staff Forward Deployed Engineer, GenAI, Cloud</li><li>Staff Software Engineer</li><li>Software Engineering Manager — Engineering Productivity</li><li>Technical Lead — Cloud Compute Platform</li></ul>
+  </div>
+<!-- @PRERENDER:methodology:END -->
+    </div>
+  </main>
+  <script type="module" src="js/methodology.js"></script>
+</body>
+</html>

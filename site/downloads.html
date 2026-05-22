@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Downloads — Bias Research</title>
+  <meta name="description" content="Raw run-level JSON, aggregated CSV, the 28 résumé variants — everything from the bias research study.">
+  <meta property="og:title" content="Downloads — Bias Research">
+  <meta property="og:description" content="Raw and aggregated data from the bias research study.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+  <main class="container">
+    <h1 class="sr-only">Downloads</h1>
+    <div id="header"></div>
+    <div id="page" data-prerender="downloads">
+      <!-- @PRERENDER:downloads:START -->
+<div class="panel">
+    <div class="panel-head"><span>9,012 INFERENCES · <!-- @PRERENDER:downloads:START -->15.02 SPENT</span></div>
+    <table class="data">
+      <thead><tr><th>File</th><th>Contents</th></tr></thead>
+      <tbody>
+        <tr><td><code>data.csv</code></td><td class="dim">Aggregated by (variant, model, jd). One row per cell — n, mean score, recommend rate.</td></tr>
+        <tr><td><code>summary.md</code></td><td class="dim">Same table as data.csv plus per-model cost &amp; token breakdown.</td></tr>
+        <tr><td><code>matrix.json</code></td><td class="dim">Per-(axis, variant, model) mean Δ aggregated across JDs.</td></tr>
+        <tr><td><code>results.ndjson.gz</code></td><td class="dim">Full run-level corpus. One JSON object per inference run.</td></tr>
+        <tr><td><code>resumes.json</code></td><td class="dim">Full text of all 28 résumé variants.</td></tr>
+      </tbody>
+    </table>
+  </div>
+<!-- @PRERENDER:downloads:END -->
+    </div>
+  </main>
+  <script type="module" src="js/downloads.js"></script>
+</body>
+</html>

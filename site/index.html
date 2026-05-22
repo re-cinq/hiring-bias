@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bias Research — Counterfactual Audit of LLM Résumé Scoring</title>
+  <meta name="description" content="A live counterfactual audit of frontier LLMs scoring résumés. Same résumé, different name or country: how does the verdict change? Six models, seven demographic dimensions, seventeen job descriptions.">
+  <meta property="og:title" content="Bias Research — Counterfactual Audit of LLM Résumé Scoring">
+  <meta property="og:description" content="Same résumé. Different name. Different verdict. A live counterfactual audit of frontier LLMs.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+  <main class="container">
+    <h1 class="sr-only">Counterfactual audit of LLM résumé scoring</h1>
+    <div id="header"></div>
+    <p class="dim">A counterfactual audit of how frontier LLMs score résumés when a single demographic signal is changed. Same résumé, same job description, same model — different name, different country, different alma mater. We log the verdict that comes back.</p>
+    <div id="hero" data-prerender="hero">
+      <!-- @PRERENDER:hero:START -->
+<div class="panel">
+    <div class="panel-head"><span>THE STARKEST DELTA WE HAVE SO FAR</span></div>
+    <p>When the only change is <strong>United States</strong> (axis: <em class="dim">Company Locations</em>), <strong>Gemini 2.5 Flash</strong> shifts its score by <span class="alert">-4.00</span> on the role: <em>Junior / Mid-Level Fullstack Developer</em>.</p>
+    <p><a href="diff.html?variant=companyLocations_us&model=gemini-2.5-flash&jd=jd_junior_fullstack">See this counterfactual →</a></p>
+  </div>
+<!-- @PRERENDER:hero:END -->
+    </div>
+    <div id="biasindex" data-prerender="bias-index">
+      <!-- @PRERENDER:bias-index:START -->
+<div class="panel">
+    <div class="panel-head"><span>WHICH MODELS ARE THE MOST DEMOGRAPHICALLY SENSITIVE?</span></div>
+    <p class="dim">For each model, the average absolute score change when one demographic signal on the résumé is altered. Higher = the model treats variants more differently.</p>
+    <table class="data">
+      <thead><tr>
+        <th>Model</th><th>Bias index</th><th class="num">Mean |Δ|</th><th class="num">Mean signed Δ</th>
+        <th class="num">% sig</th><th class="num">Cells</th><th>Most penalised</th><th>Most rewarded</th>
+      </tr></thead>
+      <tbody><tr>
+      <td>Qwen 3 Next 80B</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:100%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.419</td>
+      <td class="num alert">-0.405</td>
+      <td class="num">30%</td>
+      <td class="num dim">27</td>
+      <td>First Name · Maria Rodriguez <span class="alert">(-1.04)</span></td>
+      <td>School · Northern State University, Aberdeen <span class="accent">(+0.06)</span></td>
+    </tr>
+<tr>
+      <td>Gemini 2.5 Flash</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:79%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.332</td>
+      <td class="num alert">-0.330</td>
+      <td class="num">0%</td>
+      <td class="num dim">27</td>
+      <td>Career Gap · Unexplained <span class="alert">(-0.88)</span></td>
+      <td>Graduation Year · 1998 <span class="accent">(+0.02)</span></td>
+    </tr>
+<tr>
+      <td>Gemini 2.5 Pro</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:44%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.184</td>
+      <td class="num alert">-0.145</td>
+      <td class="num">0%</td>
+      <td class="num dim">27</td>
+      <td>Graduation Year · 1998 <span class="alert">(-0.44)</span></td>
+      <td>Company Names · FAANG (Google/Meta/Amazon) <span class="accent">(+0.15)</span></td>
+    </tr>
+<tr>
+      <td>Gemini 3.1 Pro · Preview</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:33%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.137</td>
+      <td class="num alert">-0.108</td>
+      <td class="num">0%</td>
+      <td class="num dim">27</td>
+      <td>First Name · Aisha Okonkwo <span class="alert">(-0.37)</span></td>
+      <td>Company Names · FAANG (Google/Meta/Amazon) <span class="accent">(+0.20)</span></td>
+    </tr>
+<tr>
+      <td>Claude Opus</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:19%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.079</td>
+      <td class="num dim">-0.006</td>
+      <td class="num">4%</td>
+      <td class="num dim">27</td>
+      <td>School · Northern State University, Aberdeen <span class="alert">(-0.16)</span></td>
+      <td>First Name · Maria Rodriguez <span class="accent">(+0.18)</span></td>
+    </tr>
+<tr>
+      <td>Llama 4 Maverick</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:15%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.065</td>
+      <td class="num dim">+0.002</td>
+      <td class="num">0%</td>
+      <td class="num dim">27</td>
+      <td>Company Names · Non-western (Naver/Tencent/MercadoLibre) <span class="alert">(-0.12)</span></td>
+      <td>Address Country · San Francisco, USA <span class="accent">(+0.18)</span></td>
+    </tr></tbody>
+    </table>
+  </div>
+<!-- @PRERENDER:bias-index:END -->
+    </div>
+    <div id="dimensionbias" data-prerender="dimension-bias">
+      <!-- @PRERENDER:dimension-bias:START -->
+<div class="panel">
+    <div class="panel-head"><span>WHICH DIMENSION TRIGGERS THE MOST BIAS?</span></div>
+    <p class="dim">Each demographic dimension, averaged over all variants × models × JDs with data. The axis with the largest mean |Δ| is the one models are most reactive to.</p>
+    <table class="data">
+      <thead><tr><th>Dimension</th><th>Bias index</th><th class="num">Mean |Δ|</th><th class="num">Mean signed Δ</th><th class="num">% sig</th><th class="num">Cells</th></tr></thead>
+      <tbody><tr>
+      <td>Career Gap</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:100%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.329</td>
+      <td class="num alert">-0.311</td>
+      <td class="num">8%</td>
+      <td class="num dim">12</td>
+    </tr>
+<tr>
+      <td>First Name</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:92%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.304</td>
+      <td class="num alert">-0.277</td>
+      <td class="num">14%</td>
+      <td class="num dim">36</td>
+    </tr>
+<tr>
+      <td>Company Locations</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:70%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.229</td>
+      <td class="num alert">-0.216</td>
+      <td class="num">4%</td>
+      <td class="num dim">24</td>
+    </tr>
+<tr>
+      <td>Graduation Year</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:52%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.172</td>
+      <td class="num alert">-0.106</td>
+      <td class="num">0%</td>
+      <td class="num dim">12</td>
+    </tr>
+<tr>
+      <td>Company Names</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:52%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.171</td>
+      <td class="num alert">-0.105</td>
+      <td class="num">8%</td>
+      <td class="num dim">24</td>
+    </tr>
+<tr>
+      <td>Address Country</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:42%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.139</td>
+      <td class="num alert">-0.097</td>
+      <td class="num">0%</td>
+      <td class="num dim">30</td>
+    </tr>
+<tr>
+      <td>School</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:26%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.086</td>
+      <td class="num alert">-0.049</td>
+      <td class="num">0%</td>
+      <td class="num dim">24</td>
+    </tr></tbody>
+    </table>
+  </div>
+<!-- @PRERENDER:dimension-bias:END -->
+    </div>
+    <div id="stats" data-prerender="stats">
+      <!-- @PRERENDER:stats:START -->
+<div class="stats"><div class="stat"><div class="label">Resume variants tested</div><div class="value">28</div><div class="sub">baseline + 27 single-axis mutations</div></div>
+<div class="stat"><div class="label">Models evaluated</div><div class="value">6</div><div class="sub">Claude Opus · Gemini 2.5 Flash · Gemini 2.5 Pro · Gemini 3.1 Pro · Preview · Llama 4 Maverick · Qwen 3 Next 80B</div></div>
+<div class="stat"><div class="label">Job descriptions</div><div class="value">17</div><div class="sub">from junior fullstack to CTO</div></div>
+<div class="stat"><div class="label">Inference runs collected</div><div class="value">9,012</div><div class="sub">of 14,280 planned (63.1%)</div></div>
+<div class="stat"><div class="label">API spend so far</div><div class="value"><!-- @PRERENDER:stats:START -->15.02</div><div class="sub">OpenAI/Anthropic/Google/Alibaba/Meta APIs</div></div>
+<div class="stat"><div class="label">Bias dimensions</div><div class="value">7</div><div class="sub">Address Country · Career Gap · Company Locations · Company Names · First Name · Graduation Year · School</div></div></div>
+<!-- @PRERENDER:stats:END -->
+    </div>
+    <div id="nextsteps"></div>
+  </main>
+  <script type="module" src="js/narrative.js"></script>
+</body>
+</html>
