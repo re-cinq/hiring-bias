@@ -44,6 +44,34 @@ if (top) {
   hero.append(panel);
 }
 
+renderTopCounterfactuals(document.getElementById('topcounterfactuals'));
+
+function renderTopCounterfactuals(host) {
+  if (!host) return;
+  host.innerHTML = '';
+  const top = diffsIndex.slice(0, 12);
+  if (!top.length) return;
+  const panel = el('div', { class: 'panel' });
+  panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'TOP COUNTERFACTUALS — THE CASES WITH THE LARGEST Δ')));
+  const grid = el('div', { class: 'grid', style: { gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '6px' } });
+  for (const d of top) {
+    const axisL = matrix.axis_labels?.[d.axis] ?? d.axis;
+    const levelL = matrix.level_labels?.[d.axis]?.[d.level] ?? d.level;
+    grid.append(el('a', {
+      href: `diff.html?variant=${d.axis}_${d.level}&model=${d.model}&jd=${d.jd}`,
+      class: 'tc-card'
+    }, [
+      el('span', { class: d.delta >= 0 ? 'accent' : 'alert' }, (d.delta >= 0 ? '+' : '') + d.delta.toFixed(2)),
+      ' · ',
+      `${axisL} · ${levelL}`,
+      el('br'),
+      el('span', { class: 'dim' }, `${MODEL_DISPLAY[d.model] ?? d.model} · ${matrix.jd_labels?.[d.jd] ?? d.jd}`)
+    ]));
+  }
+  panel.append(grid);
+  host.append(panel);
+}
+
 renderBiasIndex(document.getElementById('biasindex'), matrix, {
   title: 'WHICH MODELS ARE THE MOST DEMOGRAPHICALLY SENSITIVE?',
   description: 'For each model, the average absolute score change when one demographic signal on the résumé is altered. Higher = the model treats variants more differently. Most penalised / most rewarded shows the variant that triggered the largest swing in each direction.'

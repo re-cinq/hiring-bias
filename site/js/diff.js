@@ -1,9 +1,9 @@
 import { mountChrome } from './nav.js';
 import { loadJson, el, header, params, setParam, badges, pill, fmtNum, fmtSignedDelta, deltaClass, copyLinkButton } from './lib.js';
-import { renderLineDiff } from './linediff.js';
+import { diffLines } from './linediff.js';
 
 await mountChrome();
-document.getElementById('header').append(header('COUNTERFACTUAL DIFF', 'baseline vs. one demographic variant — same JD, same model'));
+document.getElementById('header').append(header('COUNTERFACTUAL DIFF', 'one line changes on the résumé — read what the model said about each version'));
 
 const summary = await loadJson('data/summary.json');
 const matrix = await loadJson('data/matrix.json');
@@ -14,7 +14,6 @@ const AXES = matrix.axes;
 const MODELS = matrix.models;
 const AXIS_LABELS = matrix.axis_labels ?? {};
 const LEVEL_LABELS = matrix.level_labels ?? {};
-const JD_LABELS = matrix.jd_labels ?? {};
 const LEVELS_BY_AXIS = matrix.levels_by_axis ?? {};
 
 const MODEL_DISPLAY = {
@@ -68,56 +67,8 @@ row.append(
 );
 page.append(controls);
 
-renderTopCounterfactuals();
-
-function renderTopCounterfactuals() {
-  const top = diffsIndex.slice(0, 12);
-  if (!top.length) return;
-  const panel = el('div', { class: 'panel' });
-  panel.append(el('div', { class: 'panel-head' }, [
-    el('span', {}, 'TOP COUNTERFACTUALS — JUMP TO THE CASES WITH THE LARGEST Δ'),
-    el('div', { class: 'controls' }, [
-      el('button', { onclick: () => navigateDiff(-1) }, '[ ← prev ]'),
-      el('button', { onclick: () => navigateDiff(1) }, '[ next → ]')
-    ])
-  ]));
-  const grid = el('div', { class: 'grid', style: { gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '6px' } });
-  for (const d of top) {
-    const label = `${AXIS_LABELS[d.axis] ?? d.axis} · ${LEVEL_LABELS[d.axis]?.[d.level] ?? d.level}`;
-    const button = el('button', {
-      style: { textAlign: 'left', padding: '6px 8px', fontSize: '11px', lineHeight: '1.3' },
-      onclick: () => loadTopPick(d)
-    }, [
-      el('span', { class: d.delta >= 0 ? 'accent' : 'alert' }, (d.delta >= 0 ? '+' : '') + d.delta.toFixed(2)),
-      ' · ',
-      label,
-      el('br'),
-      el('span', { class: 'dim' }, `${MODEL_DISPLAY[d.model] ?? d.model} · ${JD_LABELS[d.jd] ?? d.jd}`)
-    ]);
-    grid.append(button);
-  }
-  panel.append(grid);
-  page.append(panel);
-}
-
-function loadTopPick(d) {
-  variantSel.value = `${d.axis}_${d.level}`;
-  modelSel.value = d.model;
-  jdSel.value = d.jd;
-  onChange();
-}
-
-function navigateDiff(direction) {
-  const cur = `${variantSel.value}__${modelSel.value}__${jdSel.value}`;
-  let idx = diffsIndex.findIndex((d) => d.id === cur);
-  if (idx === -1) idx = 0;
-  const next = (idx + direction + diffsIndex.length) % diffsIndex.length;
-  loadTopPick(diffsIndex[next]);
-}
-
-const resumeHost = el('div');
 const verdictHost = el('div');
-page.append(verdictHost, resumeHost);
+page.append(verdictHost);
 
 variantSel.addEventListener('change', onChange);
 modelSel.addEventListener('change', onChange);
@@ -133,31 +84,38 @@ async function onChange() {
 }
 
 async function render() {
-  const variant = variantSel.value;
-  const model = modelSel.value;
-  const jd = jdSel.value;
-  renderResumeDiff(variant);
-  await renderVerdict(variant, model, jd);
+  await renderVerdict(variantSel.value, modelSel.value, jdSel.value);
 }
 
-function renderResumeDiff(variant) {
-  resumeHost.innerHTML = '';
-  const panel = el('div', { class: 'panel' });
-  panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'RESUME — WHAT CHANGED (baseline → variant)')));
-  const baselineText = resumes['baseline'] ?? '';
-  const variantText = resumes[variant] ?? '';
-  if (!variantText) {
-    panel.append(el('p', { class: 'alert' }, `no variant text for ${variant}`));
-  } else {
-    panel.append(renderLineDiff(baselineText, variantText, { context: 1 }));
+function changeCaption(variant) {
+  const wrap = el('div', { class: 'change-caption' });
+  wrap.append(el('div', { class: 'change-head' }, [
+    el('span', { class: 'dim' }, 'ONE LINE CHANGED · '),
+    el('span', {}, variantLabel(variant)),
+    el('a', { href: `resume-diff.html?from=baseline&to=${variant}`, class: 'change-full' }, 'full résumé diff →')
+  ]));
+
+  const lines = diffLines(resumes['baseline'] ?? '', resumes[variant] ?? '');
+  const changed = lines.filter((l) => l.kind !== 'ctx' && l.text.trim());
+  if (!changed.length) {
+    wrap.append(el('div', { class: 'dim' }, '(identical)'));
+    return wrap;
   }
-  resumeHost.append(panel);
+  const box = el('div', { class: 'linediff' });
+  for (const l of changed) {
+    box.append(el('div', { class: `line ${l.kind}` }, [
+      el('span', { class: 'pfx' }, l.kind === 'add' ? '+ ' : '- '),
+      el('span', {}, l.text.trim())
+    ]));
+  }
+  wrap.append(box);
+  return wrap;
 }
 
 async function renderVerdict(variant, model, jd) {
   verdictHost.innerHTML = '';
   const panel = el('div', { class: 'panel' });
-  panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'VERDICT — HOW THE MODEL SCORED EACH RESUME')));
+  panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'WHAT THE MODEL SAID — BASELINE vs VARIANT')));
 
   const id = `${variant}__${model}__${jd}`;
   let prebuilt = null;
@@ -179,6 +137,7 @@ async function renderVerdict(variant, model, jd) {
     }
   }
 
+  panel.append(changeCaption(variant));
   verdictHost.append(panel);
 }
 
@@ -188,7 +147,7 @@ function renderVerdictCards(baseline, variantData, variant, model, jd, delta, ci
   wrap.append(verdictCard('Baseline (unmodified resume)', baseline));
   wrap.append(verdictCard(`Variant — ${variantLabel(variant)}`, variantData));
 
-  const summary = el('div', { class: 'panel', style: { marginTop: '12px' } });
+  const summary = el('div', { class: 'panel' });
   summary.append(el('div', { class: 'panel-head' }, el('span', {}, 'SUMMARY')));
   summary.append(el('div', {}, [
     `Δ score: `, el('span', { class: deltaClass(delta) }, fmtSignedDelta(delta, 2)),
@@ -197,7 +156,7 @@ function renderVerdictCards(baseline, variantData, variant, model, jd, delta, ci
   ]));
 
   const both = document.createElement('div');
-  both.append(wrap, summary);
+  both.append(summary, wrap);
   return both;
 }
 

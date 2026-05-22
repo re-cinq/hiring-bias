@@ -450,14 +450,22 @@ function buildNgrams(records, axis, baselines) {
   return { axis, by_level: byLevel };
 }
 
-function pickTopDiffs(cells, records, n) {
-  const candidates = cells.filter((c) => c.delta != null && c.variant !== 'baseline');
-  candidates.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
-  const top = candidates.slice(0, n);
+function indexFirstRecord(records) {
+  const byCell = new Map();
+  for (const r of records) {
+    const key = `${r.variant}__${r.model}__${r.jd}`;
+    if (!byCell.has(key)) byCell.set(key, r);
+  }
+  return byCell;
+}
+
+function buildDiffObjects(cells, records) {
+  const recByCell = indexFirstRecord(records);
   const out = [];
-  for (const c of top) {
-    const variantRec = records.find((r) => r.variant === c.variant && r.model === c.model && r.jd === c.jd);
-    const baselineRec = records.find((r) => r.variant === 'baseline' && r.model === c.model && r.jd === c.jd);
+  for (const c of cells) {
+    if (c.delta == null || c.variant === 'baseline') continue;
+    const variantRec = recByCell.get(`${c.variant}__${c.model}__${c.jd}`);
+    const baselineRec = recByCell.get(`baseline__${c.model}__${c.jd}`);
     if (!variantRec || !baselineRec) continue;
     out.push({
       id: `${c.variant}__${c.model}__${c.jd}`,
@@ -554,14 +562,13 @@ async function main() {
     outputs.push(await writeJson(`ngrams/${axis}.json`, buildNgrams(records, axis, baselines)));
   }
 
-  const topDiffs = pickTopDiffs(cells, records, TOP_DIFFS_COUNT);
+  const allDiffs = buildDiffObjects(cells, records);
+  const topDiffs = [...allDiffs].sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta)).slice(0, TOP_DIFFS_COUNT);
   outputs.push(await writeJson('diffs/index.json', topDiffs.map((d) => ({
     id: d.id, variant: d.variant, axis: d.axis, level: d.level, model: d.model, jd: d.jd,
     delta: d.delta, ci_overlap: d.ci_overlap
   }))));
-  for (const d of topDiffs) {
-    outputs.push(await writeJson(`diffs/${d.id}.json`, d));
-  }
+  outputs.push(...await Promise.all(allDiffs.map((d) => writeJson(`diffs/${d.id}.json`, d))));
 
   outputs.push(await writeJson('resumes.json', await loadVariantResumes()));
   outputs.push(await writeJson('jds-text.json', jdTexts));
