@@ -10,6 +10,7 @@ import { costFor } from '../src/pricing.js';
 const RESULTS_DIR = 'results';
 const VARIANTS_DIR = 'data/variants';
 const JDS_DIR = 'data/jds';
+const AUDITS_DIR = 'data/audits';
 const OUT_DIR = 'site/data';
 const EXPECTED_RUNS_PER_CELL = 5;
 const TOP_DIFFS_COUNT = 200;
@@ -479,6 +480,17 @@ function buildDiffObjects(cells, records) {
   return out;
 }
 
+async function loadAudits() {
+  const out = new Map();
+  if (!(await fs.access(AUDITS_DIR).then(() => true, () => false))) return out;
+  const files = (await fs.readdir(AUDITS_DIR)).filter((f) => f.endsWith('.json'));
+  for (const file of files) {
+    const a = JSON.parse(await fs.readFile(path.join(AUDITS_DIR, file), 'utf8'));
+    out.set(a.id, { verdict: a.verdict, confidence: a.confidence, rationale: a.rationale, bias_signals: a.bias_signals ?? [] });
+  }
+  return out;
+}
+
 async function loadVariantResumes() {
   const files = await fs.readdir(VARIANTS_DIR);
   const out = {};
@@ -563,6 +575,8 @@ async function main() {
   }
 
   const allDiffs = buildDiffObjects(cells, records);
+  const audits = await loadAudits();
+  for (const d of allDiffs) d.audit = audits.get(d.id) ?? null;
   const topDiffs = [...allDiffs].sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta)).slice(0, TOP_DIFFS_COUNT);
   outputs.push(await writeJson('diffs/index.json', topDiffs.map((d) => ({
     id: d.id, variant: d.variant, axis: d.axis, level: d.level, model: d.model, jd: d.jd,

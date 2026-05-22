@@ -122,7 +122,7 @@ async function renderVerdict(variant, model, jd) {
   try { prebuilt = await loadJson(`data/diffs/${id}.json`); } catch {}
 
   if (prebuilt) {
-    panel.append(renderVerdictCards(prebuilt.baseline, prebuilt.variant_data, variant, model, jd, prebuilt.delta, prebuilt.ci_overlap));
+    panel.append(renderVerdictCards(prebuilt.baseline, prebuilt.variant_data, variant, model, jd, prebuilt.delta, prebuilt.ci_overlap, prebuilt.audit));
   } else {
     const axis = variant.split('_')[0];
     const level = variant.slice(axis.length + 1);
@@ -141,7 +141,7 @@ async function renderVerdict(variant, model, jd) {
   verdictHost.append(panel);
 }
 
-function renderVerdictCards(baseline, variantData, variant, model, jd, delta, ciOverlap) {
+function renderVerdictCards(baseline, variantData, variant, model, jd, delta, ciOverlap, audit) {
   const wrap = el('div', { class: 'grid grid-2' });
 
   wrap.append(verdictCard('Baseline (unmodified resume)', baseline));
@@ -154,10 +154,31 @@ function renderVerdictCards(baseline, variantData, variant, model, jd, delta, ci
     ' · ',
     ciOverlap ? el('span', { class: 'dim' }, 'CI overlaps baseline — not significant') : el('span', { class: 'accent' }, '✓ CI excludes baseline — significant')
   ]));
+  if (audit?.verdict) summary.append(renderAudit(audit));
 
   const both = document.createElement('div');
   both.append(summary, wrap);
   return both;
+}
+
+const AUDIT_CLASS = { bias: 'alert', justified: 'accent', mixed: 'dim' };
+const AUDIT_LABEL = { bias: 'BIAS', justified: 'JUSTIFIED', mixed: 'MIXED' };
+
+function renderAudit(audit) {
+  const box = el('div', { class: 'audit' });
+  const klass = AUDIT_CLASS[audit.verdict] ?? 'dim';
+  box.append(el('div', {}, [
+    el('span', { class: 'dim' }, 'AUDITOR VERDICT: '),
+    el('span', { class: `audit-badge ${klass}` }, AUDIT_LABEL[audit.verdict] ?? audit.verdict.toUpperCase()),
+    audit.confidence ? el('span', { class: 'dim' }, ` · ${audit.confidence} confidence`) : null
+  ]));
+  if (audit.rationale) box.append(el('p', { class: 'dim' }, audit.rationale));
+  if (audit.bias_signals?.length) {
+    const ul = el('ul');
+    for (const s of audit.bias_signals) ul.append(el('li', { class: klass }, `“${s}”`));
+    box.append(ul);
+  }
+  return box;
 }
 
 function verdictCard(title, data, compare = null) {
