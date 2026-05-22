@@ -68,6 +68,8 @@ No prose before or after the JSON."
     echo "FAIL  $id" >&2; return 0
   fi
 
+  # write to a temp file then rename — atomic, so a concurrent build:site never
+  # reads a half-written verdict.
   jq -n \
     --arg id "$id" --arg variant "$variant" \
     --arg model "$(jq -r '.model' "$f")" --arg jd "$(jq -r '.jd' "$f")" \
@@ -75,7 +77,8 @@ No prose before or after the JSON."
     --arg auditor "$MODEL" --arg ts "$(date -u +%FT%TZ)" \
     --argjson v "$verdict" \
     '{id:$id, variant:$variant, model:$model, jd:$jd, delta:$delta, auditor:$auditor, timestamp:$ts} + $v' \
-    > "$out"
+    > "$out.tmp.$$"
+  mv "$out.tmp.$$" "$out"
   printf '%-9s  %s\n' "$(jq -r '.verdict' "$out")" "$id"
 }
 

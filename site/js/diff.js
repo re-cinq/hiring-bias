@@ -26,6 +26,9 @@ const MODEL_DISPLAY = {
 };
 const modelLabel = (m) => MODEL_DISPLAY[m] ?? m;
 
+const AUDIT_CLASS = { bias: 'alert', justified: 'accent', mixed: 'dim' };
+const AUDIT_LABEL = { bias: 'BIAS', justified: 'JUSTIFIED', mixed: 'MIXED' };
+
 const initial = params();
 const variantParam = initial.get('variant') ?? diffsIndex[0]?.variant ?? 'firstName_aisha-okonkwo';
 const modelParam = initial.get('model') ?? diffsIndex[0]?.model ?? MODELS[0];
@@ -160,9 +163,6 @@ function renderVerdictCards(baseline, variantData, variant, model, jd, delta, ci
   both.append(summary, wrap);
   return both;
 }
-
-const AUDIT_CLASS = { bias: 'alert', justified: 'accent', mixed: 'dim' };
-const AUDIT_LABEL = { bias: 'BIAS', justified: 'JUSTIFIED', mixed: 'MIXED' };
 
 function renderAudit(audit) {
   const box = el('div', { class: 'audit' });
