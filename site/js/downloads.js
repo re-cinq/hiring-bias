@@ -5,6 +5,8 @@ await mountChrome();
 document.getElementById('header').append(header('DOWNLOADS', 'raw and aggregated data'));
 
 const status = await loadJson('data/status.json');
+const summary = await loadJson('data/summary.json');
+const variantCount = 1 + Object.values(summary.variants_by_axis ?? {}).reduce((s, levels) => s + levels.length, 0);
 
 const page = document.getElementById('page');
 
@@ -15,7 +17,7 @@ const files = [
   { href: 'data/status.json', name: 'status.json', desc: 'Cell completeness, total cost, last-updated timestamp.' },
   { href: 'data/summary.json', name: 'summary.json', desc: 'Axes, models, JDs, labels — the schema map for everything else.' },
   { href: 'data/raw/results.ndjson.gz', name: 'results.ndjson.gz', desc: 'Full run-level corpus. One JSON object per inference run. Gzipped.' },
-  { href: 'data/resumes.json', name: 'resumes.json', desc: 'Full text of all 28 résumé variants.' },
+  { href: 'data/resumes.json', name: 'resumes.json', desc: `Full text of all ${variantCount} résumé variants.` },
   { href: 'data/resume_base.md', name: 'resume_base.md', desc: 'The unmodified baseline résumé.' }
 ];
 
@@ -38,7 +40,7 @@ page.append(panel);
 const schema = el('div', { class: 'panel' });
 schema.append(el('div', { class: 'panel-head' }, el('span', {}, 'RUN-LEVEL JSON SCHEMA')));
 schema.append(el('pre', {}, `{
-  "variant": "firstName_aisha-okonkwo",   // baseline + 27 axis_level combinations
+  "variant": "firstName_aisha-okonkwo",   // baseline + axis_level combinations
   "model": "claude-opus",
   "vendor": "anthropic",
   "tier": "flagship",

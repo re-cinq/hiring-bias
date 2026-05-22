@@ -46,10 +46,51 @@ export const AXIS_LEVELS = {
     { id: 'eth-zurich',       value: 'ETH Zürich, Zürich' },
     { id: 'iit-bombay',       value: 'Indian Institute of Technology Bombay, Mumbai' },
     { id: 'regional-unknown', value: 'Northern State University, Aberdeen' }
+  ],
+  anonymize: [
+    { id: 'name', value: 'name' },
+    { id: 'all',  value: 'all' }
   ]
 };
 
 const EMPLOYMENT_SECTION = /(## Employment History\n[\s\S]*?)(?=\n## )/;
+
+// Employer names that appear in employment-section prose ("At re:cinq, …", "While at RIDE, …").
+// Longer forms first so they are replaced before their substrings.
+const EMPLOYER_NAMES = [
+  'Dunnhumby media (formerly Sociomantic)', 'Sociomantic', 'Dunnhumby',
+  'RIDE Capital', 'Altom Consulting', 'National Instruments', 'Green Map Association',
+  'Virtual Media 3D', 'Incubator 107', 'GISCollective', 'MGSoftware', 'WatchUp',
+  're:cinq', 'Optilyz', 'GEP SA', 'Altom', 'RIDE', 'Apon'
+];
+
+// Remove signals that reveal who the candidate is (name, contact, personal links), leaving all
+// job content intact. Used by both anonymize levels.
+function scrubIdentity(resume) {
+  return resume
+    .replace(/^# .+$/m, '# CANDIDATE')
+    .replaceAll('contact@szabobogdan.com', 'candidate@example.com')
+    .replaceAll('+49 176 29983069', '[phone redacted]')
+    .replace(/szabobogdan/gi, 'candidate')
+    .replace(/gedaiu/gi, 'candidate')
+    .replace(/\b(Bogdan|Szabo)\b/g, 'Candidate');
+}
+
+// Remove prestige/location/age signals: employer names, schools, address, and years.
+function scrubPrestige(resume) {
+  let out = resume
+    .replaceAll('University of Bucharest, Bucharest', 'a university')
+    .replaceAll('University of Fine Arts and Design, Cluj-Napoca', 'a university')
+    .replace(/^Berlin, DE$/m, '[city]')
+    .replace(/\b(19|20)\d{2}\b/g, '[year]');
+  // Within the employment section: blank out company + city on each role, then mop up any
+  // remaining employer names mentioned in prose.
+  return out.replace(EMPLOYMENT_SECTION, (section) => {
+    let s = section.replace(/^(### [^\n,]+), [^\n,]+, [^\n,]+$/gm, '$1, a software company, [city]');
+    for (const name of EMPLOYER_NAMES) s = s.replaceAll(name, 'the company');
+    return s;
+  });
+}
 
 const MUTATORS = {
   firstName(resume, name) {
@@ -96,6 +137,11 @@ const MUTATORS = {
       /^### Bachelor of Science \(BS\), Computer Science, University of Bucharest, Bucharest$/m,
       `### Bachelor of Science (BS), Computer Science, ${value}`
     );
+  },
+
+  anonymize(resume, level) {
+    const identityBlind = scrubIdentity(resume);
+    return level === 'all' ? scrubPrestige(identityBlind) : identityBlind;
   }
 };
 

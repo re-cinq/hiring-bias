@@ -80,6 +80,10 @@ function levelLabel(axis, levelId) {
     return map[levelId] ?? titleCase(levelId);
   }
   if (axis === 'graduationYear') return `Graduated ${levelId}`;
+  if (axis === 'anonymize') {
+    const map = { name: 'Name blind', all: 'Fully blinded' };
+    return map[levelId] ?? titleCase(levelId);
+  }
   return titleCase(levelId);
 }
 
@@ -138,7 +142,8 @@ const AXIS_DESCRIPTIONS = {
   careerGap: 'A two-year break on the timeline, with or without an explanation.',
   companyLocations: 'Geographic location of past employers — same companies, different home countries.',
   companyNames: 'Prestige tier of past employers (FAANG, mid-tier, regional, non-Western).',
-  school: 'University attended — same degree, different alma mater.'
+  school: 'University attended — same degree, different alma mater.',
+  anonymize: 'Identifying signals removed (blind résumé) — tests whether hiding name, employer, school and location reduces the bias seen in the other axes. A score change when a signal is removed reveals the model was relying on it.'
 };
 
 function sortKeys(obj) {
@@ -308,6 +313,49 @@ function byJdFile(jd, jdCells, jdSeniority) {
   return { jd, seniority: jdSeniority, cells };
 }
 
+// Compact per-JD signed-delta series for the additive-light "bias fingerprint" waves
+// on jds.html. One global variant ordering (axes order, then levels within each axis)
+// keeps every row's x-axis aligned and comparable.
+function buildWaves(cells, axes, models, axisLabels, levelLabels, modelLabels) {
+  const variants = [];
+  const axisBounds = [];
+  for (const axis of axes) {
+    const start = variants.length;
+    for (const lvl of AXIS_LEVELS[axis]) {
+      variants.push({
+        id: `${axis}_${lvl.id}`,
+        axis,
+        level: lvl.id,
+        label: `${axisLabels[axis] ?? axis} · ${levelLabels[axis]?.[lvl.id] ?? lvl.id}`
+      });
+    }
+    axisBounds.push({ axis, start, end: variants.length });
+  }
+
+  const deltaByKey = new Map();
+  let maxAbs = 0;
+  for (const c of cells) {
+    if (!axes.includes(axisOf(c.variant)) || c.delta == null) continue;
+    deltaByKey.set(`${c.variant}|${c.model}|${c.jd}`, c.delta);
+    if (Math.abs(c.delta) > maxAbs) maxAbs = Math.abs(c.delta);
+  }
+
+  const series = {};
+  for (const jd of [...new Set(cells.map((c) => c.jd))]) {
+    series[jd] = Object.fromEntries(models.map((model) =>
+      [model, variants.map((v) => deltaByKey.get(`${v.id}|${model}|${jd}`) ?? null)]));
+  }
+
+  return {
+    models,
+    modelLabels: Object.fromEntries(models.map((m) => [m, modelLabels[m] ?? m])),
+    variants,
+    axisBounds,
+    maxAbsDelta: Math.ceil(maxAbs * 10) / 10 || 1,
+    series
+  };
+}
+
 function buildModels(records, cells, models) {
   const byModel = groupBy(records, (r) => r.model);
   const out = [];
@@ -422,17 +470,21 @@ function buildNgrams(records, axis, baselines) {
   return { axis, by_level: byLevel };
 }
 
-function indexFirstRecord(records) {
+// Pick the lowest-run record per cell as the displayed/audited sample. Deterministic
+// and stable: backfilling only adds higher run numbers, so the sample never changes —
+// which keeps audit verdicts valid across re-runs.
+function indexSampleRecord(records) {
   const byCell = new Map();
   for (const r of records) {
     const key = `${r.variant}__${r.model}__${r.jd}`;
-    if (!byCell.has(key)) byCell.set(key, r);
+    const existing = byCell.get(key);
+    if (!existing || r.run < existing.run) byCell.set(key, r);
   }
   return byCell;
 }
 
 function buildDiffObjects(cells, records) {
-  const recByCell = indexFirstRecord(records);
+  const recByCell = indexSampleRecord(records);
   const out = [];
   for (const c of cells) {
     if (c.delta == null || c.variant === 'baseline') continue;
@@ -540,6 +592,8 @@ async function main() {
     const jdCells = cells.filter((c) => c.jd === jd);
     outputs.push(await writeJson(`by-jd/${jd}.json`, byJdFile(jd, jdCells, JD_SENIORITY[jd] ?? 5)));
   }
+
+  outputs.push(await writeJson('waves.json', buildWaves(cells, axes, models, axisLabels, levelLabels, MODEL_DISPLAY)));
 
   for (const axis of axes) {
     outputs.push(await writeJson(`ngrams/${axis}.json`, buildNgrams(records, axis, baselines)));
@@ -735,9 +789,14 @@ function heroHtml(topDiffs, matrix) {
   </div>`;
 }
 
+function variantCountOf(matrix) {
+  return 1 + matrix.axes.reduce((s, a) => s + (matrix.levels_by_axis?.[a]?.length ?? 0), 0);
+}
+
 function statsHtml({ status, matrix, jdsCount }) {
+  const variantCount = variantCountOf(matrix);
   const tiles = [
-    ['Resume variants tested', '28', 'baseline + 27 single-axis mutations'],
+    ['Resume variants tested', String(variantCount), `baseline + ${variantCount - 1} résumé variants`],
     ['Models evaluated', String(matrix.models.length), matrix.models.map((m) => modelDisplay(m)).join(' · ')],
     ['Job descriptions', String(jdsCount), 'from junior fullstack to CTO'],
     ['Inference runs collected', status.n_records.toLocaleString(), `of ${status.expected_total_records.toLocaleString()} planned (${(status.n_records / status.expected_total_records * 100).toFixed(1)}%)`],
@@ -881,7 +940,7 @@ function jdsPageHtml({ matrix, jds, jdLabels, jdShortLabels, jdTexts, cells }) {
       return `<details class="jd-row">
         <summary>
           <div class="jd-grid">
-            <div class="jd-title"><strong>${esc(jdLabels[id] ?? id)}</strong><br><span class="dim">${esc(jdShortLabels[id] ?? '')} · seniority ${seniorityFor(id)}</span></div>
+            <div class="jd-title"><strong>${esc(jdLabels[id] ?? id)}</strong><br><span class="dim">${esc(jdShortLabels[id] ?? '')} · seniority ${seniorityFor(id)}</span><canvas class="jd-wave" data-jd="${esc(id)}"></canvas></div>
             <div class="jd-best"><span class="dim">best candidate</span><br>${renderEntry(best, 'accent')}</div>
             <div class="jd-worst"><span class="dim">worst candidate</span><br>${renderEntry(worst, 'alert')}</div>
             <div class="jd-link"><a href="diff.html?jd=${esc(id)}">counterfactuals →</a></div>
@@ -897,7 +956,9 @@ function jdsPageHtml({ matrix, jds, jdLabels, jdShortLabels, jdTexts, cells }) {
   }).join('\n');
   return `<div class="panel">
     <div class="panel-head"><span>${jds.length} JOB DESCRIPTIONS</span></div>
-    <p>Every one of the 28 résumé variants is scored against each of these jobs by each of the ${matrix.models.length} models in the study. Click any role to expand its full description and see which résumé variant scored best and worst on it.</p>
+    <p>Every one of the ${variantCountOf(matrix)} résumé variants is scored against each of these jobs by each of the ${matrix.models.length} models in the study. Click any role to expand its full description and see which résumé variant scored best and worst on it.</p>
+    <p class="dim">Each role shows a "bias fingerprint": one line per model, x = résumé variants grouped by dimension, y = score Δ vs the baseline résumé. Where the models agree, their colours add toward white — shared bias.</p>
+    <div class="wave-legend" id="wave-legend"></div>
   </div>
   ${sections}`;
 }
@@ -909,7 +970,12 @@ function methodologyHtml({ matrix, jds, jdLabels }) {
   }).join('\n');
   return `<div class="panel">
     <div class="panel-head"><span>DESIGN</span></div>
-    <p>For each (axis, level, model, job description) cell we run the same prompt several times and record the response. The only thing that varies within an axis is one demographic signal on the résumé — the rest of the document is byte-identical to the baseline.</p>
+    <p>For each (axis, level, model, job description) cell we run the same prompt several times and record the response. For the injection axes, the only thing that varies is one demographic signal on the résumé — the rest of the document is byte-identical to the baseline.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><span>TWO ARMS — PROBE AND MITIGATION</span></div>
+    <p><strong>Injection probes</strong> swap a single signal (name, country, school, employer, …) into an otherwise identical résumé and ask whether the verdict moves. <strong>The anonymization arm runs the opposite test:</strong> it <em>removes</em> identifying and prestige signals — replacing the name, contact details, employers, schools, locations and dates with neutral placeholders — to ask whether blinding the résumé reduces the bias the probes expose.</p>
+    <p>The logic is symmetric: if a candidate's qualifications are unchanged and the score still moves when a signal is <em>hidden</em>, the model was relying on that signal. <code>anonymize_name</code> blinds only identity (name, contact, personal links); <code>anonymize_all</code> additionally blinds employers, schools, locations and dates.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>INFERENCE SETTINGS</span></div>
@@ -930,7 +996,7 @@ function methodologyHtml({ matrix, jds, jdLabels }) {
   </div>`;
 }
 
-function downloadsHtml({ status }) {
+function downloadsHtml({ status, matrix }) {
   return `<div class="panel">
     <div class="panel-head"><span>${status.n_records.toLocaleString()} INFERENCES · $${status.total_cost_usd.toFixed(2)} SPENT</span></div>
     <table class="data">
@@ -940,7 +1006,7 @@ function downloadsHtml({ status }) {
         <tr><td><code>summary.md</code></td><td class="dim">Same table as data.csv plus per-model cost &amp; token breakdown.</td></tr>
         <tr><td><code>matrix.json</code></td><td class="dim">Per-(axis, variant, model) mean Δ aggregated across JDs.</td></tr>
         <tr><td><code>results.ndjson.gz</code></td><td class="dim">Full run-level corpus. One JSON object per inference run.</td></tr>
-        <tr><td><code>resumes.json</code></td><td class="dim">Full text of all 28 résumé variants.</td></tr>
+        <tr><td><code>resumes.json</code></td><td class="dim">Full text of all ${variantCountOf(matrix)} résumé variants.</td></tr>
       </tbody>
     </table>
   </div>`;
@@ -972,7 +1038,7 @@ async function prerenderHtml({ status, matrixData, topDiffs, axes, models, jds, 
     'resume-diff-index': resumeDiffIndexHtml(matrixData),
     'jds': jdsPageHtml({ matrix: matrixData, jds, jdLabels, jdShortLabels, jdTexts, cells }),
     'methodology': methodologyHtml({ matrix: matrixData, jds, jdLabels }),
-    'downloads': downloadsHtml({ status }),
+    'downloads': downloadsHtml({ status, matrix: matrixData }),
     'about': aboutHtml({ status })
   };
 

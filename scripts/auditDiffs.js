@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import pLimit from 'p-limit';
 import { MODELS } from '../src/providers/index.js';
 import { buildAuditPrompt } from '../src/auditPrompt.js';
@@ -32,13 +33,20 @@ function resumeChange(baselineMd, variantMd) {
 
 async function auditOne(auditor, diff, baselineMd, variantMd) {
   const target = path.join(AUDITS_DIR, `${diff.id}.json`);
-  if (await fileExists(target)) return { skipped: true };
 
   const prompt = buildAuditPrompt({
     change: resumeChange(baselineMd, variantMd),
     baseline: diff.baseline?.sample,
-    variant: diff.variant_data?.sample
+    variant: diff.variant_data?.sample,
+    mode: diff.axis === 'anonymize' ? 'redact' : 'inject'
   });
+  // Skip only when an existing verdict came from identical inputs; re-judge otherwise.
+  const inputHash = createHash('sha256').update(prompt).digest('hex');
+  if (await fileExists(target)) {
+    const prev = JSON.parse(await fs.readFile(target, 'utf8'));
+    if (prev.input_hash === inputHash) return { skipped: true };
+  }
+
   const { data, usage } = await auditor.call(prompt);
 
   const record = {
@@ -47,6 +55,7 @@ async function auditOne(auditor, diff, baselineMd, variantMd) {
     delta: diff.delta,
     auditor: auditor.slot,
     timestamp: new Date().toISOString(),
+    input_hash: inputHash,
     verdict: data.verdict,
     confidence: data.confidence,
     rationale: data.rationale,
