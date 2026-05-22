@@ -44,6 +44,8 @@ jobs:
           cp report/summary.md site/data/summary.md
           cp data/resume_base.md site/data/resume_base.md
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
