@@ -6,6 +6,7 @@ import { Readable } from 'node:stream';
 import { loadResults, groupBy, mean, stdev, recommendRate, tInterval95 } from '../src/aggregate.js';
 import { AXIS_LEVELS } from '../src/generateVariants.js';
 import { costFor } from '../src/pricing.js';
+import { mdToHtml, esc } from '../site/js/markdown.js';
 
 const RESULTS_DIR = 'results';
 const VARIANTS_DIR = 'data/variants';
@@ -104,36 +105,6 @@ async function loadJdTexts() {
     texts[id] = await fs.readFile(path.join(JDS_DIR, file), 'utf8');
   }
   return texts;
-}
-
-function mdToHtml(md) {
-  const lines = md.split('\n');
-  const out = [];
-  let inList = false;
-  let inPara = false;
-  const closePara = () => { if (inPara) { out.push('</p>'); inPara = false; } };
-  const closeList = () => { if (inList) { out.push('</ul>'); inList = false; } };
-  for (const raw of lines) {
-    const line = raw.trim();
-    if (!line) { closePara(); closeList(); continue; }
-    let m;
-    if ((m = line.match(/^# (.+)$/))) { closePara(); closeList(); out.push(`<h2>${esc(m[1])}</h2>`); }
-    else if ((m = line.match(/^## (.+)$/))) { closePara(); closeList(); out.push(`<h3>${esc(m[1])}</h3>`); }
-    else if ((m = line.match(/^### (.+)$/))) { closePara(); closeList(); out.push(`<h4>${esc(m[1])}</h4>`); }
-    else if ((m = line.match(/^[-*] (.+)$/))) {
-      closePara();
-      if (!inList) { out.push('<ul>'); inList = true; }
-      out.push(`<li>${esc(m[1])}</li>`);
-    } else {
-      closeList();
-      if (!inPara) { out.push('<p>'); inPara = true; }
-      else out.push(' ');
-      out.push(esc(line));
-    }
-  }
-  closePara();
-  closeList();
-  return out.join('');
 }
 
 const JD_SHORT = {
@@ -621,10 +592,6 @@ const MODEL_DISPLAY = {
   'llama-4-maverick': 'Llama 4 Maverick',
   'qwen-3-next-80b': 'Qwen 3 Next 80B'
 };
-
-function esc(s) {
-  return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
 
 function modelDisplay(m) { return MODEL_DISPLAY[m] ?? m; }
 

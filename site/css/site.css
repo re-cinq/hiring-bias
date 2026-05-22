@@ -449,6 +449,19 @@ table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
   .jd-grid { grid-template-columns: 1fr; gap: 4px; }
   .jd-grid .jd-link { text-align: left; }
 }
+/* Collapsible JD on the diff page: summary reads like a panel head. */
+.jd-collapse > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.jd-collapse .jd-caret { transition: transform 80ms ease; display: inline-block; }
+.jd-collapse[open] .jd-caret { transform: rotate(90deg); }
+
 .jd-body { padding: 8px 0 16px 8px; font-size: 12px; line-height: 1.5; color: var(--text); }
 .jd-body h2, .jd-body h3, .jd-body h4 {
   text-transform: none;

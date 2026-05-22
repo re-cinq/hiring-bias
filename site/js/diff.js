@@ -1,6 +1,7 @@
 import { mountChrome } from './nav.js';
 import { loadJson, el, header, params, setParam, badges, pill, fmtNum, fmtSignedDelta, deltaClass, copyLinkButton } from './lib.js';
 import { diffLines, wordDiff } from './linediff.js';
+import { mdToHtml } from './markdown.js';
 
 await mountChrome();
 document.getElementById('header').append(header('COUNTERFACTUAL DIFF', 'one line changes on the résumé — read what the model said about each version'));
@@ -9,6 +10,7 @@ const summary = await loadJson('data/summary.json');
 const matrix = await loadJson('data/matrix.json');
 const resumes = await loadJson('data/resumes.json');
 const diffsIndex = await loadJson('data/diffs/index.json');
+const jdTexts = await loadJson('data/jds-text.json');
 
 const AXES = matrix.axes;
 const MODELS = matrix.models;
@@ -115,8 +117,27 @@ function changeCaption(variant) {
   return wrap;
 }
 
+function jdLabel(jd) {
+  return summary.jds.find((j) => j.id === jd)?.label ?? jd;
+}
+
+function jobDescription(jd) {
+  const panel = el('div', { class: 'panel' });
+  const details = el('details', { class: 'jd-row jd-collapse' });
+  details.append(el('summary', {}, [
+    el('span', { class: 'jd-caret' }, '▸'),
+    el('span', { class: 'panel-head-text' }, `JOB DESCRIPTION — ${jdLabel(jd)}`)
+  ]));
+  const body = el('div', { class: 'jd-body' });
+  body.innerHTML = mdToHtml(jdTexts[jd] ?? '');
+  details.append(body);
+  panel.append(details);
+  return panel;
+}
+
 async function renderVerdict(variant, model, jd) {
   verdictHost.innerHTML = '';
+  verdictHost.append(jobDescription(jd));
   const panel = el('div', { class: 'panel' });
   panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'WHAT THE MODEL SAID — BASELINE vs VARIANT')));
 
