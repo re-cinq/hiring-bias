@@ -157,11 +157,32 @@ function renderVerdictCards(baseline, variantData, variant, model, jd, delta, ci
     ' · ',
     ciOverlap ? el('span', { class: 'dim' }, 'CI overlaps baseline — not significant') : el('span', { class: 'accent' }, '✓ CI excludes baseline — significant')
   ]));
+  summary.append(el('p', { class: 'plain-summary' }, plainSummary(delta, ciOverlap, variant)));
   if (audit?.verdict) summary.append(renderAudit(audit));
 
   const both = document.createElement('div');
   both.append(summary, wrap);
   return both;
+}
+
+// A math-free reading of the Δ score + significance, for non-statisticians.
+function plainSummary(delta, ciOverlap, variant) {
+  if (delta == null) return 'Not enough runs yet to compare this version against the unchanged résumé.';
+  const what = variantLabel(variant);
+  const abs = Math.abs(delta);
+  const points = `${abs.toFixed(2)} ${abs >= 1.005 ? 'points' : 'point'} out of 10`;
+
+  if (abs < 0.1) {
+    return `Changing only “${what}” — nothing about the candidate's actual experience — left the score essentially unchanged (${points}). The model treated both résumés the same here.`;
+  }
+
+  const size = abs < 0.5 ? 'a little' : abs < 1.5 ? 'noticeably' : 'sharply';
+  const dir = delta > 0 ? 'higher (it helped the candidate)' : 'lower (it hurt the candidate)';
+  const lead = `Changing only “${what}” — nothing about the candidate's actual experience — made the model score this résumé ${size} ${dir}, by ${points} on average.`;
+  const tail = ciOverlap
+    ? ' But that gap is within the normal run-to-run wobble, so it might just be chance.'
+    : ' This gap held up consistently across repeated runs, so it looks like a real effect, not luck.';
+  return lead + tail;
 }
 
 function renderAudit(audit) {
