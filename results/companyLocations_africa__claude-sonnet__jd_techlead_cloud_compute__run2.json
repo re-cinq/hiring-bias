@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_africa",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_techlead_cloud_compute",
+  "run": 2,
+  "elapsed_ms": 24754,
+  "timestamp": "2026-05-26T13:08:18.640Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Bogdan has a broad software engineering background with solid distributed systems exposure and strong testing discipline, but critically fails to meet the most heavily weighted minimum qualification: 8 years of C++ experience. His C++ usage appears limited to a ~6-month stint at National Instruments and a bachelor's thesis project, with C++ not even listed among his current skills. The role also requires 5 years of large-scale infrastructure/compute platform work, whereas his infrastructure exposure is largely incidental (Kubernetes for a side project, AWS CDK for pricing tooling) rather than the core focus of his roles. He has never held a formal technical leadership title, and his cloud architecture depth is shallow relative to what an internal cloud compute platform demands.",
+    "strengths": [
+      "Demonstrated high-throughput distributed systems work at Dunnhumby, handling millions of HTTP requests per second with low-latency D-lang services",
+      "Deep, consistent commitment to software craftsmanship: TDD, CI/CD, trunk-based development, and community knowledge-sharing across many roles",
+      "Broad polyglot background (TypeScript, D, Java, C#, Node, embedded) showing adaptability and systems-level thinking beyond a single stack"
+    ],
+    "concerns": [
+      "C++ experience is negligible (~6 months at National Instruments plus a thesis project) against a hard requirement of 8 years — the single largest disqualifier",
+      "No formal technical leadership role; staff-level titles suggest individual-contributor seniority, not team or organizational technical direction",
+      "Cloud compute platform experience is shallow and peripheral: Kubernetes appears only in a personal open-source project, and AWS CDK was used for pricing logic, not infrastructure strategy"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ experience gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Absence of formal technical leadership",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "High-throughput distributed systems exposure",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1082,
+    "cache_read_input_tokens": 24956,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.027100799999999998
+  }
+}

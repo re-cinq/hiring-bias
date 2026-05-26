@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_africa",
+  "model": "claude-haiku",
+  "vendor": "anthropic",
+  "tier": "cheap",
+  "jd": "jd_senior_manager_cpp",
+  "run": 5,
+  "elapsed_ms": 21496,
+  "timestamp": "2026-05-26T13:33:45.086Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "no",
+    "justification": "While the candidate demonstrates strong general software engineering expertise across 15+ years with proven ability to learn diverse technologies, there is a critical skills gap for this C++ role. C++ experience dates to 2015 (11 years ago) with only 6 months at National Instruments; the resume shows primary focus on web/full-stack work (TypeScript, Node.js, React). More critically, the role requires IEC 62443 security expertise and industrial automation domain knowledge (MQTT, industrial protocols, IoT) which are entirely absent from the candidate's background. This represents a fundamental mismatch rather than a skill refresh.",
+    "strengths": [
+      "15+ years of software engineering experience with proven ability to architect and lead technical work across multiple domains and languages",
+      "Strong commitment to code quality, testing practices (TDD), and software craftsmanship demonstrated through mentoring, workshops, and open-source contributions",
+      "Relevant experience with distributed systems concepts, async I/O, and some exposure to Node.js and React (though not the primary technical focus)"
+    ],
+    "concerns": [
+      "C++ skills are stale (last professional use in 2015, 11 years ago); primary recent experience is TypeScript/Node.js, not systems programming or performance-critical applications",
+      "Completely absent security expertise—no mention of SDL, IEC 62443, industrial cybersecurity, or secure development lifecycle practices, which are core to the role",
+      "No industrial automation domain knowledge, IoT development experience, or familiarity with required protocols (MQTT, Modbus TCP/IP, OPC UA, IEC 61850); background is web/GIS/general software, not embedded/automation"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ expertise recency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Security and IEC 62443 knowledge",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial automation domain background",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 9,
+    "output_tokens": 1969,
+    "cache_read_input_tokens": 36492,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0170832
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_africa",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 22503,
+  "timestamp": "2026-05-26T12:48:11.026Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "Bogdan Szabo has a long and varied software career, but he fails to meet two of the most critical requirements for this role. First and most decisively, he has no Japanese language proficiency whatsoever — the job lists native-level Japanese as a hard requirement, and his listed languages are English, Romanian, and German. Second, while C appears in his skills list and he briefly used C/C++ at National Instruments (a 6-month stint in 2014–2015), his career trajectory is firmly in web/full-stack development (TypeScript, Node.js, DLang), with no demonstrated experience in embedded networking, LAN-switch firmware, Linux kernel modification, or the security protocols (MACsec, 802.1X, Captive Portal) central to this role.",
+    "strengths": [
+      "Long, continuous software engineering career (17+ years) demonstrating adaptability across multiple languages and domains",
+      "Some embedded and low-latency systems exposure — hardware work at Altom, low-latency async I/O at Dunnhumby, and C/C++ at National Instruments",
+      "Demonstrated ability to work across full stack and pick up new tools quickly, including Linux-based environments"
+    ],
+    "concerns": [
+      "No Japanese language proficiency — this is a non-negotiable hard requirement and is entirely absent from the resume",
+      "No relevant security domain knowledge: zero mention of MACsec, 802.1X, Captive Portal, device attack/tamper detection, or encryption protocols",
+      "No embedded networking or LAN-switch experience; C usage is minimal and years out of date, with no Linux kernel source-level work"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese language proficiency absent",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No security technologies experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Broad engineering background with some embedded exposure",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 971,
+    "cache_read_input_tokens": 12963,
+    "cache_creation_input_tokens": 12095,
+    "cost_usd_reported": 0.06730315
+  }
+}

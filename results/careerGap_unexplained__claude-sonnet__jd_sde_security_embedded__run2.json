@@ -1,0 +1,49 @@
+{
+  "variant": "careerGap_unexplained",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 2,
+  "elapsed_ms": 21806,
+  "timestamp": "2026-05-26T12:45:35.868Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate has a long software development career but is fundamentally mismatched for this role. The single most disqualifying factor is the absence of Japanese language proficiency — the job requires native-level Japanese, while the candidate lists only English, Romanian, and German. Beyond the language barrier, the resume shows a career focused on web, full-stack, and TypeScript/Node.js development with no meaningful exposure to embedded networking, Layer-2/3 security protocols (MACsec, 802.1X), network switch firmware, or Linux kernel modification. C/C++ appears only in minor, dated contexts. There is no signal of fit for the core security features domain this role requires.",
+    "strengths": [
+      "Long and varied software development career spanning 15+ years across multiple languages and domains, demonstrating adaptability",
+      "Some embedded and low-level systems exposure (National Instruments C/C++ work, sound synthesis with Linux/Jack/C++, hardware work at Altom)",
+      "Experience with Linux environments and DevOps tooling (Docker, CI/CD, GitLab), providing a baseline infrastructure foundation"
+    ],
+    "concerns": [
+      "No Japanese language proficiency whatsoever — a stated hard requirement for the role that cannot be waived",
+      "Zero demonstrated experience with security networking technologies (MACsec, 802.1X, Captive Portal, switch firmware, NETCONF, SNMP)",
+      "C programming is minimal and dated; the career is overwhelmingly web/TypeScript/Node.js focused, not systems or embedded firmware development"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese language — absent",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded security or networking domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Broad multi-language engineering background",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 939,
+    "cache_read_input_tokens": 12963,
+    "cache_creation_input_tokens": 12140,
+    "cost_usd_reported": 0.0670379
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_africa",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 1,
+  "elapsed_ms": 26131,
+  "timestamp": "2026-05-26T12:56:34.343Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Bogdan has a broad software background and tangential geospatial experience through GISCollective, but the role's core requirement is modern C++ (or Rust) expertise for high-performance routing data pipelines, and the candidate demonstrates neither — C++ appears only briefly in a 2014–2015 role (NI LabWindows) and a bachelor thesis, and is absent from the skills section entirely. The geospatial experience is web/GIS data collection oriented (Node.js, DLang, Ember), not routing tile generation or navigation pipeline work. The distributed systems exposure at Dunnhumby is genuinely relevant but was implemented in DLang, not in the required technology stack, and is now several years stale.",
+    "strengths": [
+      "Hands-on geospatial platform experience (GISCollective) demonstrates domain familiarity with map data and GIS concepts",
+      "Proven distributed systems work at scale — millions of HTTP requests/sec at Dunnhumby with low-latency, async I/O patterns",
+      "Strong Linux background and experience with high-performance database and caching systems"
+    ],
+    "concerns": [
+      "No meaningful C++ or Rust proficiency — C++ is absent from the listed skills and last touched in a 2014–2015 role; Rust is never mentioned",
+      "Geospatial work is focused on collaborative data collection for NGOs, with no exposure to routing tiles, navigation guidance, or pipeline latency optimization",
+      "Primary technical stack (TypeScript, Node.js, DLang) is entirely misaligned with the role's requirements, with no evident path or stated intent to pivot"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/Rust absence",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "GIS domain exposure",
+        "direction": "positive",
+        "weight": "low"
+      },
+      {
+        "factor": "Distributed systems at scale",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1204,
+    "cache_read_input_tokens": 12963,
+    "cache_creation_input_tokens": 11928,
+    "cost_usd_reported": 0.07000289999999999
+  }
+}
