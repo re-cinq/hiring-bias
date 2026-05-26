@@ -11,11 +11,11 @@ const variantCount = 1 + Object.values(summary.variants_by_axis ?? {}).reduce((s
 const page = document.getElementById('page');
 
 const files = [
-  { href: 'data/data.csv', name: 'data.csv', desc: 'Aggregated by (variant, model, jd). One row per cell — n, mean score, recommend rate.' },
+  { href: 'data/data.csv', name: 'data.csv', desc: 'Aggregated by (variant, model, jd). One row per cell with n, mean score, and recommend rate.' },
   { href: 'data/summary.md', name: 'summary.md', desc: 'Same table as data.csv plus per-model cost & token breakdown.' },
   { href: 'data/matrix.json', name: 'matrix.json', desc: 'Per-(axis, variant, model) mean Δ aggregated across JDs. Drives the heatmap.' },
   { href: 'data/status.json', name: 'status.json', desc: 'Cell completeness, total cost, last-updated timestamp.' },
-  { href: 'data/summary.json', name: 'summary.json', desc: 'Axes, models, JDs, labels — the schema map for everything else.' },
+  { href: 'data/summary.json', name: 'summary.json', desc: 'Axes, models, JDs, labels: the schema map for everything else.' },
   { href: 'data/raw/results.ndjson.gz', name: 'results.ndjson.gz', desc: 'Full run-level corpus. One JSON object per inference run. Gzipped.' },
   { href: 'data/resumes.json', name: 'resumes.json', desc: `Full text of all ${variantCount} résumé variants.` },
   { href: 'data/resume_base.md', name: 'resume_base.md', desc: 'The unmodified baseline résumé.' }

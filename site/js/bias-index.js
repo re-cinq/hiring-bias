@@ -126,7 +126,7 @@ export function computeDimensionBias(matrix) {
   return out.sort((a, b) => (b.mean_abs_delta ?? -1) - (a.mean_abs_delta ?? -1));
 }
 
-export function renderDimensionBias(host, matrix, { title = 'WHICH DIMENSION TRIGGERS THE MOST BIAS?', description = 'Each demographic dimension, averaged over all variants × models × JDs with data. The axis with the largest mean |Δ| is the one models are most reactive to.' } = {}) {
+export function renderDimensionBias(host, matrix, { title = 'WHICH DIMENSION TRIGGERS THE MOST BIAS?', description = 'Same data, grouped by what we changed instead of who did the changing. The mean |Δ| pools every model, variant, and job for each demographic axis. The axis at the top is the one models react to most reliably.' } = {}) {
   host.innerHTML = '';
   const panel = el('div', { class: 'panel' });
   panel.append(el('div', { class: 'panel-head' }, el('span', {}, title)));

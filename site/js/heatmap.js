@@ -3,7 +3,7 @@ import { loadJson, el, header, fmtNum, fmtSignedDelta, deltaClass, setParam, par
 import { wallView } from './charts.js';
 
 await mountChrome();
-document.getElementById('header').append(header('BIAS MATRIX                 ', 'pick a model + dimension · see the wall of variants × job descriptions'));
+document.getElementById('header').append(header('BIAS MATRIX                 ', 'pick a model and a dimension to see the wall of résumé variants × jobs'));
 
 const matrix = await loadJson('data/matrix.json');
 const summary = await loadJson('data/summary.json');
@@ -154,18 +154,28 @@ async function rebuildWall() {
 function renderDetail({ model, axis, cells, levels, jds }) {
   detailHost.innerHTML = '';
   const panel = el('div', { class: 'panel' });
-  panel.append(el('div', { class: 'panel-head' }, el('span', {}, `SUMMARY — ${AXIS_LABELS[axis] ?? axis} × ${modelLabel(model)}`)));
+  panel.append(el('div', { class: 'panel-head' }, el('span', {}, `SUMMARY · ${AXIS_LABELS[axis] ?? axis} × ${modelLabel(model)}`)));
+
+  panel.append(el('p', { class: 'dim' }, [
+    'Each row is one (variant, job) experiment for this model, repeated several times. ',
+    el('strong', {}, 'n'), ' is the number of reruns. ',
+    el('strong', {}, 'Mean'), ' is the model\'s average score for the variant across those reruns; ',
+    el('strong', {}, 'Baseline'), ' is its average for the unmodified résumé on the same job. ',
+    el('strong', {}, 'Δ'), ' is Mean minus Baseline (negative = the variant was penalised, positive = boosted). ',
+    el('strong', {}, '95% CI'), ' is the range we expect the variant\'s true average to fall in 95 times out of 100. ',
+    el('strong', {}, 'Sig'), ' shows ✓ when the baseline sits outside that range, meaning the gap is unlikely to be run-to-run noise.'
+  ]));
 
   const table = el('table', { class: 'data' });
   table.append(el('thead', {}, el('tr', {}, [
     el('th', {}, 'Variant'),
     el('th', {}, 'Job description'),
-    el('th', { class: 'num' }, 'n'),
-    el('th', { class: 'num' }, 'Mean'),
-    el('th', { class: 'num' }, 'Baseline'),
-    el('th', { class: 'num' }, 'Δ'),
-    el('th', { class: 'num' }, '95% CI'),
-    el('th', {}, 'Sig'),
+    el('th', { class: 'num', title: 'Number of reruns we collected for this cell. More reruns means a tighter confidence interval.' }, 'n'),
+    el('th', { class: 'num', title: 'Average score the model gave the variant across all reruns.' }, 'Mean'),
+    el('th', { class: 'num', title: 'Average score the model gave the unmodified résumé on the same job. The reference point.' }, 'Baseline'),
+    el('th', { class: 'num', title: 'Mean minus Baseline. Negative = the variant was penalised, positive = boosted.' }, 'Δ'),
+    el('th', { class: 'num', title: '95% confidence interval for the variant\'s mean score. The range the true average likely lies in.' }, '95% CI'),
+    el('th', { title: '✓ when the baseline falls outside the variant\'s 95% CI. The gap is unlikely to be run-to-run noise.' }, 'Sig'),
     el('th', {}, '')
   ])));
   const tbody = el('tbody');

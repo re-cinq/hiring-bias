@@ -4,7 +4,7 @@ import { diffLines, wordDiff } from './linediff.js';
 import { mdToHtml } from './markdown.js';
 
 await mountChrome();
-document.getElementById('header').append(header('COUNTERFACTUAL DIFF', 'one line changes on the résumé — read what the model said about each version'));
+document.getElementById('header').append(header('COUNTERFACTUAL DIFF', 'one line changes on the résumé · read what the model said about each version'));
 
 const summary = await loadJson('data/summary.json');
 const matrix = await loadJson('data/matrix.json');
@@ -130,7 +130,7 @@ function jobDescription(jd) {
   const details = el('details', { class: 'jd-row jd-collapse' });
   details.append(el('summary', {}, [
     el('span', { class: 'jd-caret' }, '▸'),
-    el('span', { class: 'panel-head-text' }, `JOB DESCRIPTION — ${jdLabel(jd)}`)
+    el('span', { class: 'panel-head-text' }, `JOB DESCRIPTION · ${jdLabel(jd)}`)
   ]));
   const body = el('div', { class: 'jd-body' });
   body.innerHTML = mdToHtml(jdTexts[jd] ?? '');
@@ -143,7 +143,7 @@ async function renderVerdict(variant, model, jd) {
   verdictHost.innerHTML = '';
   verdictHost.append(jobDescription(jd));
   const panel = el('div', { class: 'panel' });
-  panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'WHAT THE MODEL SAID — BASELINE vs VARIANT')));
+  panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'WHAT THE MODEL SAID · BASELINE vs VARIANT')));
 
   const id = `${variant}__${model}__${jd}`;
   let prebuilt = null;
@@ -157,7 +157,7 @@ async function renderVerdict(variant, model, jd) {
     const byAxis = await loadJson(`data/by-axis/${axis}.json`);
     const cell = byAxis.cells.find((c) => c.level === level && c.model === model && c.jd === jd);
     if (!cell) {
-      panel.append(el('p', { class: 'dim' }, 'no data yet for this combination — pick a different cell.'));
+      panel.append(el('p', { class: 'dim' }, 'No data yet for this combination. Pick a different cell.'));
     } else {
       const base = { mean: cell.baseline_mean, recommend_rate: cell.baseline_recommend_rate, sample: null };
       const vari = { mean: cell.mean, recommend_rate: cell.recommend_yes_rate, sample: null };
@@ -173,14 +173,14 @@ function renderVerdictCards(baseline, variantData, variant, model, jd, delta, ci
   const wrap = el('div', { class: 'grid grid-2' });
 
   wrap.append(verdictCard('Baseline (unmodified resume)', baseline));
-  wrap.append(verdictCard(`Variant — ${variantLabel(variant)}`, variantData, baseline.sample));
+  wrap.append(verdictCard(`Variant · ${variantLabel(variant)}`, variantData, baseline.sample));
 
   const summary = el('div', { class: 'panel' });
   summary.append(el('div', { class: 'panel-head' }, el('span', {}, 'SUMMARY')));
   summary.append(el('div', {}, [
     `Δ score: `, el('span', { class: deltaClass(delta) }, fmtSignedDelta(delta, 2)),
     ' · ',
-    ciOverlap ? el('span', { class: 'dim' }, 'CI overlaps baseline — not significant') : el('span', { class: 'accent' }, '✓ CI excludes baseline — significant')
+    ciOverlap ? el('span', { class: 'dim' }, 'CI overlaps baseline (not significant)') : el('span', { class: 'accent' }, '✓ CI excludes baseline (significant)')
   ]));
   summary.append(el('p', { class: 'plain-summary' }, plainSummary(delta, ciOverlap, variant)));
   if (audit?.verdict) summary.append(renderAudit(audit));
@@ -198,12 +198,12 @@ function plainSummary(delta, ciOverlap, variant) {
   const points = `${abs.toFixed(2)} ${abs >= 1.005 ? 'points' : 'point'} out of 10`;
 
   if (abs < 0.1) {
-    return `Changing only “${what}” — nothing about the candidate's actual experience — left the score essentially unchanged (${points}). The model treated both résumés the same here.`;
+    return `Changing only “${what}” (nothing about the candidate's actual experience) left the score essentially unchanged (${points}). The model treated both résumés the same here.`;
   }
 
   const size = abs < 0.5 ? 'a little' : abs < 1.5 ? 'noticeably' : 'sharply';
   const dir = delta > 0 ? 'higher (it helped the candidate)' : 'lower (it hurt the candidate)';
-  const lead = `Changing only “${what}” — nothing about the candidate's actual experience — made the model score this résumé ${size} ${dir}, by ${points} on average.`;
+  const lead = `Changing only “${what}” (nothing about the candidate's actual experience) made the model score this résumé ${size} ${dir}, by ${points} on average.`;
   const tail = ciOverlap
     ? ' But that gap is within the normal run-to-run wobble, so it might just be chance.'
     : ' This gap held up consistently across repeated runs, so it looks like a real effect, not luck.';

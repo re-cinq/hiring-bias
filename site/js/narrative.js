@@ -57,7 +57,7 @@ function renderTopCounterfactuals(host) {
   const top = diffsIndex.slice(0, 12);
   if (!top.length) return;
   const panel = el('div', { class: 'panel' });
-  panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'TOP COUNTERFACTUALS — THE CASES WITH THE LARGEST Δ')));
+  panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'TOP COUNTERFACTUALS · CASES WITH THE LARGEST Δ')));
   const grid = el('div', { class: 'grid', style: { gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '6px' } });
   for (const d of top) {
     const axisL = matrix.axis_labels?.[d.axis] ?? d.axis;
@@ -79,7 +79,7 @@ function renderTopCounterfactuals(host) {
 
 renderBiasIndex(document.getElementById('biasindex'), matrix, {
   title: 'WHICH MODELS ARE THE MOST DEMOGRAPHICALLY SENSITIVE?',
-  description: 'For each model, the average absolute score change when one demographic signal on the résumé is altered. Higher = the model treats variants more differently. Most penalised / most rewarded shows the variant that triggered the largest swing in each direction.'
+  description: 'Each row is one model. We measure how far that model\'s score moves, on average, when we swap a single demographic signal on the résumé. The higher the number, the less even-handed the model. "Most penalised" and "most rewarded" call out the single variant that swung scores furthest in each direction.'
 });
 
 renderDimensionBias(document.getElementById('dimensionbias'), matrix);
@@ -104,11 +104,11 @@ nextsteps.innerHTML = '';
 const ns = el('div', { class: 'panel' });
 ns.append(el('div', { class: 'panel-head' }, el('span', {}, 'WHERE TO GO NEXT')));
 const ul = el('ul');
-ul.append(el('li', {}, [el('a', { href: 'heatmap.html' }, 'Bias Matrix'), ' — pick a (model, dimension) pair and see the wall of variants × jobs.']));
-ul.append(el('li', {}, [el('a', { href: 'diff.html' }, 'Counterfactual Diff'), ' — pick one cell and read what the model actually said about each résumé.']));
-ul.append(el('li', {}, [el('a', { href: 'resume-diff.html' }, 'Resume Diff'), ' — verify that the experiment is honest: usually only one line changes between any two variants.']));
-ul.append(el('li', {}, [el('a', { href: 'methodology.html' }, 'Methodology'), ' — the prompt, the experiment design, the limitations.']));
-ul.append(el('li', {}, [el('a', { href: 'downloads.html' }, 'Downloads'), ' — raw run-level JSON, aggregated CSV, the variant resumes themselves.']));
+ul.append(el('li', {}, [el('a', { href: 'heatmap.html' }, 'Bias Matrix'), ': pick a model and a dimension, see the wall of variants × jobs.']));
+ul.append(el('li', {}, [el('a', { href: 'diff.html' }, 'Counterfactual Diff'), ': pick a cell and read what the model actually said about each résumé.']));
+ul.append(el('li', {}, [el('a', { href: 'resume-diff.html' }, 'Resume Diff'), ': confirm the experiment is honest. Usually only one line changes between any two variants.']));
+ul.append(el('li', {}, [el('a', { href: 'methodology.html' }, 'Methodology'), ': the prompt, the design, the limitations.']));
+ul.append(el('li', {}, [el('a', { href: 'downloads.html' }, 'Downloads'), ': raw run-level JSON, aggregated CSV, and the variant résumés.']));
 nextsteps.append(ns);
 ns.append(ul);
 

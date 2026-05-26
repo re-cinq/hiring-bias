@@ -15,7 +15,7 @@
   <main class="container">
     <h1 class="sr-only">Counterfactual audit of LLM résumé scoring</h1>
     <div id="header"></div>
-    <p class="dim">A counterfactual audit of how frontier LLMs score résumés when a single demographic signal is changed. Same résumé, same job description, same model — different name, different country, different alma mater. We log the verdict that comes back.</p>
+    <p class="dim">A counterfactual audit of how frontier LLMs score résumés when one demographic signal changes. Same résumé. Same job. Same model. Just a different name, country, or alma mater. We log how the verdict shifts.</p>
     <div id="hero" data-prerender="hero">
       <!-- @PRERENDER:hero:START -->
 <div class="panel">
@@ -30,7 +30,7 @@
       <!-- @PRERENDER:bias-index:START -->
 <div class="panel">
     <div class="panel-head"><span>WHICH MODELS ARE THE MOST DEMOGRAPHICALLY SENSITIVE?</span></div>
-    <p class="dim">For each model, the average absolute score change when one demographic signal on the résumé is altered. Higher = the model treats variants more differently.</p>
+    <p class="dim">Each row is one model. We measure how far that model&#39;s score moves, on average, when we swap a single demographic signal on the résumé. The higher the number, the less even-handed the model. &quot;Most penalised&quot; and &quot;most rewarded&quot; call out the single variant that swung scores furthest in each direction.</p>
     <table class="data">
       <thead><tr>
         <th>Model</th><th>Bias index</th><th class="num">Mean |Δ|</th><th class="num">Mean signed Δ</th>
@@ -57,16 +57,6 @@
       <td>Graduation Year · 1998 <span class="accent">(-0.05)</span></td>
     </tr>
 <tr>
-      <td>Mistral Small</td>
-      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:64%;background:var(--accent)"></div></div></div></td>
-      <td class="num">0.260</td>
-      <td class="num alert">-0.233</td>
-      <td class="num">8%</td>
-      <td class="num dim">24</td>
-      <td>First Name · Aisha Okonkwo <span class="alert">(-0.67)</span></td>
-      <td>Career Gap · Caregiving <span class="accent">(+0.14)</span></td>
-    </tr>
-<tr>
       <td>Gemini 2.5 Pro</td>
       <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:60%;background:var(--accent)"></div></div></div></td>
       <td class="num">0.243</td>
@@ -75,6 +65,16 @@
       <td class="num dim">29</td>
       <td>Graduation Year · 1998 <span class="alert">(-0.55)</span></td>
       <td>School · ETH Zürich, Zürich <span class="accent">(+0.09)</span></td>
+    </tr>
+<tr>
+      <td>Mistral Small</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:58%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.235</td>
+      <td class="num alert">-0.203</td>
+      <td class="num">7%</td>
+      <td class="num dim">28</td>
+      <td>First Name · Aisha Okonkwo <span class="alert">(-0.67)</span></td>
+      <td>Career Gap · Caregiving <span class="accent">(+0.14)</span></td>
     </tr>
 <tr>
       <td>Gemini 3.1 Pro · Preview</td>
@@ -88,41 +88,41 @@
     </tr>
 <tr>
       <td>Claude Haiku</td>
-      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:26%;background:var(--accent)"></div></div></div></td>
-      <td class="num">0.107</td>
-      <td class="num dim">+0.016</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:25%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.103</td>
+      <td class="num dim">+0.018</td>
       <td class="num">0%</td>
-      <td class="num dim">14</td>
+      <td class="num dim">15</td>
       <td>Career Gap · Caregiving <span class="alert">(-0.26)</span></td>
       <td>Company Names · FAANG (Google/Meta/Amazon) <span class="accent">(+0.31)</span></td>
     </tr>
 <tr>
       <td>Claude Sonnet</td>
-      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:24%;background:var(--accent)"></div></div></div></td>
-      <td class="num">0.098</td>
-      <td class="num dim">+0.002</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:23%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.093</td>
+      <td class="num dim">+0.004</td>
       <td class="num">0%</td>
-      <td class="num dim">15</td>
+      <td class="num dim">16</td>
       <td>Career Gap · Unexplained <span class="alert">(-0.31)</span></td>
       <td>Address Country · San Francisco, USA <span class="accent">(+0.19)</span></td>
     </tr>
 <tr>
       <td>Claude Opus</td>
       <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:20%;background:var(--accent)"></div></div></div></td>
-      <td class="num">0.080</td>
-      <td class="num alert">-0.055</td>
+      <td class="num">0.083</td>
+      <td class="num alert">-0.053</td>
       <td class="num">7%</td>
       <td class="num dim">29</td>
       <td>School · Northern State University, Aberdeen <span class="alert">(-0.22)</span></td>
-      <td>First Name · Maria Rodriguez <span class="accent">(+0.13)</span></td>
+      <td>Company Names · Non-western (Naver/Tencent/MercadoLibre) <span class="accent">(+0.14)</span></td>
     </tr>
 <tr>
       <td>Mistral Large</td>
-      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:20%;background:var(--accent)"></div></div></div></td>
-      <td class="num">0.080</td>
-      <td class="num alert">-0.072</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:18%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.073</td>
+      <td class="num alert">-0.063</td>
       <td class="num">0%</td>
-      <td class="num dim">25</td>
+      <td class="num dim">28</td>
       <td>Company Locations · India <span class="alert">(-0.31)</span></td>
       <td>Address Country · Bucharest, Romania <span class="accent">(+0.05)</span></td>
     </tr>
@@ -144,7 +144,7 @@
       <!-- @PRERENDER:dimension-bias:START -->
 <div class="panel">
     <div class="panel-head"><span>WHICH DIMENSION TRIGGERS THE MOST BIAS?</span></div>
-    <p class="dim">Each demographic dimension, averaged over all variants × models × JDs with data. The axis with the largest mean |Δ| is the one models are most reactive to.</p>
+    <p class="dim">Same data, grouped by what we changed instead of who did the changing. The mean |Δ| pools every model, variant, and job for each demographic axis. The axis at the top is the one models react to most reliably.</p>
     <table class="data">
       <thead><tr><th>Dimension</th><th>Bias index</th><th class="num">Mean |Δ|</th><th class="num">Mean signed Δ</th><th class="num">% sig</th><th class="num">Cells</th></tr></thead>
       <tbody><tr>
@@ -182,18 +182,18 @@
 <tr>
       <td>Graduation Year</td>
       <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:47%;background:var(--accent)"></div></div></div></td>
-      <td class="num">0.145</td>
-      <td class="num alert">-0.099</td>
-      <td class="num">7%</td>
-      <td class="num dim">15</td>
+      <td class="num">0.144</td>
+      <td class="num alert">-0.085</td>
+      <td class="num">6%</td>
+      <td class="num dim">16</td>
     </tr>
 <tr>
       <td>Company Names</td>
-      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:45%;background:var(--accent)"></div></div></div></td>
-      <td class="num">0.139</td>
-      <td class="num alert">-0.068</td>
-      <td class="num">6%</td>
-      <td class="num dim">35</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:44%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.135</td>
+      <td class="num alert">-0.060</td>
+      <td class="num">5%</td>
+      <td class="num dim">37</td>
     </tr>
 <tr>
       <td>Address Country</td>
@@ -205,11 +205,11 @@
     </tr>
 <tr>
       <td>School</td>
-      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:22%;background:var(--accent)"></div></div></div></td>
-      <td class="num">0.068</td>
-      <td class="num alert">-0.041</td>
+      <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:21%;background:var(--accent)"></div></div></div></td>
+      <td class="num">0.063</td>
+      <td class="num alert">-0.039</td>
       <td class="num">0%</td>
-      <td class="num dim">24</td>
+      <td class="num dim">30</td>
     </tr></tbody>
     </table>
   </div>
@@ -221,8 +221,8 @@
 <div class="stats"><div class="stat"><div class="label">Resume variants tested</div><div class="value">30</div><div class="sub">baseline + 29 résumé variants</div></div>
 <div class="stat"><div class="label">Models evaluated</div><div class="value">10</div><div class="sub">Claude Haiku · Claude Opus · Claude Sonnet · Gemini 2.5 Flash · Gemini 2.5 Pro · Gemini 3.1 Pro · Preview · Llama 4 Maverick · Mistral Large · Mistral Small · Qwen 3 Next 80B</div></div>
 <div class="stat"><div class="label">Job descriptions</div><div class="value">17</div><div class="sub">from junior fullstack to CTO</div></div>
-<div class="stat"><div class="label">Inference runs collected</div><div class="value">21,878</div><div class="sub">of 25,500 planned (85.8%)</div></div>
-<div class="stat"><div class="label">API spend so far</div><div class="value">$306.27</div><div class="sub">OpenAI/Anthropic/Google/Alibaba/Meta APIs</div></div>
+<div class="stat"><div class="label">Inference runs collected</div><div class="value">22,682</div><div class="sub">of 25,500 planned (88.9%)</div></div>
+<div class="stat"><div class="label">API spend so far</div><div class="value">$320.28</div><div class="sub">OpenAI/Anthropic/Google/Alibaba/Meta APIs</div></div>
 <div class="stat"><div class="label">Bias dimensions</div><div class="value">8</div><div class="sub">Address Country · Anonymize · Career Gap · Company Locations · Company Names · First Name · Graduation Year · School</div></div></div>
 <!-- @PRERENDER:stats:END -->
     </div>

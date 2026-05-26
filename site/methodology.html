@@ -19,18 +19,18 @@
       <!-- @PRERENDER:methodology:START -->
 <div class="panel">
     <div class="panel-head"><span>DESIGN</span></div>
-    <p>For each (axis, level, model, job description) cell we run the same prompt several times and record the response. For the injection axes, the only thing that varies is one demographic signal on the résumé — the rest of the document is byte-identical to the baseline.</p>
+    <p>For each (axis, level, model, job description) cell we run the same prompt several times and record the response. For the injection axes, the only thing that varies is one demographic signal on the résumé. The rest of the document is byte-identical to the baseline.</p>
   </div>
   <div class="panel">
-    <div class="panel-head"><span>TWO ARMS — PROBE AND MITIGATION</span></div>
-    <p><strong>Injection probes</strong> swap a single signal (name, country, school, employer, …) into an otherwise identical résumé and ask whether the verdict moves. <strong>The anonymization arm runs the opposite test:</strong> it <em>removes</em> identifying and prestige signals — replacing the name, contact details, employers, schools, locations and dates with neutral placeholders — to ask whether blinding the résumé reduces the bias the probes expose.</p>
+    <div class="panel-head"><span>TWO ARMS · PROBE AND MITIGATION</span></div>
+    <p><strong>Injection probes</strong> swap a single signal (name, country, school, employer, and so on) into an otherwise identical résumé and ask whether the verdict moves. <strong>The anonymization arm runs the opposite test:</strong> it <em>removes</em> identifying and prestige signals (the name, contact details, employers, schools, locations and dates are replaced with neutral placeholders) and asks whether blinding the résumé reduces the bias the probes expose.</p>
     <p>The logic is symmetric: if a candidate's qualifications are unchanged and the score still moves when a signal is <em>hidden</em>, the model was relying on that signal. <code>anonymize_name</code> blinds only identity (name, contact, personal links); <code>anonymize_all</code> additionally blinds employers, schools, locations and dates.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>INFERENCE SETTINGS</span></div>
-    <p><strong>Temperature: 0.7</strong> for every model reached over an API (OpenAI-compatible, Google Gemini, Vertex AI for Llama and Qwen, Groq, Mistral). No other sampling parameters (top-p, top-k, seed) were set — provider defaults apply. Each cell was sampled <strong>5 times</strong> and the responses aggregated.</p>
-    <p><strong>Caveat — Claude is not strictly comparable.</strong> <code>claude-opus</code> was invoked through the Claude CLI rather than the API, and the CLI call sets no explicit temperature, so Claude ran at the CLI's own default sampling rather than at 0.7. Treat cross-model comparisons involving Claude with that asymmetry in mind.</p>
-    <p><strong>Why this matters for significance.</strong> 0.7 is a relatively high temperature, so run-to-run variance is substantial. With only 5 runs per cell the noise floor is high — which is why most per-cell deltas do not clear the 95% confidence threshold against baseline. A future run at lower temperature, or with more samples per cell, would tighten the confidence intervals.</p>
+    <p><strong>Temperature: 0.7</strong> for every model reached over an API (OpenAI-compatible, Google Gemini, Vertex AI for Llama and Qwen, Groq, Mistral). No other sampling parameters (top-p, top-k, seed) were set; provider defaults apply. Each cell was sampled <strong>5 times</strong> and the responses aggregated.</p>
+    <p><strong>Caveat: Claude is not strictly comparable.</strong> <code>claude-opus</code> was invoked through the Claude CLI rather than the API, and the CLI call sets no explicit temperature, so Claude ran at the CLI's own default sampling rather than at 0.7. Treat cross-model comparisons involving Claude with that asymmetry in mind.</p>
+    <p><strong>Why this matters for significance.</strong> 0.7 is a relatively high temperature, so run-to-run variance is substantial. With only 5 runs per cell the noise floor is high, which is why most per-cell deltas do not clear the 95% confidence threshold against baseline. A future run at lower temperature, or with more samples per cell, would tighten the confidence intervals.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>BIAS DIMENSIONS</span></div>
@@ -47,7 +47,7 @@
     </table>
   </div>
   <div class="panel">
-    <div class="panel-head"><span>JOB DESCRIPTIONS — 17 TOTAL</span></div>
+    <div class="panel-head"><span>JOB DESCRIPTIONS · 17 TOTAL</span></div>
     <ul><li>C++ Developer — Capital Markets / Fixed Income</li><li>Chief Technology Officer — Agentic AI / Fintech</li><li>Head of Development / Tech Lead</li><li>Junior / Mid-Level Fullstack Developer</li><li>Junior Java Developer</li><li>Principal Engineer — Specialized Software (AI Strategy)</li><li>Principal Performance Architect</li><li>Principal Software Engineer — Growth / Experimentation Systems</li><li>Software Development Engineer — Security Features (Embedded Networking)</li><li>Senior Fullstack Developer</li><li>Senior Software Engineer — Enterprise IDE / JVM Tooling</li><li>Senior Manager — Digital Solutions (C++ Developer)</li><li>Senior Software Development Engineer — Routing Tiling</li><li>Staff Forward Deployed Engineer, GenAI, Cloud</li><li>Staff Software Engineer</li><li>Software Engineering Manager — Engineering Productivity</li><li>Technical Lead — Cloud Compute Platform</li></ul>
   </div>
 <!-- @PRERENDER:methodology:END -->
