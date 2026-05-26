@@ -731,6 +731,8 @@ const MODEL_DISPLAY = {
   'gemini-2.5-pro': 'Gemini 2.5 Pro',
   'gemini-3.1-pro-preview': 'Gemini 3.1 Pro · Preview',
   'llama-4-maverick': 'Llama 4 Maverick',
+  'mistral-large': 'Mistral Large',
+  'mistral-small': 'Mistral Small',
   'qwen-3-next-80b': 'Qwen 3 Next 80B'
 };
 
@@ -742,6 +744,8 @@ const MODEL_SHORT = {
   'gemini-2.5-pro': '2.5 Pro',
   'gemini-3.1-pro-preview': '3.1 Pro',
   'llama-4-maverick': 'Llama 4',
+  'mistral-large': 'Mistral L',
+  'mistral-small': 'Mistral S',
   'qwen-3-next-80b': 'Qwen 3'
 };
 
