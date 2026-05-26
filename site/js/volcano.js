@@ -37,17 +37,16 @@ export function renderVolcano(host, data, matrix, modelLabel) {
 
   const panel = el('div', { class: 'panel' });
   panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'WHICH SHIFTS ARE REAL, NOT NOISE?')));
-  panel.append(el('p', { class: 'dim' }, 'Each dot is one experiment: we swap a demographic signal into a résumé and rerun it five times against one model and one job. Horizontal position = how far the average score moved versus the unmodified résumé (left = the candidate was penalised, right = boosted). Vertical position = how consistent that move was across the five reruns — higher means it shows up every time, lower means it could be run-to-run jitter. Dots above the dashed line cleared the p < 0.05 bar, the conventional threshold for "this isn\'t random." Colour = model (same palette as the waves); where many models pile up, the colours blend toward white. Click a model in the legend to isolate it; hover a point for the case, click to open the side-by-side diff.'));
+  panel.append(el('p', { class: 'dim' }, 'Every dot is one experiment. We drop a demographic signal into the résumé, run the same prompt five times, and compare the average score against the unmodified version. Left means the candidate was penalised, right means boosted. The higher a dot sits, the more reliably that shift showed up across all five reruns. The dashed line is the conventional p < 0.05 threshold for "not random." Dots are coloured by model (same palette as the waves); where many models pile on the same spot, the colours blend toward white. Click a model in the legend to isolate it. Hover any dot for the case, click to open the diff.'));
 
   const howto = el('details', { class: 'vol-howto' }, [
     el('summary', {}, 'How to spot bias on this chart'),
     el('ul', {}, [
-      el('li', {}, [el('strong', {}, 'Isolate one model, then look for an off-centre cluster.'), ' Click a colour in the legend to hide the others. If that model\'s dots lean systematically to one side of zero — especially above the dashed line — it is rewarding or penalising whatever signals are in those experiments. Hover a dot to see which demographic is responsible.']),
-      el('li', {}, [el('strong', {}, 'Many colours stacking on the same point (going white).'), ' Cross-model agreement: every model reacts the same way to that experiment. Broad agreement raises the case that the effect is real-world bias, not one model\'s quirk.']),
-      el('li', {}, [el('strong', {}, 'High up AND far from zero.'), ' Large effect and rock-solid across reruns — the strongest individual evidence. Click the dot to open the side-by-side diff and read the model\'s own rationale for the score gap.']),
-      el('li', {}, [el('strong', {}, 'Spread evenly either side of zero.'), ' A model whose dots straddle zero isn\'t favouring either direction on average — it\'s just inconsistent. That\'s noise, not bias.']),
-      el('li', {}, [el('strong', {}, 'Empty top corners.'), ' If the upper-left and upper-right are bare, no demographic produced a large, repeatable shift for that model — bias either isn\'t there or got drowned out by noise.']),
-      el('li', {}, [el('strong', {}, 'Cross-check per-demographic patterns elsewhere.'), ' This view mixes all eight demographic axes together. Use the heatmap to see which axis × model cells are off, and the waves on the jobs page for the direction and shape of each axis.'])
+      el('li', {}, [el('strong', {}, 'Isolate one model and look for a tilt.'), ' Click a colour in the legend to hide the others. If that model\'s dots cluster on one side of zero (especially above the dashed line), it is rewarding or penalising the signal in those experiments. Hover a dot to see which demographic.']),
+      el('li', {}, [el('strong', {}, 'Many colours stacking on the same spot.'), ' Blending toward white is broad agreement across models. That is the strongest sign the effect is a real-world bias, not one model\'s quirk.']),
+      el('li', {}, [el('strong', {}, 'A single dot, high up and far from zero.'), ' Large effect, repeatable across reruns. Click it to open the side by side and read the model\'s own rationale for the gap.']),
+      el('li', {}, [el('strong', {}, 'Dots spread evenly around zero.'), ' The model is not favouring either side on average, it is just being inconsistent. Noise, not bias.']),
+      el('li', {}, [el('strong', {}, 'Cross-check elsewhere.'), ' This view mixes all eight demographic axes together. The heatmap shows which axis × model cells are off; the waves on the jobs page show the direction and shape per axis.'])
     ])
   ]);
   panel.append(howto);
@@ -100,7 +99,7 @@ export function renderVolcano(host, data, matrix, modelLabel) {
 
     const ty = yAt(data.threshold);
     node.append(svg('line', { x1: PADL, y1: ty, x2: PADL + plotW, y2: ty, class: 'vol-threshold' }));
-    node.append(svg('text', { x: PADL + plotW, y: ty - 4, class: 'vol-label', 'text-anchor': 'end' }, document.createTextNode('noise floor (p = 0.05) — dots above are real effects')));
+    node.append(svg('text', { x: PADL + plotW, y: ty - 4, class: 'vol-label', 'text-anchor': 'end' }, document.createTextNode('noise floor (p = 0.05). Dots above are real effects.')));
 
     // Quadrant hints, behind the points so data sits on top.
     node.append(svg('text', { x: xAt(-maxAbsX * 0.55), y: PADT + 14, class: 'vol-hint', 'text-anchor': 'middle' }, document.createTextNode('REAL PENALTIES')));
