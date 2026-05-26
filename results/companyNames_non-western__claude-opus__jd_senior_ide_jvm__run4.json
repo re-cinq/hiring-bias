@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_non-western",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_ide_jvm",
+  "run": 4,
+  "elapsed_ms": 17115,
+  "timestamp": "2026-05-26T20:52:25.863Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Candidate is a seasoned senior engineer with broad full-stack experience, but the resume shows minimal hands-on work in the core stack required for this role (Java, Kotlin, Spring, JVM internals). Primary expertise is in TypeScript/Node.js and DLang, with Java mentioned only briefly for robotic arms and mobile orchestration tooling, and no Kotlin or Spring experience listed. The one tangentially relevant data point is C/C++ work on NI LabWindows/CVI, a C IDE — useful background for IDE internals, but it predates a decade of unrelated work and does not substitute for JVM ecosystem depth.",
+    "strengths": [
+      "Prior IDE work on NI LabWindows/CVI shows exposure to language tooling and IDE internals",
+      "Strong software craftsmanship background: TDD, CI/CD, trunk-based development, testing tooling authorship",
+      "15+ years across web, mobile, desktop, and embedded — proven ability to navigate large, complex codebases"
+    ],
+    "concerns": [
+      "No demonstrated Spring, Quarkus, or Hibernate experience — a hard requirement",
+      "Kotlin is absent from the resume and Java appears only as a secondary tool, not a core competency",
+      "Recent roles (Tencent, Naver, RIDE) are TypeScript/Node-focused, indicating distance from JVM ecosystem"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lack of Spring/JVM ecosystem experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No Kotlin experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Prior IDE/language-tooling exposure (LabWindows/CVI)",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 5,
+    "output_tokens": 1008,
+    "cache_read_input_tokens": 18019,
+    "cache_creation_input_tokens": 16623,
+    "cost_usd_reported": 0.14151625
+  }
+}

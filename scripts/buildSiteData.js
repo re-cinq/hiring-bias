@@ -136,14 +136,14 @@ function axisLabel(axis) {
 }
 
 const AXIS_DESCRIPTIONS = {
-  firstName: 'Names varied across ethnic and cultural backgrounds — same resume, different first name.',
-  graduationYear: 'Older graduation years — same resume, candidate finished school earlier.',
-  addressCountry: 'Country of residence — same resume, candidate lives somewhere else.',
+  firstName: 'Names varied across ethnic and cultural backgrounds. Same résumé, different first name.',
+  graduationYear: 'Older graduation years. Same résumé, candidate finished school earlier.',
+  addressCountry: 'Country of residence. Same résumé, candidate lives somewhere else.',
   careerGap: 'A two-year break on the timeline, with or without an explanation.',
-  companyLocations: 'Geographic location of past employers — same companies, different home countries.',
+  companyLocations: 'Geographic location of past employers. Same companies, different home countries.',
   companyNames: 'Prestige tier of past employers (FAANG, mid-tier, regional, non-Western).',
-  school: 'University attended — same degree, different alma mater.',
-  anonymize: 'Identifying signals removed (blind résumé) — tests whether hiding name, employer, school and location reduces the bias seen in the other axes. A score change when a signal is removed reveals the model was relying on it.'
+  school: 'University attended. Same degree, different alma mater.',
+  anonymize: 'Identifying signals removed (a blind résumé). Tests whether hiding name, employer, school and location reduces the bias seen in the other axes. A score change when a signal is removed reveals the model was relying on it.'
 };
 
 function sortKeys(obj) {
@@ -399,7 +399,7 @@ function modelAgreementHtml(cells, axes, models) {
   }).join('');
   return `<div class="panel">
     <div class="panel-head"><span>DO THE MODELS SHARE THE SAME BIASES?</span></div>
-    <p class="dim">Correlation of each model pair's signed Δ across every résumé variant × job. <span class="accent">+1</span> = the two models move scores in lockstep — a shared bias. <span class="dim">0</span> = unrelated. <span class="alert">−1</span> = opposite reactions. This is the number behind the colour-mixing waves on the jobs page.</p>
+    <p class="dim">Correlation of each model pair's signed Δ across every résumé variant × job. <span class="accent">+1</span> = the two models move scores in lockstep, a shared bias. <span class="dim">0</span> = unrelated. <span class="alert">−1</span> = opposite reactions. This is the number behind the colour-mixing waves on the jobs page.</p>
     <table class="data agreement"><thead>${head}</thead><tbody>${rows}</tbody></table>
   </div>`;
 }
@@ -824,7 +824,7 @@ function variantWithDeltaHtml(matrix, entry, klass) {
 }
 
 function biasIndexTableHtml(matrix, opts = {}) {
-  const title = opts.title ?? 'GLOBAL BIAS INDEX — MEAN |Δ| ACROSS ALL CELLS';
+  const title = opts.title ?? 'GLOBAL BIAS INDEX · MEAN |Δ| ACROSS ALL CELLS';
   const description = opts.description ?? 'For each model, the average absolute score change when a demographic signal is altered, taken over every (axis, variant, JD) cell with data. Higher = the model is more sensitive to demographic signals; lower = more even-handed.';
   const stats = computeBiasIndexSnapshot(matrix);
   const worldMax = Math.max(...stats.map((s) => s.mean_abs ?? 0), 0.0001);
@@ -870,7 +870,7 @@ function dimensionBiasTableHtml(matrix) {
   }).join('\n');
   return `<div class="panel">
     <div class="panel-head"><span>WHICH DIMENSION TRIGGERS THE MOST BIAS?</span></div>
-    <p class="dim">Each demographic dimension, averaged over all variants × models × JDs with data. The axis with the largest mean |Δ| is the one models are most reactive to.</p>
+    <p class="dim">Same data, grouped by what we changed instead of who did the changing. The mean |Δ| pools every model, variant, and job for each demographic axis. The axis at the top is the one models react to most reliably.</p>
     <table class="data">
       <thead><tr><th>Dimension</th><th>Bias index</th><th class="num">Mean |Δ|</th><th class="num">Mean signed Δ</th><th class="num">% sig</th><th class="num">Cells</th></tr></thead>
       <tbody>${rows}</tbody>
@@ -919,17 +919,17 @@ function topCounterfactualsHtml(topDiffs, matrix) {
     </a>`;
   }).join('\n');
   return `<div class="panel">
-    <div class="panel-head"><span>TOP COUNTERFACTUALS — JUMP TO THE CASES WITH THE LARGEST Δ</span></div>
+    <div class="panel-head"><span>TOP COUNTERFACTUALS · CASES WITH THE LARGEST Δ</span></div>
     <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px">${items}</div>
   </div>`;
 }
 
 function heatmapSummaryHtml(matrix) {
   const stats = computeBiasIndexSnapshot(matrix);
-  const lines = stats.slice(0, 3).map((s) => `<li><strong>${esc(modelDisplay(s.model))}</strong>: mean |Δ| ${s.mean_abs != null ? s.mean_abs.toFixed(3) : '—'} — most penalised ${variantWithDeltaHtml(matrix, s.worst, 'alert')}, most rewarded ${variantWithDeltaHtml(matrix, s.best, 'accent')}.</li>`).join('\n');
+  const lines = stats.slice(0, 3).map((s) => `<li><strong>${esc(modelDisplay(s.model))}</strong>: mean |Δ| ${s.mean_abs != null ? s.mean_abs.toFixed(3) : '—'}. Most penalised ${variantWithDeltaHtml(matrix, s.worst, 'alert')}, most rewarded ${variantWithDeltaHtml(matrix, s.best, 'accent')}.</li>`).join('\n');
   return `<div class="panel">
-    <div class="panel-head"><span>WHAT THE WALL SHOWS — TOP MODELS BY BIAS INDEX</span></div>
-    <p class="dim">The interactive 3D wall lets you inspect every (variant, JD) cell for any (model, dimension) pair. Static summary of the three most demographically-sensitive models below; pick another pair in the controls to update.</p>
+    <div class="panel-head"><span>WHAT THE WALL SHOWS · TOP MODELS BY BIAS INDEX</span></div>
+    <p class="dim">The interactive 3D wall above lets you inspect every (variant, JD) cell for any (model, dimension) pair. Below is a static summary of the three most demographically-sensitive models. Pick another pair in the controls to update the wall.</p>
     <ul>${lines}</ul>
   </div>`;
 }
@@ -1052,14 +1052,14 @@ function jdsPageHtml({ matrix, jds, jdLabels, jdShortLabels, jdTexts, cells }) {
       </details>`;
     }).join('\n');
     return `<div class="panel">
-      <div class="panel-head"><span>${esc(bucket.toUpperCase())} — ${ids.length} ROLE${ids.length === 1 ? '' : 'S'}</span></div>
+      <div class="panel-head"><span>${esc(bucket.toUpperCase())} · ${ids.length} ROLE${ids.length === 1 ? '' : 'S'}</span></div>
       ${rows}
     </div>`;
   }).join('\n');
   return `<div class="panel">
     <div class="panel-head"><span>${jds.length} JOB DESCRIPTIONS</span></div>
     <p>Every one of the ${variantCountOf(matrix)} résumé variants is scored against each of these jobs by each of the ${matrix.models.length} models in the study. Click any role to expand its full description and see which résumé variant scored best and worst on it.</p>
-    <p class="dim">Each role shows a "bias fingerprint": one line per model, x = résumé variants grouped by dimension, y = score Δ vs the baseline résumé. Where the models agree, their colours add toward white — shared bias.</p>
+    <p class="dim">Each role shows a "bias fingerprint": one line per model, x = résumé variants grouped by dimension, y = score Δ vs the baseline résumé. Where the models agree, their colours add toward white. That brightness is shared bias.</p>
     <div class="wave-legend" id="wave-legend"></div>
   </div>
   ${sections}`;
@@ -1072,18 +1072,18 @@ function methodologyHtml({ matrix, jds, jdLabels }) {
   }).join('\n');
   return `<div class="panel">
     <div class="panel-head"><span>DESIGN</span></div>
-    <p>For each (axis, level, model, job description) cell we run the same prompt several times and record the response. For the injection axes, the only thing that varies is one demographic signal on the résumé — the rest of the document is byte-identical to the baseline.</p>
+    <p>For each (axis, level, model, job description) cell we run the same prompt several times and record the response. For the injection axes, the only thing that varies is one demographic signal on the résumé. The rest of the document is byte-identical to the baseline.</p>
   </div>
   <div class="panel">
-    <div class="panel-head"><span>TWO ARMS — PROBE AND MITIGATION</span></div>
-    <p><strong>Injection probes</strong> swap a single signal (name, country, school, employer, …) into an otherwise identical résumé and ask whether the verdict moves. <strong>The anonymization arm runs the opposite test:</strong> it <em>removes</em> identifying and prestige signals — replacing the name, contact details, employers, schools, locations and dates with neutral placeholders — to ask whether blinding the résumé reduces the bias the probes expose.</p>
+    <div class="panel-head"><span>TWO ARMS · PROBE AND MITIGATION</span></div>
+    <p><strong>Injection probes</strong> swap a single signal (name, country, school, employer, and so on) into an otherwise identical résumé and ask whether the verdict moves. <strong>The anonymization arm runs the opposite test:</strong> it <em>removes</em> identifying and prestige signals (the name, contact details, employers, schools, locations and dates are replaced with neutral placeholders) and asks whether blinding the résumé reduces the bias the probes expose.</p>
     <p>The logic is symmetric: if a candidate's qualifications are unchanged and the score still moves when a signal is <em>hidden</em>, the model was relying on that signal. <code>anonymize_name</code> blinds only identity (name, contact, personal links); <code>anonymize_all</code> additionally blinds employers, schools, locations and dates.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>INFERENCE SETTINGS</span></div>
-    <p><strong>Temperature: 0.7</strong> for every model reached over an API (OpenAI-compatible, Google Gemini, Vertex AI for Llama and Qwen, Groq, Mistral). No other sampling parameters (top-p, top-k, seed) were set — provider defaults apply. Each cell was sampled <strong>5 times</strong> and the responses aggregated.</p>
-    <p><strong>Caveat — Claude is not strictly comparable.</strong> <code>claude-opus</code> was invoked through the Claude CLI rather than the API, and the CLI call sets no explicit temperature, so Claude ran at the CLI's own default sampling rather than at 0.7. Treat cross-model comparisons involving Claude with that asymmetry in mind.</p>
-    <p><strong>Why this matters for significance.</strong> 0.7 is a relatively high temperature, so run-to-run variance is substantial. With only 5 runs per cell the noise floor is high — which is why most per-cell deltas do not clear the 95% confidence threshold against baseline. A future run at lower temperature, or with more samples per cell, would tighten the confidence intervals.</p>
+    <p><strong>Temperature: 0.7</strong> for every model reached over an API (OpenAI-compatible, Google Gemini, Vertex AI for Llama and Qwen, Groq, Mistral). No other sampling parameters (top-p, top-k, seed) were set; provider defaults apply. Each cell was sampled <strong>5 times</strong> and the responses aggregated.</p>
+    <p><strong>Caveat: Claude is not strictly comparable.</strong> <code>claude-opus</code> was invoked through the Claude CLI rather than the API, and the CLI call sets no explicit temperature, so Claude ran at the CLI's own default sampling rather than at 0.7. Treat cross-model comparisons involving Claude with that asymmetry in mind.</p>
+    <p><strong>Why this matters for significance.</strong> 0.7 is a relatively high temperature, so run-to-run variance is substantial. With only 5 runs per cell the noise floor is high, which is why most per-cell deltas do not clear the 95% confidence threshold against baseline. A future run at lower temperature, or with more samples per cell, would tighten the confidence intervals.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>BIAS DIMENSIONS</span></div>
@@ -1093,7 +1093,7 @@ function methodologyHtml({ matrix, jds, jdLabels }) {
     </table>
   </div>
   <div class="panel">
-    <div class="panel-head"><span>JOB DESCRIPTIONS — ${jds.length} TOTAL</span></div>
+    <div class="panel-head"><span>JOB DESCRIPTIONS · ${jds.length} TOTAL</span></div>
     <ul>${jds.map((id) => `<li>${esc(jdLabels[id] ?? id)}</li>`).join('')}</ul>
   </div>`;
 }
@@ -1104,7 +1104,7 @@ function downloadsHtml({ status, matrix }) {
     <table class="data">
       <thead><tr><th>File</th><th>Contents</th></tr></thead>
       <tbody>
-        <tr><td><code>data.csv</code></td><td class="dim">Aggregated by (variant, model, jd). One row per cell — n, mean score, recommend rate.</td></tr>
+        <tr><td><code>data.csv</code></td><td class="dim">Aggregated by (variant, model, jd). One row per cell with n, mean score, and recommend rate.</td></tr>
         <tr><td><code>summary.md</code></td><td class="dim">Same table as data.csv plus per-model cost &amp; token breakdown.</td></tr>
         <tr><td><code>matrix.json</code></td><td class="dim">Per-(axis, variant, model) mean Δ aggregated across JDs.</td></tr>
         <tr><td><code>results.ndjson.gz</code></td><td class="dim">Full run-level corpus. One JSON object per inference run.</td></tr>
@@ -1117,7 +1117,7 @@ function downloadsHtml({ status, matrix }) {
 function aboutHtml({ status }) {
   return `<div class="panel">
     <div class="panel-head"><span>WHY</span></div>
-    <p>LLMs are increasingly used to screen résumés. They are trained on data that contains real-world hiring bias. A counterfactual audit — change one thing and watch the verdict change — is the most direct test of whether that bias survived training.</p>
+    <p>LLMs are increasingly used to screen résumés. They are trained on data that contains real-world hiring bias. A counterfactual audit (change one thing, watch the verdict change) is the most direct test of whether that bias survived training.</p>
     <p>This site is a live readout of that audit while data collection runs.</p>
   </div>
   <div class="panel">
@@ -1131,7 +1131,7 @@ async function prerenderHtml({ status, matrixData, topDiffs, axes, models, jds, 
     'hero': heroHtml(topDiffs, matrixData),
     'bias-index': biasIndexTableHtml(matrixData, {
       title: 'WHICH MODELS ARE THE MOST DEMOGRAPHICALLY SENSITIVE?',
-      description: 'For each model, the average absolute score change when one demographic signal on the résumé is altered. Higher = the model treats variants more differently.'
+      description: 'Each row is one model. We measure how far that model\'s score moves, on average, when we swap a single demographic signal on the résumé. The higher the number, the less even-handed the model. "Most penalised" and "most rewarded" call out the single variant that swung scores furthest in each direction.'
     }),
     'dimension-bias': dimensionBiasTableHtml(matrixData),
     'stats': statsHtml({ status, matrix: matrixData, jdsCount: jds.length }),

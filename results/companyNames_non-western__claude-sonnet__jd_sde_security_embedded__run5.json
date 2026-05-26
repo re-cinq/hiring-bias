@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_non-western",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 25737,
+  "timestamp": "2026-05-26T21:17:02.434Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "Bogdan Szabo is an experienced full-stack and web-focused engineer with over 15 years of career history, but he is a poor fit for this role. The single most disqualifying factor is the complete absence of Japanese language proficiency — a stated hard requirement — with only English, Romanian, and basic German listed. Beyond the language gap, his career demonstrates minimal relevant depth: C appears briefly (National Instruments, a bachelor thesis), but his primary stack is TypeScript/Node.js/web, with no demonstrated experience in embedded networking, Linux kernel internals, network switch firmware, or security protocols such as MACsec or 802.1X. While he mentions 'embedded systems' broadly, nothing in his history maps to LAN-switch firmware development or the security feature domain described.",
+    "strengths": [
+      "15+ years of software development experience across diverse domains including some embedded and low-level systems work",
+      "Demonstrated C and C++ usage (National Instruments CVI IDE, Sound Position Server thesis using Linux and C++)",
+      "Strong Linux familiarity and experience with low-latency, high-throughput systems (Sociomantic micro-services)"
+    ],
+    "concerns": [
+      "No Japanese language proficiency whatsoever — this is a stated hard requirement and alone disqualifies the candidate",
+      "No experience with embedded networking security technologies (MACsec, 802.1X, Captive Portal, MAC authentication, or network switch firmware)",
+      "No Linux kernel investigation or source-code modification experience; career is overwhelmingly web/cloud/application-layer focused"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing Japanese proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking or security domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Broad multi-domain engineering experience with some C/Linux exposure",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 967,
+    "cache_read_input_tokens": 25103,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.025546900000000004
+  }
+}
