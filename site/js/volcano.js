@@ -37,7 +37,20 @@ export function renderVolcano(host, data, matrix, modelLabel) {
 
   const panel = el('div', { class: 'panel' });
   panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'WHICH SHIFTS ARE REAL, NOT NOISE?')));
-  panel.append(el('p', { class: 'dim' }, 'Every (variant × model × job) cell. X = score Δ vs the baseline résumé; Y = significance (−log₁₀ p — higher is less likely to be chance). Points above the dashed line clear p < 0.05: far-left are real penalties, far-right real boosts. One colour per model (same as the waves); where they stack up, the colours brighten toward white. Click a model to isolate it; hover a point for the case, click to open the diff.'));
+  panel.append(el('p', { class: 'dim' }, 'Each dot is one experiment: we swap a demographic signal into a résumé and rerun it five times against one model and one job. Horizontal position = how far the average score moved versus the unmodified résumé (left = the candidate was penalised, right = boosted). Vertical position = how consistent that move was across the five reruns — higher means it shows up every time, lower means it could be run-to-run jitter. Dots above the dashed line cleared the p < 0.05 bar, the conventional threshold for "this isn\'t random." Colour = model (same palette as the waves); where many models pile up, the colours blend toward white. Click a model in the legend to isolate it; hover a point for the case, click to open the side-by-side diff.'));
+
+  const howto = el('details', { class: 'vol-howto' }, [
+    el('summary', {}, 'How to spot bias on this chart'),
+    el('ul', {}, [
+      el('li', {}, [el('strong', {}, 'Isolate one model, then look for an off-centre cluster.'), ' Click a colour in the legend to hide the others. If that model\'s dots lean systematically to one side of zero — especially above the dashed line — it is rewarding or penalising whatever signals are in those experiments. Hover a dot to see which demographic is responsible.']),
+      el('li', {}, [el('strong', {}, 'Many colours stacking on the same point (going white).'), ' Cross-model agreement: every model reacts the same way to that experiment. Broad agreement raises the case that the effect is real-world bias, not one model\'s quirk.']),
+      el('li', {}, [el('strong', {}, 'High up AND far from zero.'), ' Large effect and rock-solid across reruns — the strongest individual evidence. Click the dot to open the side-by-side diff and read the model\'s own rationale for the score gap.']),
+      el('li', {}, [el('strong', {}, 'Spread evenly either side of zero.'), ' A model whose dots straddle zero isn\'t favouring either direction on average — it\'s just inconsistent. That\'s noise, not bias.']),
+      el('li', {}, [el('strong', {}, 'Empty top corners.'), ' If the upper-left and upper-right are bare, no demographic produced a large, repeatable shift for that model — bias either isn\'t there or got drowned out by noise.']),
+      el('li', {}, [el('strong', {}, 'Cross-check per-demographic patterns elsewhere.'), ' This view mixes all eight demographic axes together. Use the heatmap to see which axis × model cells are off, and the waves on the jobs page for the direction and shape of each axis.'])
+    ])
+  ]);
+  panel.append(howto);
 
   const legend = el('div', { class: 'vol-legend' });
   panel.append(legend);
@@ -79,7 +92,7 @@ export function renderVolcano(host, data, matrix, modelLabel) {
       node.append(svg('line', { x1: PADL, y1: y, x2: PADL + plotW, y2: y, class: 'vol-grid' }));
       node.append(svg('text', { x: PADL - 7, y: y + 3, class: 'vol-label', 'text-anchor': 'end' }, document.createTextNode(String(s))));
     }
-    node.append(svg('text', { x: 14, y: PADT + plotH / 2, class: 'vol-label', 'text-anchor': 'middle', transform: `rotate(-90 14 ${PADT + plotH / 2})` }, document.createTextNode('−log₁₀ p (significance)')));
+    node.append(svg('text', { x: 14, y: PADT + plotH / 2, class: 'vol-label', 'text-anchor': 'middle', transform: `rotate(-90 14 ${PADT + plotH / 2})` }, document.createTextNode('Consistency across reruns →')));
 
     node.append(svg('line', { x1: PADL, y1: PADT, x2: PADL, y2: PADT + plotH, class: 'vol-axis' }));
     node.append(svg('line', { x1: PADL, y1: PADT + plotH, x2: PADL + plotW, y2: PADT + plotH, class: 'vol-axis' }));
@@ -87,12 +100,17 @@ export function renderVolcano(host, data, matrix, modelLabel) {
 
     const ty = yAt(data.threshold);
     node.append(svg('line', { x1: PADL, y1: ty, x2: PADL + plotW, y2: ty, class: 'vol-threshold' }));
-    node.append(svg('text', { x: PADL + plotW, y: ty - 4, class: 'vol-label', 'text-anchor': 'end' }, document.createTextNode('p < 0.05')));
+    node.append(svg('text', { x: PADL + plotW, y: ty - 4, class: 'vol-label', 'text-anchor': 'end' }, document.createTextNode('noise floor (p = 0.05) — dots above are real effects')));
+
+    // Quadrant hints, behind the points so data sits on top.
+    node.append(svg('text', { x: xAt(-maxAbsX * 0.55), y: PADT + 14, class: 'vol-hint', 'text-anchor': 'middle' }, document.createTextNode('REAL PENALTIES')));
+    node.append(svg('text', { x: xAt(maxAbsX * 0.55), y: PADT + 14, class: 'vol-hint', 'text-anchor': 'middle' }, document.createTextNode('REAL BOOSTS')));
+    node.append(svg('text', { x: PADL + plotW / 2, y: PADT + plotH - 8, class: 'vol-hint', 'text-anchor': 'middle' }, document.createTextNode('looks like noise')));
 
     for (const d of [-maxAbsX, -maxAbsX / 2, 0, maxAbsX / 2, maxAbsX]) {
       node.append(svg('text', { x: xAt(d), y: PADT + plotH + 16, class: 'vol-label', 'text-anchor': 'middle' }, document.createTextNode(fmtSignedDelta(d, 1))));
     }
-    node.append(svg('text', { x: PADL + plotW / 2, y: H - 4, class: 'vol-label', 'text-anchor': 'middle' }, document.createTextNode('score Δ vs baseline')));
+    node.append(svg('text', { x: PADL + plotW / 2, y: H - 4, class: 'vol-label', 'text-anchor': 'middle' }, document.createTextNode('← penalty   ·   score change vs neutral résumé   ·   boost →')));
 
     // Additive layer (mix-blend-mode in CSS) holds only the visible points so isolated
     // models don't blend against faded ones.
