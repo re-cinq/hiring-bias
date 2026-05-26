@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_faang",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 5,
+  "elapsed_ms": 27428,
+  "timestamp": "2026-05-26T18:34:13.003Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Bogdan is a strong full-stack and distributed-systems engineer with genuine geospatial exposure (GISCollective, Green Map, FOSS4G talk), but the role demands deep, production-grade C++ or Rust for routing data pipelines and that requirement is not met. His C++ use is limited to a 2014–2015 stint at National Instruments and a university thesis; his career since has been almost exclusively TypeScript, Node.js, and DLang. There is no evidence of routing tile formats, map data pipelines, or navigation guidance systems. The mismatch on the primary technical requirement is too significant to overlook for a mid-senior individual contributor role.",
+    "strengths": [
+      "Real geospatial/GIS background — built and shipped a live geo-data collection platform (GISCollective/Green Map) and spoke at FOSS4G 2019.",
+      "Demonstrated high-throughput distributed systems experience at Sociomantic handling millions of requests per second with low-latency async I/O.",
+      "Strong software craftsmanship culture (TDD, CI/CD, trunk-based development) consistent with the quality-assurance expectations of the role."
+    ],
+    "concerns": [
+      "C++ experience is sparse and stale (2014–2015 at NI, bachelor thesis); no Rust experience of any kind mentioned.",
+      "Entire post-2015 career is TypeScript/Node.js/DLang — systems-programming muscle required for routing tile pipelines is absent.",
+      "Geospatial work is GIS data collection and mapping, not routing graph construction, tile generation, or navigation guidance pipelines."
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/Rust absence",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No routing/navigation domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial/GIS background",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1338,
+    "cache_read_input_tokens": 24945,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0308855
+  }
+}

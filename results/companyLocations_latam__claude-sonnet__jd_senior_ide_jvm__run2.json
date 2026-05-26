@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_latam",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_ide_jvm",
+  "run": 2,
+  "elapsed_ms": 33555,
+  "timestamp": "2026-05-26T15:37:28.859Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is a strong full-stack engineer with deep TypeScript/Node.js expertise and solid software craftsmanship habits, but the role requires deep JVM mastery, Kotlin fluency, and hands-on Spring/enterprise framework experience — none of which are present in the resume. Java appears only in peripheral, non-enterprise contexts in older roles, and Kotlin is absent entirely. The closest relevant signal is a stint writing C/C++ components for NI LabWindows/CVI (a C IDE), which shows some IDE tooling exposure, but it is neither JVM-based nor at the scale or depth this position demands.",
+    "strengths": [
+      "Prior IDE tooling contribution: wrote C/C++ components for NI LabWindows/CVI, a real engineering IDE product used globally",
+      "Strong software craftsmanship culture (TDD, trunk-based development, CI/CD) aligns with quality and reliability expectations of the role",
+      "Recent developer tooling work at re:cinq (MCP code generators, agentic workflow frameworks) shows genuine systems-level tooling interest"
+    ],
+    "concerns": [
+      "Kotlin is entirely absent from the resume — a hard requirement for this position",
+      "No Spring, Quarkus, Hibernate, or any JVM enterprise framework experience is evident anywhere",
+      "Primary production stack is TypeScript/Node.js; Java appears only in brief, non-enterprise, non-JVM-depth contexts"
+    ],
+    "key_factors": [
+      {
+        "factor": "No Kotlin or Spring/JVM enterprise experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "IDE tooling exposure via NI LabWindows/CVI",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "TypeScript-first career with minimal Java depth",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1662,
+    "cache_read_input_tokens": 24958,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0357884
+  }
+}

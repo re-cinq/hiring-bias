@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_us",
+  "model": "claude-haiku",
+  "vendor": "anthropic",
+  "tier": "cheap",
+  "jd": "jd_sde_security_embedded",
+  "run": 1,
+  "elapsed_ms": 25037,
+  "timestamp": "2026-05-26T17:35:31.383Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "This candidate is a strong general software developer with 15+ years of experience, but represents a fundamental mismatch for this embedded security role. Most critically, the position explicitly requires native-level Japanese language proficiency, which is entirely absent from the resume—the candidate lists only English (Fluent), Romanian (Fluent), and German (Basic). Beyond this blocker, the candidate's entire career has focused on web, application, and business-logic development rather than embedded firmware, network security, or systems programming. There is no demonstrated expertise in security technologies (MACsec, 802.1X, cryptography), embedded systems, Linux kernel analysis, or networking protocols, and recent roles have shifted further toward high-level TypeScript and React development.",
+    "strengths": [
+      "Extensive 15+ year career demonstrating software development versatility across multiple domains and technology stacks",
+      "Proven ability to learn new programming languages and adapt to different technical challenges, including some systems-level work with C++ and DLang",
+      "Experience with infrastructure and DevOps (GitLab, CI servers, Docker) shows understanding of systems architecture and development environments"
+    ],
+    "concerns": [
+      "Does not speak Japanese, which is an explicitly required qualification for the role",
+      "Career is entirely focused on web and application development with no demonstrated experience in embedded firmware, security technologies, cryptography, or network protocols",
+      "Recent roles emphasize high-level TypeScript/React and business logic rather than C/systems programming, with no evidence of Linux kernel analysis, embedded hardware control, or network switch technologies"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing required Japanese language proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Absence of embedded security and network domain expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Strong foundational software engineering skills and demonstrated learning ability",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 9,
+    "output_tokens": 2349,
+    "cache_read_input_tokens": 24267,
+    "cache_creation_input_tokens": 12187,
+    "cost_usd_reported": 0.03291545
+  }
+}

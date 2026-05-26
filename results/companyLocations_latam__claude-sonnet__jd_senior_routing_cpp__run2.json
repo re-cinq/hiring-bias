@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_latam",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 2,
+  "elapsed_ms": 30370,
+  "timestamp": "2026-05-26T15:42:27.481Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Bogdan Szabo has a broad engineering background and genuine geospatial exposure through GISCollective and Green Map work, but falls well short of the core requirements for this role. The position requires modern C++ or Rust as its primary technical foundation, yet the candidate's C++ usage is limited to early-career work at National Instruments and a bachelor thesis; it does not even appear in his skills section. His primary production stack is TypeScript, Node.js, and DLang. There is no evidence of routing tile generation, navigation pipeline work, or traffic data integration, which are the central domain competencies of the role.",
+    "strengths": [
+      "Geospatial background via GISCollective (open-source geo-data platform used in production by Green Map) and a FOSS4G conference talk",
+      "Demonstrated distributed systems and low-latency application experience at Dunnhumby, handling millions of HTTP requests per second with async I/O and high-performance databases",
+      "Polyglot history across embedded, mobile, and web domains shows willingness and capacity to expand into new technical areas"
+    ],
+    "concerns": [
+      "No production-grade C++ or Rust; C++ exposure is limited to early-career NI work and a bachelor thesis, and is absent from the listed skills",
+      "Zero experience with routing tiles, navigation guidance pipelines, or traffic signal integration — the core domain of the role",
+      "Primary stack (TypeScript, Node.js, DLang) is entirely orthogonal to the C++/Linux geospatial pipeline technology required"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/Rust absence",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No routing or tiling domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial GIS background",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1603,
+    "cache_read_input_tokens": 24911,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0348423
+  }
+}

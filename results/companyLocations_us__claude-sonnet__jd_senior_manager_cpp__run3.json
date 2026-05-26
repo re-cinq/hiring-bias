@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_us",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 3,
+  "elapsed_ms": 31024,
+  "timestamp": "2026-05-26T17:04:49.822Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate has a broad 15+ year software engineering background, but the role's primary requirement — hands-on C++ development for industrial automation — is almost entirely missing from the profile. C++ appears only in a bachelor's thesis project and a 6-month role at National Instruments in 2014–2015, and is conspicuously absent from the candidate's own skills list. There is no evidence of multi-threaded C++ systems, STL usage, MQTT, IEC 62443 secure development practices, or industrial-protocol experience, all of which are central to this position. The candidate's actual expertise is in TypeScript/Node.js web and full-stack development.",
+    "strengths": [
+      "15+ years of diverse engineering experience with demonstrated ability to build high-throughput, distributed systems (millions of requests/second at Dunnhumby).",
+      "Event-driven architecture experience from GISCollective and Dunnhumby aligns loosely with the message-broker and large-scale application requirements.",
+      "Node.js and React expertise covers two of the role's listed advantageous skills."
+    ],
+    "concerns": [
+      "C++ experience is negligible — a thesis project and one 6-month role over a decade ago — and is not listed among the candidate's own skills.",
+      "No exposure to IEC 62443, secure development lifecycle practices, or any industrial cybersecurity concepts.",
+      "No IoT, industrial automation, or relevant protocol experience (MQTT, Modbus TCP/IP, OPC UA, IEC 61850), which are core to the role's domain."
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ proficiency absent",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No industrial/IoT domain knowledge",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Event-driven distributed systems background",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1592,
+    "cache_read_input_tokens": 25182,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0350296
+  }
+}

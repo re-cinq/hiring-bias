@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_faang",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 28119,
+  "timestamp": "2026-05-26T18:23:27.766Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate has an extensive software development career spanning 15+ years, but is fundamentally misaligned with this role. The most critical disqualifier is the complete absence of Japanese language proficiency, which is listed as a mandatory requirement. Beyond that, the candidate's background is almost entirely in web, full-stack, and data infrastructure work — there is no evidence of security domain expertise (MACsec, 802.1X, captive portal), embedded networking, Linux kernel modification, or LAN-switch product experience. C programming appears only briefly in early career entries and an academic project, and there is no mention of Layer-2/Layer-3 networking, switch chip knowledge, or BIOS/bootloader work.",
+    "strengths": [
+      "15+ years of broad software engineering experience across web, embedded, and data domains demonstrates strong technical adaptability",
+      "Some C/C++ exposure at National Instruments and in an academic wave field synthesis project, showing baseline familiarity with lower-level systems",
+      "Demonstrated engineering discipline: TDD, CI/CD, trunk-based development, and code quality practices align well with collaborative embedded development workflows"
+    ],
+    "concerns": [
+      "No Japanese language proficiency mentioned anywhere — this is a hard mandatory requirement and alone disqualifies the candidate",
+      "Zero security domain experience: no evidence of work with MACsec, 802.1X, captive portals, encryption protocols, or device attack/tamper detection",
+      "No networking fundamentals depth: no Layer-2/Layer-3, switch operation, NETCONF, SNMP, or embedded firmware experience visible in the resume"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese language proficiency absent",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No security or networking domain knowledge",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Minimal and non-recent C/embedded experience",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1305,
+    "cache_read_input_tokens": 25114,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.030610199999999997
+  }
+}

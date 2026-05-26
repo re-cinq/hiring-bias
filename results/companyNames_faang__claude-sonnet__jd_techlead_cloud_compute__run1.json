@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_faang",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_techlead_cloud_compute",
+  "run": 1,
+  "elapsed_ms": 30102,
+  "timestamp": "2026-05-26T18:43:32.104Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Bogdan is a strong full-stack and distributed systems engineer with impressive pedigree (Google, Meta) and genuine high-throughput infrastructure experience at Dunnhumby, but he is fundamentally mismatched to this role's core requirements. The job mandates 8 years of C++ experience; the resume shows roughly 6 months of C/C++ work at National Instruments plus a thesis project, with C++ absent from the skills section entirely. The role also demands 5 years in large-scale cloud compute or hardware-adjacent infrastructure, whereas his infrastructure work is primarily application-layer (TypeScript, Node.js, AWS CDK) with cloud infrastructure as a secondary concern. His leadership experience is present but implicit and community-oriented rather than formal technical-lead ownership of a platform org.",
+    "strengths": [
+      "Proven high-throughput distributed systems experience: low-latency micro-services handling millions of HTTP req/sec at Dunnhumby demonstrates real scale",
+      "Strong testing and engineering-quality culture: TDD advocacy, CI/CD, trunk-based dev, and authored open-source testing frameworks (Fluent-Asserts, Trial)",
+      "Staff-level positions at Google and Meta signal seniority and ability to operate in large, complex engineering organizations"
+    ],
+    "concerns": [
+      "C++ experience is critically insufficient: the role requires 8 years; the resume shows ~6 months at NI plus a student thesis — a near-total mismatch on the primary technical requirement",
+      "No cloud compute platform or hardware-architecture depth: infrastructure work is application-layer (AWS CDK for pricing pipelines, Kubernetes for a side project) rather than the compute/storage/network layer the role targets",
+      "Formal technical leadership is absent: Staff Engineer titles and community workshops do not substitute for documented experience owning platform strategy, setting architectural standards for a team, or mentoring cloud/DevOps engineers in a line-leadership capacity"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Cloud compute / infra layer experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "High-scale distributed systems at Dunnhumby",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1299,
+    "cache_read_input_tokens": 12963,
+    "cache_creation_input_tokens": 12047,
+    "cost_usd_reported": 0.07194215
+  }
+}

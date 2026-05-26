@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_latam",
+  "model": "claude-haiku",
+  "vendor": "anthropic",
+  "tier": "cheap",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 21655,
+  "timestamp": "2026-05-26T16:13:08.598Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "While the candidate demonstrates strong general software engineering skills with 15+ years of experience and proficiency in C and Linux, they fatally lack the critical native-level Japanese language proficiency explicitly required for the role. Additionally, the resume shows no evidence of embedded networking, security technologies (encryption, authentication protocols, attack detection), kernel-level work, or firmware development. Recent career trajectory (past 5 years) has focused on web and cloud development, moving away from embedded systems entirely. The domain expertise required for security-focused embedded networking firmware is fundamentally absent.",
+    "strengths": [
+      "15+ years of software development experience with exposure to C/C++, Linux, and embedded systems at National Instruments and Altom Consulting",
+      "Strong software engineering practices emphasizing testing, code quality, and CI/CD, with demonstrated ability to learn diverse technology stacks",
+      "Evidence of low-level systems work including custom kernel understanding and infrastructure management (GitLab, CI servers, Docker)"
+    ],
+    "concerns": [
+      "No native-level Japanese language proficiency listed; resume explicitly states English (Fluent), Romanian (Fluent), German (Basic) only—fails hard requirement",
+      "Complete absence of embedded networking, network security technologies (MACsec, 802.1X, SNMP, NETCONF), or switch firmware domain experience",
+      "Recent 5-year career pivot away from embedded systems toward web/cloud stack (TypeScript, Node.js, React, AWS, MongoDB); C experience last active in 2014–2015"
+    ],
+    "key_factors": [
+      {
+        "factor": "Native-level Japanese language proficiency (hard requirement)",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Embedded networking and security domain expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "C and Linux experience (dated but present)",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 9,
+    "output_tokens": 2105,
+    "cache_read_input_tokens": 36414,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0176574
+  }
+}
