@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 17074,
+  "timestamp": "2026-05-22T15:45:21.341Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is a capable generalist full-stack/web developer with broad experience (TypeScript, Node.js, DLang) and some historical C/C++ exposure (NI LabWindows/CVI, a C++ bachelor thesis). However, this role is embedded LAN-switch security firmware requiring strong C for UNIX development, Linux kernel investigation and source modification, and switch-level security/networking knowledge (MACsec, 802.1X, L2/L3) — none of which appear in the resume. Critically, native-level Japanese is a hard requirement, and the candidate lists only English (fluent), Romanian (fluent), and basic German. The combination of missing language requirement and absent core domain experience makes this a poor fit.",
+    "strengths": [
+      "Deep, long software-engineering track record well beyond the 3+ year minimum",
+      "Some real C/C++ experience (LabWindows/CVI IDE components, C++ thesis) plus Linux familiarity",
+      "Strong engineering discipline: TDD, CI/CD, Docker, dev-ops, and embedded/robotics exposure"
+    ],
+    "concerns": [
+      "No native-level Japanese — a stated hard requirement",
+      "No demonstrated Linux kernel source modification, switch/networking (L2/L3), or security tech (MACsec, 802.1X) experience",
+      "Recent work is web/full-stack in TypeScript/Node; C is not a current core skill"
+    ],
+    "key_factors": [
+      {
+        "factor": "Native Japanese requirement unmet",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded security/kernel/switch experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Some C/C++ and embedded background",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1864,
+    "output_tokens": 1249,
+    "cache_read_input_tokens": 21204,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.054469
+  }
+}

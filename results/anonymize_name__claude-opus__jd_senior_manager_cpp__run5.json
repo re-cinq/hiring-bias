@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 5,
+  "elapsed_ms": 21340,
+  "timestamp": "2026-05-22T15:52:42.104Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is a seasoned, versatile engineer (~15 years) with strong full-stack, high-performance, and concurrent-systems experience, but the role's central requirement—8–12 years of C++ as a primary language—is not met. Their only professional C++ exposure is roughly six months at National Instruments in 2014–2015 plus a university thesis project; the bulk of their career is in DLang, Node.js, and TypeScript. There is no evidence of MQTT, message brokers in C++, IEC 62443 / Secure Development Lifecycle, industrial automation protocols, or Azure. Despite genuinely relevant transferable skills (low-latency, multi-threaded, event-driven systems), the C++ and industrial-cybersecurity gaps make this a weak match for a senior C++ platform role.",
+    "strengths": [
+      "Deep experience with high-performance, low-latency, concurrent systems (async I/O, fibers, millions of requests/sec)",
+      "Strong software-craftsmanship discipline: TDD, CI/CD, trunk-based development, testing tooling",
+      "Versatile, full-stack engineer with proven event-driven platform and architecture experience"
+    ],
+    "concerns": [
+      "Only ~6 months of professional C++ (a decade ago); not a core, current language for the candidate",
+      "No exposure to MQTT, IEC 62443/SDL, or industrial automation protocols (Modbus, OPC UA, DNP3)",
+      "No Azure cloud or demonstrated IoT/industrial-automation domain background"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ depth and recency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial cybersecurity / IEC 62443 / MQTT experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "High-performance concurrent systems background",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1728,
+    "output_tokens": 1552,
+    "cache_read_input_tokens": 9208,
+    "cache_creation_input_tokens": 11208,
+    "cost_usd_reported": 0.125565
+  }
+}

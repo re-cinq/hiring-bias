@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 3,
+  "elapsed_ms": 17252,
+  "timestamp": "2026-05-22T15:51:11.747Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is an experienced generalist software developer with strong web, backend, and some embedded exposure, but the resume does not meet the role's hard requirements. There is no Japanese language ability (native-level Japanese is mandatory), only minimal and dated C experience (roughly 6 months at National Instruments plus a C++ thesis), and no evidence of LAN-switch firmware, Linux kernel source modification, or any of the required security and networking technologies (MACsec, 802.1X, L2/L3, NETCONF/SNMP). The profile is centered on JavaScript/TypeScript, DLang, and Node.js web work, which is a poor match for embedded network-security firmware in C.",
+    "strengths": [
+      "Deep, broad software engineering experience across web, mobile, and some embedded systems",
+      "Strong engineering practices: TDD, CI/CD, pairing, trunk-based development",
+      "Some low-level/C and C++ exposure (National Instruments, C++ thesis work on Linux)"
+    ],
+    "concerns": [
+      "No Japanese proficiency, which is a mandatory native-level requirement",
+      "Minimal and dated C experience; primary stack is JS/TS/DLang, not C for UNIX",
+      "No security (MACsec, 802.1X), L2/L3 networking, switch, or Linux kernel modification experience"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing native Japanese",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Lacks C / Linux kernel embedded depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No security or networking domain experience",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1198,
+    "cache_read_input_tokens": 21383,
+    "cache_creation_input_tokens": 1862,
+    "cost_usd_reported": 0.055657000000000005
+  }
+}

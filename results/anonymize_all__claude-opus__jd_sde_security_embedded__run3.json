@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 3,
+  "elapsed_ms": 23506,
+  "timestamp": "2026-05-22T15:44:51.966Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is a versatile generalist with strong full-stack web experience (TypeScript/Node.js) and some C/C++ and embedded exposure (LabWindows/CVI, robotic arms, a C++ wave-field-synthesis system). However, the role's hard requirements are largely unmet: there is no evidence of native-level Japanese proficiency, no security-domain experience (MACsec, 802.1X, encryption, tamper detection), no LAN-switch or L2/L3 networking work, and no Linux kernel source-code modification. C is a minor, dated part of their background rather than a core strength for UNIX/embedded development. The mismatch on must-have qualifications makes this a poor fit for a mid-senior embedded security role.",
+    "strengths": [
+      "Broad multi-domain engineering experience spanning web, mobile, desktop, and some embedded/hardware work",
+      "Demonstrated C/C++ experience (LabWindows/CVI IDE components, C++ audio system) and Linux familiarity",
+      "Strong software-craftsmanship discipline: TDD, CI/CD, pairing, and active knowledge-sharing"
+    ],
+    "concerns": [
+      "No evidence of native-level Japanese proficiency, a hard requirement (only English/Romanian fluent, basic German)",
+      "No security-feature experience (MACsec, 802.1X, captive portal, tamper/attack detection) or LAN-switch/L2-L3 networking",
+      "No Linux kernel investigation or source-code modification experience; C is peripheral, not the primary skill"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese language requirement unmet",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded security/networking domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Some C/C++ and embedded/hardware background",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 1304,
+    "cache_read_input_tokens": 17225,
+    "cache_creation_input_tokens": 53866,
+    "cost_usd_reported": 0.38120699999999996
+  }
+}

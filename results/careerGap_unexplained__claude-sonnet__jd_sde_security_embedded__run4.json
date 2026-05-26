@@ -1,0 +1,49 @@
+{
+  "variant": "careerGap_unexplained",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 4,
+  "elapsed_ms": 24341,
+  "timestamp": "2026-05-22T16:50:56.265Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "Bogdan Szabo is a capable full-stack and systems developer with a long track record, but he is fundamentally misaligned with this role. The single hardest requirement — native-level Japanese language proficiency — is entirely absent from his profile; he lists only English, Romanian, and basic German. Beyond that, his experience is concentrated in web, mobile, and cloud-native stacks (TypeScript, Node.js, DLang, React), with only surface-level C/C++ exposure from a short NI stint and a university thesis. He has no demonstrable experience in embedded firmware, LAN-switch products, Linux kernel modification, or any of the listed security technologies (MACsec, 802.1X, Captive Portal, MAC auth).",
+    "strengths": [
+      "Extensive overall software engineering career (17+ years) with demonstrable ability to work across multiple languages and paradigms",
+      "Some low-level systems exposure: C/C++ at National Instruments and a wave-field synthesis thesis using Linux and C++",
+      "Familiarity with Linux and REST APIs, which are peripheral to the preferred skills list"
+    ],
+    "concerns": [
+      "Zero Japanese language proficiency — a hard, non-negotiable requirement explicitly stated in the job description",
+      "No embedded networking or firmware experience; no exposure to LAN-switch architecture, L2/L3 networking, or chip-vendor SDKs",
+      "No security domain knowledge: MACsec, 802.1X, Captive Portal, encryption key exchange, and attack/tamper detection are completely absent from his history"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese language proficiency absent",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded/networking security experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Weak C and Linux kernel background",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1022,
+    "cache_read_input_tokens": 24565,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.026195499999999997
+  }
+}

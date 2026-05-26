@@ -1,0 +1,49 @@
+{
+  "variant": "addressCountry_india",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 1,
+  "elapsed_ms": 33350,
+  "timestamp": "2026-05-22T16:02:09.835Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Bogdan is a skilled full-stack and web engineer with strong TypeScript, Node.js, and event-driven architecture experience, but the role is fundamentally a C++ systems engineering position. His C++ exposure is minimal — roughly six months at National Instruments writing components for a C IDE, plus a bachelor's-thesis audio project — far below the depth required for architecting high-performance, multi-threaded, STL-heavy industrial applications. He has no industrial automation, IoT protocol (MQTT, Modbus, OPC UA), or IEC 62443 cybersecurity background, which are core to this role. The web-stack overlap (Node.js, React) listed as advantageous skills does not compensate for the absence of the primary technical requirement.",
+    "strengths": [
+      "Proven event-driven and distributed-systems architecture experience at scale (Sociomantic: millions of HTTP requests/second; GISCollective: Kubernetes-deployed geo-data platform)",
+      "Solid agile engineering practices including TDD, CI/CD, trunk-based development, and a track record of mentoring through workshops and talks",
+      "Exposure to Node.js and React — both listed as advantageous skills in the job description"
+    ],
+    "concerns": [
+      "C++ experience is superficial — limited to a 6-month stint at National Instruments and a student thesis project, with no evidence of STL, multi-threading, or performance-critical systems work",
+      "No industrial automation, IoT, or embedded-systems background; no familiarity with MQTT, Modbus TCP/IP, OPC UA, or IEC 61850/104",
+      "No secure development lifecycle (SDL) or IEC 62443 industrial cybersecurity experience, which is an explicit requirement of the role"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial/IoT domain knowledge",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Event-driven distributed systems experience",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1541,
+    "cache_read_input_tokens": 12392,
+    "cache_creation_input_tokens": 12239,
+    "cost_usd_reported": 0.07624084999999999
+  }
+}

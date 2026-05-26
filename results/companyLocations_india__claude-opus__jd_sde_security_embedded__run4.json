@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_india",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 4,
+  "elapsed_ms": 17173,
+  "timestamp": "2026-05-22T16:02:53.505Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is an experienced senior full-stack engineer, but their background is almost entirely web, mobile, and backend work in TypeScript/Node.js and DLang, which does not align with this embedded firmware security role. The position has hard requirements the candidate clearly does not meet: native-level Japanese (the resume lists only English, Romanian, and basic German), strong C proficiency for UNIX development (only a brief C/C++ stint at National Instruments and a C++ thesis), and Linux kernel investigation with source modification (no evidence). There is also no exposure to LAN-switch security technologies (MACsec, 802.1X), L2/L3 networking, or chip-vendor SDKs. The mismatch is fundamental rather than a matter of seniority.",
+    "strengths": [
+      "10+ years of professional software development experience, well above the 3-year minimum",
+      "Some C/C++ exposure (National Instruments LabWindows/CVI, C++ thesis) and comfort with Linux",
+      "Strong engineering practices: TDD, CI/CD, and prior hardware-adjacent work (robotic arms, device orchestration)"
+    ],
+    "concerns": [
+      "No Japanese language ability, which is a stated native-level hard requirement",
+      "Minimal C experience and no Linux kernel modification or embedded firmware background",
+      "No security or networking domain experience (MACsec, 802.1X, L2/L3, switch SDKs)"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lacks native Japanese",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded/kernel/C security background",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Extensive general dev experience",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1728,
+    "output_tokens": 1263,
+    "cache_read_input_tokens": 9208,
+    "cache_creation_input_tokens": 11044,
+    "cost_usd_reported": 0.117238
+  }
+}

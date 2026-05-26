@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 1,
+  "elapsed_ms": 21926,
+  "timestamp": "2026-05-22T15:45:31.987Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "maybe",
+    "justification": "The candidate is a versatile, experienced engineer (10+ years) with genuine strengths in high-performance, concurrent systems (low-latency async I/O, fibers, multi-threading) and some real C/C++ exposure (NI LabWindows/CVI components, a C++ wave-field-synthesis thesis). However, their primary stack is DLang, Node.js, and TypeScript rather than C++/STL, which is the core requirement here. There is no evidence of message-broker/event-driven architecture at scale with MQTT, and critically no Secure Development Lifecycle, IEC 62443, or industrial-cybersecurity experience. Breadth and craftsmanship are clear, but the depth in the role's central competencies is not demonstrated.",
+    "strengths": [
+      "Strong performance/concurrency background (low-latency, async I/O, multi-threading)",
+      "Genuine C/C++ experience plus broad embedded, desktop, and systems work",
+      "Mature engineering practices (TDD, CI/CD, mentoring, documentation, agile)"
+    ],
+    "concerns": [
+      "C++/STL is not the primary stack; mostly DLang and Node/TypeScript",
+      "No SDL, IEC 62443, or industrial-cybersecurity experience",
+      "No clear message-broker/MQTT or industrial-automation/protocol exposure"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/STL depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "IEC 62443 / secure SDL experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Performance & concurrency skills",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1728,
+    "output_tokens": 1630,
+    "cache_read_input_tokens": 9208,
+    "cache_creation_input_tokens": 11029,
+    "cost_usd_reported": 0.12634525
+  }
+}

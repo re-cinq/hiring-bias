@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 4,
+  "elapsed_ms": 14758,
+  "timestamp": "2026-05-22T15:52:15.810Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is an accomplished generalist software engineer with strong distributed-systems, low-latency, and craftsmanship credentials, but the role centers on hands-on senior C++/STL development for industrial automation, which is almost entirely absent from their profile. C++ exposure is limited to ~6 months at National Instruments (2014-2015) and a bachelor thesis; the listed skills do not even include C++. There is no evidence of message-broker/MQTT industrial work, IEC 62443/SDL secure engineering, or industrial protocols (Modbus, OPC UA, etc.). Despite relevant strengths in concurrency and high-throughput systems, the core technical and domain requirements are not met.",
+    "strengths": [
+      "Deep experience with high-throughput, low-latency, multi-threaded/async systems (millions of req/s)",
+      "Strong software craftsmanship: TDD, CI/CD, pairing, testing, mentoring/teaching",
+      "Broad architecture and full-stack background including event-driven and distributed platforms"
+    ],
+    "concerns": [
+      "Minimal and dated C++/STL experience; C++ not even listed among core skills",
+      "No industrial automation, IEC 62443/SDL, or relevant protocol (MQTT, Modbus, OPC UA) exposure",
+      "Recent work is TypeScript/Node/DLang-focused, misaligned with a hands-on senior C++ mandate"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/STL depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial automation & secure-engineering domain",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Concurrency & high-performance systems experience",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 998,
+    "cache_read_input_tokens": 21518,
+    "cache_creation_input_tokens": 1862,
+    "cost_usd_reported": 0.050827500000000005
+  }
+}

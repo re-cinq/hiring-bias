@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 3,
+  "elapsed_ms": 25567,
+  "timestamp": "2026-05-22T15:52:20.763Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "A highly experienced and versatile engineer, but a poor fit for this specific role. The core requirement is modern C++/STL expertise for high-performance industrial systems, yet the candidate's C++ exposure is limited to ~7 months at National Instruments (2015) and a university thesis; C++ is not even listed in their skills. Their depth is in TypeScript/Node.js and DLang. There is no evidence of MQTT, Modbus/OPC UA, message brokers, IEC 62443/SDL secure engineering, or industrial automation. Adjacent strengths in low-latency distributed systems and multithreading exist but do not offset the central language and domain mismatch.",
+    "strengths": [
+      "Deep, broad engineering experience (15+ years) with strong testing/TDD discipline",
+      "Proven low-latency, high-throughput distributed systems work (millions of req/s)",
+      "Multithreading/concurrency exposure via async I/O and fibers"
+    ],
+    "concerns": [
+      "Minimal and dated C++ experience (~7 months, 2015); C++ not in skill list",
+      "No industrial automation, IEC 62443/SDL, MQTT, or OT-protocol background",
+      "No evidence of message-broker or event-driven architecture in C++"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial/security domain (IEC 62443, MQTT)",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "General senior engineering breadth",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 2049,
+    "cache_read_input_tokens": 67644,
+    "cache_creation_input_tokens": 2044,
+    "cost_usd_reported": 0.101308
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 1,
+  "elapsed_ms": 22431,
+  "timestamp": "2026-05-22T15:44:28.459Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is an experienced, versatile software craftsman with a long track record, but is a poor fit for this specific role. The position explicitly requires native-level Japanese proficiency, which the candidate does not have (languages listed are English, Romanian, and basic German). Beyond that hard blocker, the role centers on C for UNIX, embedded LAN-switch firmware, Linux kernel source modification, and networking security (MACsec, 802.1X, L2/L3, switch chips, SDKs) — none of which appear in the candidate's recent work, which is dominated by TypeScript/Node.js, DLang, and web/mobile development. There is some older C/C++ and embedded-adjacent experience, but it is not enough to offset the missing core requirements.",
+    "strengths": [
+      "Deep, broad engineering experience including some C/C++ and embedded work (LabWindows/CVI, robotic arms)",
+      "Strong testing/engineering discipline (TDD, CI/CD, low-latency systems) and Linux familiarity",
+      "Fluent English for technical documentation and communication"
+    ],
+    "concerns": [
+      "No native-level Japanese — a stated hard requirement",
+      "No demonstrated networking-security or LAN-switch embedded firmware experience (MACsec, 802.1X, L2/L3)",
+      "No evidence of Linux kernel source-code modification; recent stack is web/JS, not C/UNIX"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing native Japanese requirement",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking-security experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Limited recent C/Linux-kernel work",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1730,
+    "output_tokens": 1526,
+    "cache_read_input_tokens": 29310,
+    "cache_creation_input_tokens": 13623,
+    "cost_usd_reported": 0.14991575
+  }
+}

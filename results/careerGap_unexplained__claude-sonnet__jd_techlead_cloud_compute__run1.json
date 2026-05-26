@@ -1,0 +1,49 @@
+{
+  "variant": "careerGap_unexplained",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_techlead_cloud_compute",
+  "run": 1,
+  "elapsed_ms": 24102,
+  "timestamp": "2026-05-22T16:54:38.502Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The role's hard minimum of 8 years C++ experience is essentially unmet: the candidate's C++ usage appears limited to a brief stint at National Instruments (~6 months, C/C++ for a desktop IDE) and a student thesis project, and C++ does not even appear in the résumé's own skills section. The candidate's 15+ year career is primarily built on JavaScript/TypeScript, DLang, and Node.js for web and SaaS products, with no evidence of production cloud compute platform ownership, no cloud architecture credentials, and no formal technical-leadership role over cloud or infrastructure engineers. An active career gap since October 2025 adds further risk.",
+    "strengths": [
+      "Genuine high-throughput distributed systems exposure at Dunnhumby (millions of HTTP req/s, low-latency async I/O, real-time metadata pipelines)",
+      "Consistent software-craftsmanship culture: TDD, trunk-based dev, CI/CD, mentoring via public workshops and talks",
+      "Broad polyglot background (DLang, TypeScript, Swift, Java, Docker, Kubernetes) shows adaptability across layers of the stack"
+    ],
+    "concerns": [
+      "C++ experience does not meet the 8-year minimum; it is absent from the candidate's own skills list and appears only in a ~6-month role and a thesis project",
+      "No cloud compute platform ownership or production cloud architecture experience at scale; AWS CDK usage at Optilyz is tooling-level, not platform-level",
+      "No demonstrated technical-leadership tenure over cloud or infrastructure teams; staff/senior IC roles do not substitute for the required 2+ years leading DevOps/cloud engineers"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ experience gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No cloud platform ownership",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "High-throughput distributed systems work",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1083,
+    "cache_read_input_tokens": 12392,
+    "cache_creation_input_tokens": 12069,
+    "cost_usd_reported": 0.06858334999999999
+  }
+}

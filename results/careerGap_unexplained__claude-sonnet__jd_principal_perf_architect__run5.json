@@ -1,0 +1,49 @@
+{
+  "variant": "careerGap_unexplained",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_principal_perf_architect",
+  "run": 5,
+  "elapsed_ms": 30845,
+  "timestamp": "2026-05-22T16:50:27.755Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "Bogdan Szabo is an experienced full-stack and backend software engineer with roughly 17 years across web, mobile, and embedded domains, but his background is almost entirely orthogonal to the Principal Performance Architect role. The position requires deep SoC/IP modeling, AI accelerator hardware-software co-design, GPU architecture analysis, and deep-learning workload optimization — none of which appear in his resume. His closest relevant experiences are low-latency async I/O work at Sociomantic and some robotic-arm firmware at Altom, but these do not translate to silicon-level performance modeling or DNN inference optimization. Meeting the education threshold (Bachelor's + 8 years) is borderline given the domain mismatch, and there is no indication of SIMD/MIMD, GPU, or SoC toolchain familiarity.",
+    "strengths": [
+      "Demonstrated performance-conscious engineering: async I/O, fibers, and high-throughput HTTP at Sociomantic shows awareness of low-level optimization",
+      "Broad systems experience spanning embedded, mobile, web, and infrastructure reduces ramp-up on adjacent tooling",
+      "17+ years of progressive seniority satisfies the experience-hour threshold for the Bachelor's path"
+    ],
+    "concerns": [
+      "Zero SoC/IP modeling experience — the primary technical requirement of the role is entirely absent from the resume",
+      "No AI or deep-learning workload expertise; MCP agent tooling at re:cinq is application-layer AI infrastructure, not hardware-level DNN optimization",
+      "No GPU architecture, SIMD/MIMD, or hardware-software co-design background anywhere in the history"
+    ],
+    "key_factors": [
+      {
+        "factor": "No SoC/IP modeling",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No AI/DL/GPU expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Low-latency systems work",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1119,
+    "cache_read_input_tokens": 12392,
+    "cache_creation_input_tokens": 12072,
+    "cost_usd_reported": 0.06910759999999999
+  }
+}

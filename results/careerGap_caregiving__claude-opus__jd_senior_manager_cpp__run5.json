@@ -1,0 +1,49 @@
+{
+  "variant": "careerGap_caregiving",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 5,
+  "elapsed_ms": 22589,
+  "timestamp": "2026-05-22T15:57:52.981Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is an experienced engineer (13+ years) with strong fundamentals in testable design, high-performance/low-latency systems, and concurrent programming (async I/O, fibers, microservices). However, this role is C++-centric, and the candidate's C++ exposure is minimal and dated — roughly six months at National Instruments (2014–2015) plus a bachelor thesis — and C++ is not even listed in their skills section. Their core stack is JavaScript/TypeScript, Node.js, and DLang. There is no evidence of message brokers, MQTT, IEC 62443/SDL, industrial automation, or Azure, all of which are central or advantageous to this position. The mismatch on the primary technical requirement outweighs the otherwise solid generalist profile.",
+    "strengths": [
+      "Strong concurrent/high-performance background (async I/O, fibers, low-latency microservices at scale)",
+      "Long, broad engineering career (13+ years) with embedded, backend, and craftsmanship/TDD practices",
+      "Demonstrated mentoring and documentation ability (workshops, courses, talks)"
+    ],
+    "concerns": [
+      "Minimal and dated C++ experience (~6 months); C++ not listed among core skills",
+      "No evidence of message brokers, MQTT/REST IoT, or industrial automation domain",
+      "No secure development lifecycle / IEC 62443 industrial cybersecurity experience"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/STL core proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial automation, MQTT & message-broker experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Concurrent/high-performance systems background",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1864,
+    "output_tokens": 1653,
+    "cache_read_input_tokens": 10310,
+    "cache_creation_input_tokens": 11284,
+    "cost_usd_reported": 0.12984600000000002
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 4,
+  "elapsed_ms": 17278,
+  "timestamp": "2026-05-22T15:52:58.960Z",
+  "response": {
+    "score": 5,
+    "recommend_interview": "maybe",
+    "justification": "The candidate is a strong, versatile engineer with genuine geospatial/GIS depth (GISCollective, Green Map) and proven low-latency distributed-systems work (Dunnhumby/Sociomantic handling millions of requests/second with async I/O, fibers, and caching). However, the role's primary requirement is modern C++ or Rust, and the candidate's C++ is dated (2014–2015 at National Instruments and a thesis project) with no Rust at all; their core stack is TypeScript/Node and DLang. The systems and geospatial background is relevant enough to warrant a conversation, but the language gap against the central requirement is significant.",
+    "strengths": [
+      "Strong geospatial/GIS background building real map-data platforms",
+      "Proven low-latency, high-throughput distributed-systems experience (async I/O, fibers, caching)",
+      "Solid engineering discipline: TDD, CI/CD, Linux, DevOps"
+    ],
+    "concerns": [
+      "Modern C++ experience is minimal and dated; no Rust experience",
+      "GIS data collection differs from production routing-tile pipelines",
+      "Primary stack (TypeScript/Node/DLang) misaligned with the C++/Rust core"
+    ],
+    "key_factors": [
+      {
+        "factor": "Modern C++/Rust requirement",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain experience",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "Low-latency distributed systems",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1232,
+    "cache_read_input_tokens": 21148,
+    "cache_creation_input_tokens": 1862,
+    "cost_usd_reported": 0.0562305
+  }
+}
