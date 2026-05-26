@@ -1,0 +1,49 @@
+{
+  "variant": "addressCountry_usa",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_techlead_cloud_compute",
+  "run": 3,
+  "elapsed_ms": 31662,
+  "timestamp": "2026-05-26T08:10:30.895Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Bogdan Szabo is a capable and well-rounded full-stack engineer with a genuine software craftsmanship culture, but he falls critically short of the core requirements for this role. The most disqualifying gap is C++: the position requires 8 years of proficiency, while the resume shows roughly 6 months of C/C++ work at National Instruments and a university thesis project — C++ does not even appear in his skills section. He also lacks the cloud compute platform infrastructure depth (IaaS/PaaS layer, compute virtualization, storage, networking at scale) and formal technical leadership over cloud or DevOps engineering teams that the role demands. His distributed systems experience at Sociomantic is genuinely impressive but is application-layer high-throughput work, not platform infrastructure.",
+    "strengths": [
+      "Strong software craftsmanship culture with consistent application of TDD, CI/CD, trunk-based development, and pairing across multiple roles",
+      "Real distributed/high-performance systems exposure at Sociomantic handling millions of HTTP requests per second with async I/O and low-latency design",
+      "Active teaching and mentoring track record including public workshops, conference talks, recurring code kata and refactoring dojo sessions"
+    ],
+    "concerns": [
+      "C++ experience is critically below the 8-year minimum — only ~6 months at National Instruments and a bachelor thesis project; C++ is absent from the listed skills entirely",
+      "No cloud compute platform or infrastructure engineering experience at the IaaS/PaaS layer; cloud exposure is limited to AWS CDK for a pricing service and Kubernetes for a personal open-source project",
+      "No formal technical lead role owning cloud or DevOps engineering teams; leadership appears through community events and informal mentoring, not organizational technical ownership"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ experience gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Cloud infrastructure depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Software craftsmanship and testing culture",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1692,
+    "cache_read_input_tokens": 24992,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0362906
+  }
+}

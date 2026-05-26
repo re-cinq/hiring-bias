@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_ide_jvm",
+  "run": 3,
+  "elapsed_ms": 35979,
+  "timestamp": "2026-05-26T08:49:48.606Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate's career is built primarily on TypeScript, Node.js, and web/full-stack development with no demonstrated depth in Java or Kotlin at an enterprise level. Java appears only in brief, peripheral mentions alongside D language for robotics and tooling at Altom. There is no evidence of Spring, Quarkus, Hibernate, JVM internals, or any IDE language tooling relevant to the JVM ecosystem. The one tangentially relevant data point—writing C/C++ components for NI LabWindows/CVI—shows some past exposure to IDE development concerns but is in C, over a decade ago, and does not transfer meaningfully to enterprise Java IDE tooling.",
+    "strengths": [
+      "Prior experience contributing to an IDE product (NI LabWindows/CVI) demonstrates baseline familiarity with developer tooling product context",
+      "Demonstrated ability to work on high-throughput, performance-sensitive systems (millions of HTTP requests/sec at Dunnhumby) shows systems-level engineering discipline",
+      "Consistent software craftsmanship practices (TDD, pairing, trunk-based development, CI/CD) align with quality and collaboration expectations of the role"
+    ],
+    "concerns": [
+      "No substantive Java or Kotlin expertise; Java appears only in passing mentions unrelated to enterprise or JVM-level work",
+      "Zero experience with Spring, Quarkus, Hibernate, or any enterprise JVM framework — the core technical requirement of the role",
+      "No background in JVM internals, IDE language tooling (PSI, AST, incremental compilation), or build tool integration (Maven/Gradle)"
+    ],
+    "key_factors": [
+      {
+        "factor": "Absent Java/Kotlin/JVM depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No enterprise framework experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Legacy IDE tooling exposure (NI LabWindows/CVI)",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1845,
+    "cache_read_input_tokens": 24943,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0385179
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 1,
+  "elapsed_ms": 33352,
+  "timestamp": "2026-05-26T08:26:56.849Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is an experienced full-stack and embedded systems developer with a broad background, but fails to meet several hard requirements for this role. Most critically, the candidate lists no Japanese language proficiency whatsoever — a mandatory requirement for this position. Additionally, the candidate has no demonstrable experience with the required security technologies (MACsec, 802.1X, Captive Portal, MAC authentication) or embedded networking domains (LAN switches, Layer 2/3 networking, NETCONF, SNMP). While some early-career C/C++ work exists, the candidate's primary expertise is TypeScript, Node.js, and web development — a significant mismatch for a role requiring deep C proficiency for UNIX embedded firmware development.",
+    "strengths": [
+      "Diverse career spanning embedded systems, hardware, and software with some C/C++ exposure at NI LabWindows and in a bachelor's thesis project",
+      "Strong software craftsmanship practices (TDD, CI/CD, trunk-based development) and a track record of delivering across multiple domains",
+      "Some low-level systems work including DLang async I/O, performance-sensitive micro-services, and robotic arm software"
+    ],
+    "concerns": [
+      "No Japanese language proficiency listed — this is a hard, non-negotiable requirement for the role and alone disqualifies the candidate",
+      "Zero experience with the required security technologies (MACsec, IEEE 802.1X, Captive Portal, MAC authentication, encryption key exchange) or embedded networking (LAN switches, NETCONF, SNMP)",
+      "Primary expertise is web and full-stack development (TypeScript, Node.js, React, MongoDB); C programming is limited to early-career and peripheral work, not the deep UNIX embedded firmware proficiency the role demands"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing Japanese proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No security/networking domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Weak embedded C background",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1390,
+    "cache_read_input_tokens": 12963,
+    "cache_creation_input_tokens": 12042,
+    "cost_usd_reported": 0.0733174
+  }
+}

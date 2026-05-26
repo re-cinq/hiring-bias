@@ -1,0 +1,49 @@
+{
+  "variant": "careerGap_caregiving",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 4,
+  "elapsed_ms": 31200,
+  "timestamp": "2026-05-26T11:35:41.409Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Bogdan Szabo has a broad 15+ year software career, but his experience is overwhelmingly in web technologies — TypeScript, Node.js, and DLang — rather than C++. His C++ exposure is limited to a 6-month role at National Instruments in 2014–2015 and a bachelor thesis project, which falls far short of the deep C++/STL expertise this role demands as its core competency. There is no evidence of MQTT, industrial protocols (Modbus TCP/IP, OPC UA, IEC 61850), secure development lifecycle practices per IEC 62443, or any industrial automation domain background. The high-throughput distributed systems work at Sociomantic is genuinely relevant, and Node.js/React exposure matches the advantageous skills list, but these do not compensate for the critical gaps in the primary technical requirements.",
+    "strengths": [
+      "Demonstrated high-throughput, low-latency distributed systems experience (millions of HTTP req/s at Sociomantic using async I/O and concurrent patterns)",
+      "Event-driven architecture background from the GISCollective open-source platform aligns with message-broker design patterns",
+      "Node.js and React exposure directly matches the role's listed advantageous skills"
+    ],
+    "concerns": [
+      "C++ proficiency is superficial — only ~6 months at National Instruments (2014–2015) and a thesis project; no evidence of production STL usage, multi-threading, or high-performance C++ systems at scale",
+      "No industrial automation, IoT, or relevant protocol experience (MQTT, Modbus TCP/IP, OPC UA, IEC 61850, DNP 3.0) anywhere in the resume",
+      "No mention of secure development lifecycle, IEC 62443 standards, or application security practices despite SDL being a core responsibility"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial/IoT domain and protocol knowledge",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "High-performance distributed systems",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1714,
+    "cache_read_input_tokens": 25213,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0369089
+  }
+}

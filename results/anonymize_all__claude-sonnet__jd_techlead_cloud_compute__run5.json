@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_techlead_cloud_compute",
+  "run": 5,
+  "elapsed_ms": 26686,
+  "timestamp": "2026-05-26T08:33:55.725Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is a full-stack web developer with a TypeScript/Node.js-centric career. The role's most critical minimum qualification is 8 years of C++ experience, yet C++ appears only incidentally — once in a historical role writing components for NI LabWindows (duration unclear, likely under 2 years) and once in a bachelor's thesis side project — and is entirely absent from the skills section. There is no evidence of cloud platform architecture, large-scale distributed systems ownership at the required depth, or technical leadership of infrastructure teams. The profile is a capable generalist developer, not a cloud compute platform lead.",
+    "strengths": [
+      "Demonstrated software craftsmanship culture: consistent application of TDD, CI/CD, pairing, and trunk-based development across multiple roles",
+      "Breadth of technical exposure including low-latency services (D-lang async I/O, micro-services handling millions of HTTP req/s) and some infrastructure/DevOps work (Kubernetes, Docker, GitLab CI)",
+      "Community contribution and mentorship instincts evidenced by organizing Refactoring Dojos, Code Katas, and multi-module training courses"
+    ],
+    "concerns": [
+      "C++ experience is negligible — fails the 8-year minimum requirement by a wide margin; C++ is not even listed in the skills section",
+      "No cloud platform or distributed infrastructure leadership; AWS CDK appears in one pricing-team role as a tooling detail, not as architectural ownership",
+      "No technical lead or staff-level leadership track record managing projects, setting architectural standards, or mentoring cloud/DevOps engineers at scale"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ experience gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No cloud/infra leadership",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Software craftsmanship & TDD culture",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1214,
+    "cache_read_input_tokens": 24905,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0289985
+  }
+}

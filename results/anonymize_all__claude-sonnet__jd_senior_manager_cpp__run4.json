@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 4,
+  "elapsed_ms": 32778,
+  "timestamp": "2026-05-26T08:29:27.985Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is a seasoned full-stack and systems developer with a broad multi-platform background, but the role's core requirement is deep, current C++ expertise for industrial automation—and the candidate's C++ exposure is limited to a single older role writing components for NI LabWindows and a bachelor's thesis project. C++ does not appear in their skills section, and their entire recent career (the last several roles) is built on TypeScript, Node.js, and DLang. There is no evidence of industrial automation domain knowledge, IEC 62443 or SDL practices, MQTT or industrial protocol experience (Modbus, OPC UA, etc.), or Azure cloud work, all of which are central or strongly advantageous for this position.",
+    "strengths": [
+      "Demonstrated experience designing event-driven, high-performance systems including a microservices platform handling millions of HTTP requests per second using async I/O and low-latency techniques",
+      "Historical C/C++ and hardware exposure through NI LabWindows role and robotic-arm work, indicating foundational familiarity with systems-level programming",
+      "Strong software craftsmanship foundation (TDD, CI/CD, trunk-based development, community teaching) that maps well to the role's quality and mentoring expectations"
+    ],
+    "concerns": [
+      "C++ is effectively absent as a current skill—not listed in the skills section and the only explicit C++ work is an early-career role; the candidate's recent stack is entirely TypeScript/Node.js/DLang",
+      "No demonstrable knowledge of industrial cybersecurity standards (IEC 62443), Secure Development Lifecycle practices, or industrial communication protocols (MQTT, Modbus TCP/IP, OPC UA, IEC 61850)",
+      "No cloud platform experience (particularly Microsoft Azure), no industrial or embedded IoT background in recent history, and no evidence of people management or formal technical mentoring at scale required for a Senior Manager level role"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ proficiency gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial domain and cybersecurity gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "High-performance async/event-driven systems experience",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1595,
+    "cache_read_input_tokens": 25093,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.034966899999999995
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 3,
+  "elapsed_ms": 24668,
+  "timestamp": "2026-05-26T08:27:43.932Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate has a long and broad software career but is fundamentally misaligned with this role on multiple hard requirements. Most critically, there is no mention of Japanese language proficiency anywhere in the resume, which is listed as a mandatory native-level requirement. The candidate's technical depth lies in web and mobile development (TypeScript, Node.js, React, Ember.js) with only peripheral and dated C/C++ exposure (NI LabWindows tooling, a thesis project). There is no evidence of security domain knowledge — no MACsec, 802.1X, Captive Portal, or authentication system experience — and no background in Layer 2/3 networking, switch operation, or Linux kernel development.",
+    "strengths": [
+      "Extensive career spanning embedded, mobile, web, and low-latency systems shows genuine breadth of technical adaptability",
+      "Demonstrated low-latency and performance-oriented development (async I/O, caching, fibers with DLang) relevant to embedded constraints",
+      "Strong software craftsmanship culture (TDD, CI/CD, pairing, trunk-based development) is a positive signal for code quality in a firmware team"
+    ],
+    "concerns": [
+      "No Japanese language proficiency stated or implied — this is a non-negotiable hard requirement for the role",
+      "Zero evidence of security domain knowledge: no MACsec, 802.1X, Captive Portal, encryption, or attack/tamper detection experience",
+      "C programming is minimal and dated (one role using NI LabWindows CVI, one thesis with C++); primary stack is TypeScript/Node.js, not systems C for UNIX"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese language proficiency absent",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No security domain expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Insufficient C/embedded networking depth",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1147,
+    "cache_read_input_tokens": 25005,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.028132499999999998
+  }
+}

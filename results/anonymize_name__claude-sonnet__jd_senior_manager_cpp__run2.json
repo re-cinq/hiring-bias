@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 2,
+  "elapsed_ms": 26988,
+  "timestamp": "2026-05-26T08:50:06.599Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is a highly experienced polyglot engineer with strong distributed-systems and event-driven architecture chops, but the role demands deep, sustained C++ expertise as its primary technical axis — something virtually absent here. C++ appears only in a six-month stint at National Instruments (2014–2015) and a bachelor thesis project; it is not even listed in the candidate's own skills section. There is no evidence of STL mastery, multi-threaded C++ systems, industrial-protocol familiarity (MQTT, Modbus, OPC UA), IEC 62443 security standards, or industrial-automation domain knowledge, all of which are central to this role.",
+    "strengths": [
+      "Demonstrated ability to build high-throughput, low-latency distributed systems (millions of HTTP req/s at Dunnhumby) shows relevant performance engineering mindset",
+      "Event-driven architecture experience (GISCollective geo-data platform, Dunnhumby microservices) aligns with the message-broker and async design patterns the role requires",
+      "Strong agile/craftsmanship foundation (TDD, CI/CD, trunk-based dev at RIDE) and mentoring track record (workshops, dojos) match the behavioral and team-leadership expectations"
+    ],
+    "concerns": [
+      "C++ is effectively absent from the candidate's active skill set — the only direct exposure is a 6-month role in 2014–2015 and a university project; the self-reported skills list omits it entirely",
+      "No industrial automation, IEC 62443 cybersecurity standards, SDL practices, or industrial-protocol knowledge (Modbus, OPC UA, IEC 61850, MQTT), which are core requirements rather than nice-to-haves",
+      "Career trajectory is web/TypeScript/Node.js-centric with no signal of intent or recent activity to pivot toward systems-level C++ or embedded/IoT domains"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial automation & security standards",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Distributed/event-driven systems experience",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1267,
+    "cache_read_input_tokens": 25153,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.030125899999999994
+  }
+}

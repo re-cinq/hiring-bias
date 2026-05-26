@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 23567,
+  "timestamp": "2026-05-26T08:49:31.196Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate has an impressive 15+ year career spanning web, mobile, and some embedded work, but is fundamentally misaligned with this role on its most critical axes. The job requires native-level Japanese proficiency — the candidate lists English, Romanian, and basic German with no mention of Japanese whatsoever. Beyond that dealbreaker, the candidate has no demonstrated experience with the required security domain (MACsec, 802.1X, Captive Portal, device attack detection) or embedded LAN-switch firmware. Their C/C++ exposure is minimal and dated (NI LabWindows in 2014–2015), and there is no evidence of Linux kernel investigation or source modification. The candidate's core expertise is in web/TypeScript/Node.js application development, which is largely irrelevant to this embedded networking security role.",
+    "strengths": [
+      "Broad polyglot engineering background including C/C++ at National Instruments and low-latency systems work at Sociomantic, showing ability to work closer to the metal",
+      "Strong Linux familiarity and DevOps experience (Docker, CI/CD, GitLab) providing a solid foundation for embedded Linux environments",
+      "15+ years of professional software development demonstrating seniority, reliability, and the ability to own features end-to-end"
+    ],
+    "concerns": [
+      "No Japanese language proficiency whatsoever — this is a hard, non-negotiable requirement for the role and alone disqualifies the candidate",
+      "Zero experience with the required security and networking technologies: MACsec, IEEE 802.1X, Captive Portal, L2/L3 switching, NETCONF, SNMP, or any embedded network security domain",
+      "C programming experience is minimal and over a decade old; the candidate's entire recent career (2018–present) is TypeScript/Node.js web development with no systems or firmware work"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing Japanese proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking or security domain knowledge",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Broad embedded/systems exposure (NI, Sociomantic, Altom)",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1036,
+    "cache_read_input_tokens": 25065,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.026541500000000003
+  }
+}

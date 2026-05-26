@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_ide_jvm",
+  "run": 5,
+  "elapsed_ms": 32374,
+  "timestamp": "2026-05-26T08:29:29.135Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is a skilled polyglot engineer with a genuine software craftsmanship ethos and broad exposure across web, mobile, and systems domains, but presents a fundamental skills mismatch for this role. Java and Kotlin are absent as primary languages throughout the entire employment history — Java surfaces only peripherally in passing references to robotics and mobile device tooling. There is no mention of Spring, Hibernate, Quarkus, or any JVM enterprise framework. The candidate's primary stack is TypeScript/Node.js and DLang. While there is tangential tooling experience (MCP frameworks, CI infrastructure, custom test runners), none of it maps to IDE internals, JVM language tooling, or enterprise framework development.",
+    "strengths": [
+      "Strong software craftsmanship foundation: TDD, trunk-based development, pairing, and CI/CD practiced consistently across multiple senior roles",
+      "Genuine interest in developer tooling demonstrated through open-source test frameworks (Fluent-Asserts, Trial) and MCP code generators",
+      "Broad multi-language experience (DLang, C/C++, TypeScript, Swift, PHP) indicates adaptability and systems-level thinking"
+    ],
+    "concerns": [
+      "No demonstrated primary expertise in Java or Kotlin; listed in skills but appears only incidentally in employment history, never as a core language",
+      "Zero experience with Spring, Quarkus, Hibernate, or any enterprise JVM framework — the central technical requirement of the role",
+      "No evidence of IDE internals development or JVM tooling work; prior IDE-adjacent contribution (NI LabWindows) was writing C components for an existing IDE, not building IDE subsystems"
+    ],
+    "key_factors": [
+      {
+        "factor": "No Java/Kotlin primary expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No enterprise JVM framework experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Developer tooling and craftsmanship background",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1728,
+    "cache_read_input_tokens": 24883,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.036688899999999997
+  }
+}

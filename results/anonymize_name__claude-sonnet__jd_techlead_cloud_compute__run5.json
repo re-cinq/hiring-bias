@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_techlead_cloud_compute",
+  "run": 5,
+  "elapsed_ms": 28686,
+  "timestamp": "2026-05-26T08:53:58.575Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate has a strong and diverse software engineering background spanning distributed systems, full-stack development, and software craftsmanship practices, but fails to meet the most critical minimum qualification: 8 years of C++ programming. Their C++ exposure is limited to roughly 6 months at National Instruments (2014–2015) and a bachelor thesis project — a gap of approximately 7+ years against the requirement. The role is fundamentally anchored in C++ for a cloud compute platform, and no amount of breadth in TypeScript, DLang, or Node.js compensates for that deficit. There is also no evidence of formal technical leadership of cloud or infrastructure teams, and no production-level cloud architecture ownership at the scale implied by the role.",
+    "strengths": [
+      "Demonstrated experience with high-throughput distributed systems at Dunnhumby (millions of HTTP requests/second) using low-latency async I/O patterns",
+      "Consistent application of software craftsmanship practices (TDD, CI/CD, trunk-based development, pairing) across multiple employers",
+      "Community knowledge-sharing through workshops, talks, and open-source projects indicating mentoring capacity"
+    ],
+    "concerns": [
+      "C++ experience is limited to ~6 months total — roughly 7.5 years short of the 8-year minimum qualification; primary languages are TypeScript, DLang, and Node.js",
+      "No formal technical lead or engineering manager title; staff-level individual contributor roles with no documented ownership of cloud compute infrastructure strategy",
+      "No evidence of production cloud architecture at platform scale; AWS CDK usage at Optilyz is product-level tooling, not cloud compute platform engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ experience gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No cloud platform leadership",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Distributed systems exposure",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1278,
+    "cache_read_input_tokens": 24961,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.030031299999999997
+  }
+}

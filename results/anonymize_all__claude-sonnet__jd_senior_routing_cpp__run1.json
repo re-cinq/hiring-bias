@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 1,
+  "elapsed_ms": 29391,
+  "timestamp": "2026-05-26T08:29:10.780Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is a versatile full-stack and systems developer with a genuinely interesting geospatial side project (GISCollective/Open Green Map) and some low-latency distributed systems exposure via DLang, but the core technical requirements of this role are largely unmet. C++ appears only in an early-career NI LabWindows position and is absent from the skills section entirely; there is no Rust experience. The routing and tiling domain — routing tile formats, pipeline latency optimization, real-time traffic signal integration, and navigation-guidance QA — is nowhere in the work history. The career trajectory has moved decisively toward TypeScript/Node.js web and AI-agent tooling, not toward systems-level geospatial pipelines.",
+    "strengths": [
+      "Hands-on geospatial data experience through the GISCollective/Open Green Map platform and a dedicated web GIS application, demonstrating genuine domain familiarity",
+      "Demonstrated ability to work in low-latency, high-throughput distributed environments (DLang async I/O, micro-services handling millions of HTTP requests/second)",
+      "Polyglot background with C/C++ foundations and comfort across systems and embedded contexts (LabWindows/CVI, robotic arms, Linux tooling)"
+    ],
+    "concerns": [
+      "C++ is absent from the skills section and the only C++ role is early-career and tooling-focused; no Rust experience exists anywhere in the resume",
+      "No exposure to routing data pipelines, tile generation, navigation guidance systems, or real-time traffic data integration — the specific technical domain of the role",
+      "Current trajectory is firmly in TypeScript/Node.js web and AI-agent tooling, suggesting a multi-year gap from the systems-level C++ work this role demands day-to-day"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/Rust absence",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No routing/tiling domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial project history",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1129,
+    "cache_read_input_tokens": 12963,
+    "cache_creation_input_tokens": 11873,
+    "cost_usd_reported": 0.06860465
+  }
+}

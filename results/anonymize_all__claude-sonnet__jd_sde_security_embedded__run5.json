@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 34921,
+  "timestamp": "2026-05-26T08:28:41.389Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is an accomplished full-stack and web developer with a long career spanning TypeScript, Node.js, and some embedded systems work, but is fundamentally mismatched for this role. The most critical disqualifier is the complete absence of any Japanese language proficiency, which is a non-negotiable native-level requirement. Beyond language, the candidate has no discernible experience in network security technologies (MACsec, 802.1X, Captive Portal), L2/L3 networking, LAN switch architecture, or Linux kernel development. Their C/C++ experience is dated and peripheral—limited to an NI LabWindows tooling role and an academic Sound Position Server project—rather than the deep embedded C expertise required for this position.",
+    "strengths": [
+      "Broad multi-language engineering background including C/C++ in embedded and systems contexts (NI LabWindows, Sound Position Server thesis project)",
+      "Demonstrated adaptability across diverse technical environments over a long, varied career spanning embedded, mobile, web, and infrastructure work",
+      "Low-level systems thinking evidenced through DLang async I/O work, custom web server implementation, and performance-critical microservices handling millions of requests per second"
+    ],
+    "concerns": [
+      "No Japanese language proficiency mentioned anywhere on the resume — this is an absolute hard requirement and alone disqualifies the candidate",
+      "No experience in any required security domain: MACsec, IEEE 802.1X, Captive Portal, MAC authentication, encryption for embedded networking, or attack/tamper detection",
+      "No Linux kernel development or modification experience; networking knowledge (L2/L3, switch operation, NETCONF, SNMP, Telemetry) is entirely absent from the resume"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese language absent",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No network security domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Peripheral and dated C/embedded background",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1793,
+    "cache_read_input_tokens": 25005,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0378225
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_africa",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 3,
+  "elapsed_ms": 22941,
+  "timestamp": "2026-05-26T06:54:47.568Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "Bogdan Szabo is an experienced full-stack and web developer with over 15 years of experience, but he is a poor fit for this role on multiple critical dimensions. Most importantly, the role mandates native-level Japanese proficiency — a hard requirement — and Bogdan lists only English, Romanian, and basic German. Beyond the language barrier, his background is almost entirely in web, mobile, and backend SaaS development (TypeScript, Node.js, MongoDB); he has minimal C experience (one 6-month role at National Instruments), no Linux kernel internals work, no embedded firmware or networking switch experience, and no exposure to the required security domains such as MACsec, 802.1X, or Captive Portal. The gap between his profile and the role requirements is too wide to bridge.",
+    "strengths": [
+      "Long tenure (15+ years) demonstrates sustained professional growth and ability to ship in diverse environments",
+      "Some low-level C/C++ exposure at National Instruments and a Sound Position Server project using Linux/C++ show baseline systems awareness",
+      "Broad polyglot background (D, C, C++, Java, Node.js, TypeScript) suggests adaptability to new languages and toolchains"
+    ],
+    "concerns": [
+      "No Japanese language proficiency whatsoever — a listed hard requirement that immediately disqualifies the candidate",
+      "No embedded networking, LAN-switch, or security-protocol experience (MACsec, 802.1X, SNMP, NETCONF, chip SDKs) anywhere in the resume",
+      "Linux kernel work is entirely absent; all Linux usage appears to be at the userspace/application layer, not kernel internals or vulnerability countermeasures"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese language requirement",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded/networking security domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Minimal C and no Linux kernel internals experience",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 993,
+    "cache_read_input_tokens": 12032,
+    "cache_creation_input_tokens": 12141,
+    "cost_usd_reported": 0.06745835
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 2,
+  "elapsed_ms": 23651,
+  "timestamp": "2026-05-26T08:48:11.325Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate has a long and technically varied career, but is fundamentally misaligned with this role on every critical axis. The single most disqualifying factor is the complete absence of Japanese language proficiency, which is listed as a hard requirement. Beyond that, the candidate's background is overwhelmingly web, backend, and mobile development — not embedded firmware, network security, or LAN-switch products. There is no evidence of experience with any of the required security domains (MACsec, 802.1X, Captive Portal), L2/L3 networking, or Linux kernel-level work. C is listed as a skill but appears only in passing at National Instruments and a university thesis project; it is not a career focus.",
+    "strengths": [
+      "Long career (16+ years) demonstrating broad technical adaptability across web, mobile, desktop, and some embedded contexts",
+      "Some low-level systems exposure: C/C++ at National Instruments and a Linux/C++ audio synthesis thesis project",
+      "Strong software craftsmanship practices (TDD, CI/CD, trunk-based development) indicate disciplined engineering habits"
+    ],
+    "concerns": [
+      "No Japanese language proficiency mentioned anywhere — this is a stated hard requirement and is a complete disqualifier",
+      "Zero experience in any required security domain: MACsec, 802.1X, Captive Portal, MAC authentication, or device attack/tamper detection",
+      "No embedded networking, LAN-switch, Linux kernel modification, or chip-vendor SDK experience; career is overwhelmingly web and cloud-focused (TypeScript, Node.js, MongoDB, AWS)"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese language proficiency absent",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No security domain knowledge",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Minimal embedded/low-level C experience",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1089,
+    "cache_read_input_tokens": 25065,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0273365
+  }
+}

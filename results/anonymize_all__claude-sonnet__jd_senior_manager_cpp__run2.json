@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 2,
+  "elapsed_ms": 44175,
+  "timestamp": "2026-05-26T08:28:24.671Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate has a broad polyglot background and early-career C/C++ experience at National Instruments writing LabWindows/CVI components—an industrial automation context directly relevant to the role—but the past decade has been dominated by TypeScript, Node.js, and web-focused development. The core hard requirements of active C++ expertise, multi-threaded networking, IEC 62443 secure development lifecycle, MQTT, and industrial communication protocols (OPC UA, Modbus, IEC 61850) are either historical or entirely absent. The current technical profile does not align with the hands-on C++ engineering this mid-senior role demands.",
+    "strengths": [
+      "Early C/C++ experience at National Instruments writing components for an industrial-automation IDE (LabWindows/CVI), demonstrating familiarity with the domain",
+      "High-performance, low-latency systems background via DLang async I/O work handling millions of HTTP requests per second, showing a performance mindset",
+      "Proven knowledge-sharing and mentoring through workshops, conference talks, and open-source library authorship—aligns with the team-mentoring expectation"
+    ],
+    "concerns": [
+      "C++ is no longer an active skill; the skills section omits it entirely and all recent roles use TypeScript/Node.js, making the gap likely 8+ years",
+      "No evidence of IEC 62443, SDL, secure coding for industrial systems, MQTT, or any industrial communication protocol experience",
+      "Role requires architectural ownership of multi-threaded networked C++ systems; candidate's current work is web/cloud SaaS with no parallel computing or embedded-systems indicators"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ currency gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Absent industrial security knowledge",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Early NI industrial C++ context",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1855,
+    "cache_read_input_tokens": 25093,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0388719
+  }
+}

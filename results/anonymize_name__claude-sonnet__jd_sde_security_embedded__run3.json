@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 3,
+  "elapsed_ms": 32338,
+  "timestamp": "2026-05-26T08:48:43.663Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is a seasoned web and backend engineer with 15+ years of broad experience, but fails to meet several hard requirements for this role. Most critically, no Japanese language proficiency is listed — a stated non-negotiable requirement. Beyond that disqualifier, the candidate has no meaningful experience in embedded networking, LAN-switch development, security protocols (MACsec, IEEE 802.1X, Captive Portal, encryption key exchange), or Linux kernel modification. C programming appears only briefly in their history (~6 months at National Instruments in 2014–2015), while their primary and sustained expertise is TypeScript, JavaScript, and Node.js — a stack largely irrelevant to embedded firmware for network switches.",
+    "strengths": [
+      "15+ years of diverse software development experience spanning web, mobile, desktop, and some embedded contexts",
+      "Demonstrated software craftsmanship discipline including TDD, CI/CD, and low-latency systems work (D-language async I/O at Sociomantic)",
+      "Some exposure to low-level programming (C/C++ at National Instruments, robotic arm hardware at Altom, Linux usage throughout career)"
+    ],
+    "concerns": [
+      "No Japanese language proficiency listed — an explicit, non-negotiable hard requirement for this position",
+      "Zero experience with the required security domain: no MACsec, IEEE 802.1X, MAC authentication, Captive Portal, encryption key exchange, or device attack/tamper detection",
+      "C programming is minimal and dated (6 months in 2014–2015 under the skills list it is not even mentioned); no Linux kernel development or source-level modification experience evident"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese language absent",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No security or embedded networking expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Broad software engineering background",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1674,
+    "cache_read_input_tokens": 25065,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0361115
+  }
+}

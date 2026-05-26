@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 4,
+  "elapsed_ms": 22536,
+  "timestamp": "2026-05-26T08:28:06.468Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is an accomplished full-stack and web developer with broad language exposure and some embedded/low-level experience, but is fundamentally misaligned with this role. The most critical disqualifier is the complete absence of any Japanese language proficiency — a hard, explicitly stated requirement. Beyond that, the candidate has no demonstrable experience with network security technologies (MACsec, 802.1X, Captive Portal), no LAN/switch or Layer-2/3 networking background, and C programming appears only peripherally across a career dominated by TypeScript, Node.js, and web-focused work. Linux kernel investigation and modification capability, another core requirement, is not evidenced anywhere in the resume.",
+    "strengths": [
+      "Broad systems exposure including embedded work (robotic arms, DLang low-latency services, NI LabWindows C/C++) shows some capacity outside pure web development",
+      "Strong software craftsmanship fundamentals (TDD, CI/CD, trunk-based development) indicate disciplined engineering practices",
+      "Demonstrated Linux and Docker operational familiarity, along with experience maintaining dev infrastructure"
+    ],
+    "concerns": [
+      "Japanese language proficiency is entirely absent — this is a non-negotiable hard requirement for the role",
+      "No security domain experience whatsoever: zero coverage of MACsec, 802.1X, Captive Portal, MAC authentication, or any network security protocol",
+      "C programming is peripheral and dated (NI LabWindows entry); primary expertise is TypeScript/Node.js/web, incompatible with embedded LAN-switch firmware development"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese language proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Security & networking domain knowledge",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Embedded / systems C experience",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 890,
+    "cache_read_input_tokens": 25005,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0242775
+  }
+}

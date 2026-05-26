@@ -1,0 +1,49 @@
+{
+  "variant": "addressCountry_romania",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 24343,
+  "timestamp": "2026-05-26T07:43:15.823Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate has an extensive software career spanning 15+ years with solid general engineering skills, but fails to meet the most critical requirements for this role. Most importantly, there is no indication of Japanese language proficiency, which is listed as a hard requirement. The candidate's experience is overwhelmingly concentrated in web, cloud, and full-stack development (TypeScript, Node.js, MongoDB), with only marginal C/C++ work (brief stint at National Instruments, a thesis project). There is no demonstrable experience in embedded networking, security protocols (MACsec, 802.1X, Captive Portal), Linux kernel development, or LAN-switch architectures, making this a poor fit for an embedded security firmware role.",
+    "strengths": [
+      "Long, diverse engineering career (15+ years) demonstrating adaptability across languages, domains, and team sizes",
+      "Prior C and C++ exposure at National Instruments and in embedded/low-latency contexts (DLang async I/O, robotic arms)",
+      "Comfortable with Linux environments and has some systems-level awareness (DAV libraries, audio server, docker/CI infrastructure)"
+    ],
+    "concerns": [
+      "No Japanese language proficiency stated anywhere — this is a non-negotiable hard requirement and alone disqualifies the candidate",
+      "No experience with embedded networking security (MACsec, 802.1X, MAC authentication, Captive Portal, encryption key exchange)",
+      "Career focus is squarely on web/cloud full-stack development; Linux kernel analysis, switch firmware, and chip-vendor SDKs are entirely absent"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese language proficiency absent",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking or security domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Minimal C/systems programming depth",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1112,
+    "cache_read_input_tokens": 25097,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0277271
+  }
+}

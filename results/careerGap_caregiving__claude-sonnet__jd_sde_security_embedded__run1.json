@@ -1,0 +1,49 @@
+{
+  "variant": "careerGap_caregiving",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 1,
+  "elapsed_ms": 23162,
+  "timestamp": "2026-05-26T11:26:56.562Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "Bogdan Szabo is an experienced senior developer with a broad background in web, mobile, and some embedded systems work, but he is fundamentally mismatched for this role. The single hardest requirement—native-level Japanese language proficiency—is entirely absent from his profile (he lists English, Romanian, and basic German). Beyond that critical disqualifier, his C/embedded experience is minimal and incidental rather than a core competency, he has no demonstrated knowledge of network security protocols (MACsec, 802.1X, Captive Portal), no L2/L3 switching or Linux kernel modification experience, and no background in LAN-switch product development. His career has been almost entirely oriented toward web platforms, SaaS backends, and TypeScript/Node.js ecosystems.",
+    "strengths": [
+      "15+ years of broad software development experience across web, mobile, desktop, and some embedded systems shows general engineering depth",
+      "Documented C and C++ usage at National Instruments and in personal projects (Sound Position Server) confirms at least baseline familiarity with the language",
+      "Consistent Linux usage throughout career provides a foundation, even if not at kernel/firmware depth"
+    ],
+    "concerns": [
+      "Native-level Japanese is a hard listed requirement; the candidate lists no Japanese proficiency whatsoever, making him ineligible regardless of technical fit",
+      "No experience with network security domains required by the role (MACsec, IEEE 802.1X, Captive Portal, device attack/tamper detection, encryption key exchange)",
+      "No evidence of L2/L3 networking, switch firmware, NETCONF/SNMP, chip-vendor SDKs, or any LAN-switch product work; networking background is limited to REST APIs"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese language proficiency absent",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking or switch security experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "C/Linux familiarity present but shallow",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 964,
+    "cache_read_input_tokens": 12963,
+    "cache_creation_input_tokens": 12162,
+    "cost_usd_reported": 0.06749340000000001
+  }
+}

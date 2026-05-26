@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 1,
+  "elapsed_ms": 24544,
+  "timestamp": "2026-05-26T08:47:47.673Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is a seasoned full-stack/web developer with 15+ years of experience, but the overlap with this role's requirements is minimal. The position demands native-level Japanese proficiency — an absolute hard requirement — which the candidate does not possess. The role is centered on C programming for embedded networking firmware with security domain expertise (MACsec, 802.1X, Linux kernel internals), whereas the candidate's core stack is TypeScript, Node.js, and web frameworks. The only C/C++ exposure on the resume is a 6-month stint at National Instruments and a bachelor's thesis project. There is no evidence of networking, security protocols, switch architecture, or embedded firmware experience relevant to LAN-switch product development.",
+    "strengths": [
+      "Long career (15+ years) demonstrating consistent delivery across diverse domains and languages, including some low-level work (C/C++, DLang, embedded robotic arms).",
+      "Demonstrated experience with Linux environments and low-latency systems (async I/O, high-performance databases at Sociomantic), showing some systems-level awareness.",
+      "Strong software craftsmanship practices (TDD, CI/CD, code quality) that would be valuable on any engineering team."
+    ],
+    "concerns": [
+      "No Japanese language proficiency whatsoever — this is a non-negotiable hard requirement for the role.",
+      "No experience with security protocols (MACsec, 802.1X, Captive Portal), Layer-2/Layer-3 networking, or network switch architecture.",
+      "C programming exposure is negligible (6 months); the candidate's entire career trajectory is web/full-stack, making embedded firmware ownership unrealistic in the near term."
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing Japanese proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No security/networking domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Insufficient C/embedded background",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1036,
+    "cache_read_input_tokens": 12963,
+    "cache_creation_input_tokens": 12102,
+    "cost_usd_reported": 0.0682884
+  }
+}

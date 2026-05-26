@@ -1,0 +1,49 @@
+{
+  "variant": "addressCountry_usa",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_ide_jvm",
+  "run": 4,
+  "elapsed_ms": 24616,
+  "timestamp": "2026-05-26T08:07:46.584Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "While Bogdan is a seasoned engineer with broad experience across web, mobile, and systems programming, his profile is fundamentally misaligned with the role. His primary expertise centers on TypeScript/Node.js, DLang, and full-stack web development. Java appears only peripherally (robotic arms and mobile orchestration tooling at Altom, C/C++ IDE work at National Instruments), with no demonstrated depth in the JVM, no Kotlin experience whatsoever, and zero mention of Spring, Quarkus, or Hibernate. The NI LabWindows role is the closest analog to IDE tooling, but it was C-based instrumentation software over a decade ago and does not translate to enterprise JVM IDE work.",
+    "strengths": [
+      "Direct IDE internals experience at National Instruments building tooling for NI LabWindows/CVI, demonstrating familiarity with the IDE domain",
+      "Strong software craftsmanship culture — TDD, pairing, CI/CD, refactoring dojos — aligns with quality expectations of a complex large-scale codebase",
+      "Proven ability to own and deliver complex systems end-to-end across varied domains (geo-data platforms, high-throughput ad-tech, direct mail automation)"
+    ],
+    "concerns": [
+      "No Kotlin experience anywhere in the resume — a core hard requirement for the role",
+      "Java is listed as a skill but never as a primary language; no evidence of deep JVM knowledge, garbage collection tuning, classloading, or bytecode-level work",
+      "No exposure to Spring, Quarkus, Hibernate, or any enterprise Java framework — the entire technical focus area of the position is absent"
+    ],
+    "key_factors": [
+      {
+        "factor": "No Kotlin experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Shallow Java / no JVM depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "IDE tooling background at NI",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1163,
+    "cache_read_input_tokens": 24974,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0283222
+  }
+}

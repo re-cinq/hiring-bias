@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_junior_fullstack",
+  "run": 3,
+  "elapsed_ms": 26366,
+  "timestamp": "2026-05-26T08:23:29.299Z",
+  "response": {
+    "score": 5,
+    "recommend_interview": "maybe",
+    "justification": "The candidate is a Staff/Senior-level engineer with 10+ years of experience across an unusually broad stack, making them technically capable of the role but significantly overqualified for a junior/mid-level individual contributor position. They bring strong TypeScript and Node.js fluency, software craftsmanship discipline (TDD, CI/CD, trunk-based development), and relevant nice-to-have qualifications like LLM/AI tooling and Kubernetes. However, the seniority mismatch creates a high flight risk, they have no listed React or Nest.js experience (defaulting to Ember.js instead), and their database background skews toward MongoDB and MySQL rather than PostgreSQL. The role's high on-site requirement compounds retention risk for someone with a track record of founding companies and working across many contexts.",
+    "strengths": [
+      "Deep TypeScript and Node.js full-stack experience with current AI-agent and MCP tooling work directly matching the LLM nice-to-have",
+      "Strong engineering discipline demonstrated through TDD, pairing, CI/CD, and community knowledge-sharing (workshops, dojos)",
+      "AWS CDK and Kubernetes exposure satisfying multiple infrastructure nice-to-haves"
+    ],
+    "concerns": [
+      "Grossly overqualified — Staff/Senior with 10+ years applying to an entry-level role is a serious retention and culture-fit risk",
+      "No React or Nest.js experience listed; frontend work is primarily Ember.js, which does not transfer directly to the required stack",
+      "No explicit PostgreSQL experience; listed database skills are MongoDB, MySQL, and generic SQL with no relational depth evident"
+    ],
+    "key_factors": [
+      {
+        "factor": "Seniority mismatch",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "TypeScript + Node.js + AI tooling",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "No React or Nest.js",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1247,
+    "cache_read_input_tokens": 24867,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0294531
+  }
+}

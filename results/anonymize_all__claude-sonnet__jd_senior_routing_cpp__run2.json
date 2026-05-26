@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 2,
+  "elapsed_ms": 23280,
+  "timestamp": "2026-05-26T08:29:34.061Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate has a broad polyglot background and genuine geospatial interest (GISCollective, Open Green Map GIS work), but the core job requirement is modern C++ or Rust for systems-level routing/navigation pipelines, and the candidate's primary stack is TypeScript/Node.js with DLang. Their C/C++ exposure is limited to an older role writing components for a C IDE and a bachelor-thesis project, with no evidence of modern C++ idioms, performance-critical routing logic, or navigation tile processing. There is zero Rust experience mentioned. The geospatial work is data-collection and mapping tooling, not routing tile optimization or low-latency pipeline architecture of the kind required here.",
+    "strengths": [
+      "Genuine geospatial domain exposure across multiple projects (GISCollective, Open Green Map GIS app, FOSS4G talk), showing authentic interest in the problem space",
+      "Demonstrated ability to build and operate low-latency, high-throughput systems (DLang microservices handling millions of HTTP requests/second)",
+      "Broad systems breadth including Linux, distributed infrastructure, embedded/hardware (robotic arms, LabWindows), and DevOps — shows adaptability across the stack"
+    ],
+    "concerns": [
+      "No modern C++ or Rust expertise; C/C++ usage appears dated and peripheral, and neither language appears in the skills summary",
+      "Geospatial experience is data-collection and visualization focused, with no evidence of routing graph construction, tile optimization, or navigation guidance systems",
+      "Current trajectory (TypeScript, AI agents, MCP frameworks) is moving away from, not toward, the systems-level C++ work this role demands"
+    ],
+    "key_factors": [
+      {
+        "factor": "No modern C++/Rust expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain interest",
+        "direction": "positive",
+        "weight": "low"
+      },
+      {
+        "factor": "No routing/navigation pipeline experience",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1047,
+    "cache_read_input_tokens": 24836,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0264128
+  }
+}

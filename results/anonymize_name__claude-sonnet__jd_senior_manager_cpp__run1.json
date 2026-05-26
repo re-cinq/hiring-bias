@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 1,
+  "elapsed_ms": 31926,
+  "timestamp": "2026-05-26T08:49:39.610Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate's career is overwhelmingly JavaScript/TypeScript and web development. C++ appears only in a 6-month engagement at National Instruments and a bachelor thesis project, and is absent from the skills section entirely. The role demands 8–12 years of deep C++ proficiency including STL, multi-threading, message brokers, and industrial protocols (MQTT, OPC UA, Modbus), none of which the candidate demonstrates at any meaningful depth. There is no industrial automation background, no IEC 62443 SDL exposure, no Azure experience, and no evidence of technical team leadership at the scope this position requires.",
+    "strengths": [
+      "Demonstrated ability to build high-throughput, low-latency systems (Dunnhumby: millions of HTTP requests/second using async I/O, fibers, caching)",
+      "Practical event-driven architecture experience through GISCollective and microservices work, showing design sensibility transferable to message-broker patterns",
+      "Polyglot background spanning DLang, Java, C, C++, and TypeScript indicates capacity for systems-level thinking beyond web stacks"
+    ],
+    "concerns": [
+      "C++ is not listed as a skill and surfaces in only two minor historical roles totalling roughly 6 months — wholly inadequate for a senior C++ engineering position",
+      "No exposure to industrial automation, IEC 62443 cybersecurity standards, or any of the required protocols (MQTT, OPC UA, Modbus TCP/IP, IEC 61850)",
+      "No evidence of formal SDL practices, Azure cloud experience, or people management at the scale expected of a mid-senior manager role"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial automation and protocol knowledge",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "High-performance distributed systems exposure",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1628,
+    "cache_read_input_tokens": 12963,
+    "cache_creation_input_tokens": 12190,
+    "cost_usd_reported": 0.07759139999999999
+  }
+}

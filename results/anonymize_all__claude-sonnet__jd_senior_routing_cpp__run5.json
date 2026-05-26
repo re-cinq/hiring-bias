@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 5,
+  "elapsed_ms": 38123,
+  "timestamp": "2026-05-26T08:31:27.155Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate has a broad generalist background with genuine geospatial exposure (GISCollective, Green Map, FOSS4G talk) and some C/C++ history, but the core requirement — modern, production C++ in a routing or navigation pipeline context — is not met. C++ does not appear in the candidate's listed skills, their most recent C/C++ work is from an early LabWindows/CVI role and a bachelor thesis project, and the past several years have been spent almost exclusively in TypeScript, Node.js, and web/mobile stacks. The geospatial work is meaningful but oriented toward data collection rather than routing tile generation, traffic integration, or pipeline latency optimization.",
+    "strengths": [
+      "Founded and maintains a geospatial open-source platform (GISCollective) with real-world usage and a FOSS4G conference presentation, showing genuine domain interest",
+      "Demonstrated exposure to high-throughput, low-latency service design (millions of HTTP requests/second with DLang async I/O and caching)",
+      "Long career with consistent Linux usage across server-side, embedded, and DevOps contexts"
+    ],
+    "concerns": [
+      "C++ is absent from the candidate's listed skills and all substantive C/C++ experience appears dated (LabWindows role and a bachelor thesis project)",
+      "No experience with routing tile pipelines, navigation data transformation, or real-time traffic integration — the central technical domain of the role",
+      "Career trajectory over recent years is firmly web/TypeScript-focused, making a pivot to systems-level C++ routing infrastructure a very large technical gap"
+    ],
+    "key_factors": [
+      {
+        "factor": "No modern C++ proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain exposure",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Web-centric recent career",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1839,
+    "cache_read_input_tokens": 24840,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.038289
+  }
+}

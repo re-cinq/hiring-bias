@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 4,
+  "elapsed_ms": 23965,
+  "timestamp": "2026-05-26T08:49:07.629Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is an experienced full-stack and web developer with a broad polyglot background, but is fundamentally misaligned with this role. The two hardest requirements — native-level Japanese proficiency and strong C programming for embedded/UNIX development — are both unmet: the candidate lists no Japanese whatsoever, and C appears only as a brief footnote from a 7-month stint in 2014–2015. The role demands deep embedded networking security expertise (MACsec, 802.1X, Linux kernel modification, switch chip SDKs) that is entirely absent from the resume, which is dominated by web, mobile, and TypeScript work.",
+    "strengths": [
+      "Long and diverse career spanning embedded (robotic arms, NI LabWindows C/C++), low-latency systems (DLang async I/O at Dunnhumby), and full-stack development — shows adaptability",
+      "Demonstrated Linux familiarity across multiple roles and personal projects, including some systems-level work (Jack audio, DSWS web server in C++)",
+      "Strong software-craftsmanship discipline (TDD, CI/CD, trunk-based development) that would transfer to any engineering team"
+    ],
+    "concerns": [
+      "Zero Japanese language proficiency listed — this is a hard, non-negotiable requirement and alone disqualifies the candidate",
+      "No security domain experience whatsoever: no MACsec, 802.1X, Captive Portal, encryption, or any network security module mentioned",
+      "C experience is minimal and outdated (7 months in 2014–2015); the role requires deep, sustained C expertise for embedded firmware development"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese proficiency absent",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking or security domain knowledge",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Broad systems exposure (Linux, C/C++, low-latency)",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1007,
+    "cache_read_input_tokens": 25065,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0261015
+  }
+}

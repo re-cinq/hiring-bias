@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_principal_perf_architect",
+  "run": 5,
+  "elapsed_ms": 38997,
+  "timestamp": "2026-05-26T08:47:44.894Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is an experienced full-stack and systems software developer with roughly 14 years of professional experience, but their background is almost entirely in web, mobile, and application-layer development. The Principal Performance Architect role demands deep expertise in SoC and IP modeling, GPU and AI accelerator architecture, hardware-software co-design, and deep neural network workload optimization — none of which appear anywhere in this candidate's profile. While they have some performance-oriented work (low-latency DLang micro-services at Sociomantic handling millions of requests per second) and recent AI-adjacent tooling exposure at re:cinq, these fall far short of the hardware-level specialization required for a principal-level IC role in AI accelerator infrastructure.",
+    "strengths": [
+      "Low-latency systems programming experience in DLang using async I/O, fibers, and high-performance caching at scale (millions of HTTP requests per second at Sociomantic)",
+      "Broad technical range spanning embedded systems, mobile, web, and devops, demonstrating capacity to operate across abstraction layers",
+      "Recent hands-on involvement with AI-agent infrastructure and MCP tooling at re:cinq, indicating current awareness of the AI tooling landscape"
+    ],
+    "concerns": [
+      "No SoC or IP modeling experience whatsoever — the foundational technical requirement of the role is entirely absent from the resume",
+      "No background in GPU architecture, AI accelerator hardware, SIMD or MIMD architectures, or deep neural network training and inference optimization",
+      "Candidate self-identifies as a software craftsman focused on web, mobile, and application development; the gap to principal IC in hardware-software co-design for AI accelerators is too large to bridge without a significant career pivot"
+    ],
+    "key_factors": [
+      {
+        "factor": "No SoC/IP/hardware modeling background",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No AI accelerator or DNN workload expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Low-latency performance optimization experience",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2052,
+    "cache_read_input_tokens": 24964,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.041650200000000005
+  }
+}
