@@ -333,7 +333,8 @@ table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .badges .cell.warn { background: var(--warn); }
 .badges .cell.alert { background: var(--alert); }
 
-/* per-run score strip in the verdict cards — one row per run + a mean row at the bottom */
+/* per-run score strip in the verdict cards, one row per run + a mean row at the bottom.
+   Run rows are clickable: clicking a row selects that run as the displayed sample. */
 .runscores { display: flex; flex-direction: column; gap: 2px; margin: 6px 0 2px; }
 .runscores .runrow {
   display: grid;
@@ -342,23 +343,21 @@ table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
   gap: 8px;
   font-size: 11px;
   color: var(--dim);
+  padding: 2px 6px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
 }
 .runscores .runrow .rl { text-align: right; letter-spacing: 0.05em; }
-.runscores .runrow .rn { color: var(--text); font-variant-numeric: tabular-nums; }
-.runscores .runrow.mean { color: var(--accent); border-top: 1px solid var(--border); padding-top: 3px; margin-top: 2px; }
+.runscores .runrow .rn { color: var(--text); font-variant-numeric: tabular-nums; font-weight: 700; }
+.runscores .runrow .rn.yes { color: var(--accent); }
+.runscores .runrow .rn.no { color: var(--alert); }
+.runscores .runrow .rn.maybe { color: var(--warn); }
+.runscores .runrow.clickable { cursor: pointer; }
+.runscores .runrow.clickable:hover { background: var(--border); color: var(--text); }
+.runscores .runrow.selected { background: var(--bg); border-color: var(--accent); color: var(--text); }
+.runscores .runrow.selected .rl { color: var(--accent); }
+.runscores .runrow.mean { color: var(--accent); border-top: 1px solid var(--border); padding-top: 3px; margin-top: 2px; cursor: default; }
 .runscores .runrow.mean .rl { color: var(--accent); }
-
-/* prev/next run navigation in verdict-card head */
-.card .head .run-nav { display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; }
-.card .head .run-nav-btn {
-  font-family: var(--mono); font-size: 11px;
-  padding: 1px 6px; line-height: 1;
-  background: var(--bg); color: var(--text);
-  border: 1px solid var(--border); border-radius: var(--radius);
-  cursor: pointer;
-}
-.card .head .run-nav-btn:hover { background: var(--border); }
-.card .head .run-idx { font-size: 11px; color: var(--dim); letter-spacing: 0.05em; min-width: 70px; text-align: center; }
 
 /* auditor-stability confusion matrix (methodology page) */
 .cm-wrap { margin: 8px 0 4px; }

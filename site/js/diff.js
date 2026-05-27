@@ -154,16 +154,12 @@ async function renderVerdict(variant, model, jd) {
     const cardsHost = el('div', { class: 'verdict-cards-host' });
     panel.append(cardsHost);
 
-    const nB = prebuilt.baseline.runs?.length ?? 0;
-    const nV = prebuilt.variant_data.runs?.length ?? 0;
     let bIdx = 0, vIdx = 0;
     function rebuild() {
       cardsHost.innerHTML = '';
       cardsHost.append(renderRunCards(prebuilt, variant, bIdx, vIdx, {
-        onPrevB: () => { if (nB) { bIdx = (bIdx - 1 + nB) % nB; rebuild(); } },
-        onNextB: () => { if (nB) { bIdx = (bIdx + 1) % nB; rebuild(); } },
-        onPrevV: () => { if (nV) { vIdx = (vIdx - 1 + nV) % nV; rebuild(); } },
-        onNextV: () => { if (nV) { vIdx = (vIdx + 1) % nV; rebuild(); } }
+        onSelectB: (i) => { if (i !== bIdx) { bIdx = i; rebuild(); } },
+        onSelectV: (i) => { if (i !== vIdx) { vIdx = i; rebuild(); } }
       }));
     }
     rebuild();
@@ -203,17 +199,13 @@ function renderSummaryBlock(prebuilt, variant) {
   return summary;
 }
 
-// Two cards with prev/next run navigation. The variant card's word-diff highlighting is
-// re-computed against whichever baseline run is currently selected.
+// Two cards. Run navigation is done by clicking a row in the runscores strip inside each card.
+// The variant card's word-diff highlighting is re-computed against whichever baseline run is selected.
 function renderRunCards(prebuilt, variant, bIdx, vIdx, handlers) {
-  const nB = prebuilt.baseline.runs?.length ?? 0;
-  const nV = prebuilt.variant_data.runs?.length ?? 0;
   const baselineRun = prebuilt.baseline.runs?.[bIdx]?.response ?? prebuilt.baseline.sample;
   const wrap = el('div', { class: 'grid grid-2' });
-  wrap.append(verdictCard('Baseline (unmodified resume)', prebuilt.baseline, bIdx, null,
-    nB > 1 ? { nRuns: nB, onPrev: handlers.onPrevB, onNext: handlers.onNextB } : null));
-  wrap.append(verdictCard(`Variant · ${variantLabel(variant)}`, prebuilt.variant_data, vIdx, baselineRun,
-    nV > 1 ? { nRuns: nV, onPrev: handlers.onPrevV, onNext: handlers.onNextV } : null));
+  wrap.append(verdictCard('Baseline (unmodified resume)', prebuilt.baseline, bIdx, null, handlers.onSelectB));
+  wrap.append(verdictCard(`Variant · ${variantLabel(variant)}`, prebuilt.variant_data, vIdx, baselineRun, handlers.onSelectV));
   return wrap;
 }
 
@@ -255,29 +247,22 @@ function renderAudit(audit) {
   return box;
 }
 
-function verdictCard(title, data, runIdx = 0, compare = null, nav = null) {
+function verdictCard(title, data, runIdx = 0, compare = null, onSelectRun = null) {
   const card = el('div', { class: 'card' });
   // Selected per-run response (from data.runs[runIdx]); fall back to legacy data.sample.
   const sample = data.runs?.[runIdx]?.response ?? data.sample;
 
-  // Head row: title · run-nav (if multi-run) · recommend pill
-  const headChildren = [el('span', { class: 'label' }, title)];
-  if (nav && nav.nRuns > 1) {
-    headChildren.push(el('span', { class: 'run-nav' }, [
-      el('button', { class: 'run-nav-btn', onclick: nav.onPrev, title: 'previous run' }, '◀'),
-      el('span', { class: 'run-idx' }, `run ${runIdx + 1} / ${nav.nRuns}`),
-      el('button', { class: 'run-nav-btn', onclick: nav.onNext, title: 'next run' }, '▶')
-    ]));
-  }
-  headChildren.push(sample ? pill(sample.recommend_interview) : el('span', {}));
-  card.append(el('div', { class: 'head' }, headChildren));
+  card.append(el('div', { class: 'head' }, [
+    el('span', { class: 'label' }, title),
+    sample ? pill(sample.recommend_interview) : el('span', {})
+  ]));
 
   card.append(el('div', {}, [
     'Score: ', el('strong', {}, sample?.score ?? fmtNum(data.mean, 2) ?? '–'),
     ' · Mean: ', el('strong', {}, fmtNum(data.mean, 2)),
     ' · Recommend rate: ', el('strong', {}, data.recommend_rate != null ? `${(data.recommend_rate * 100).toFixed(0)}%` : '–')
   ]));
-  card.append(renderRunScores(data));
+  card.append(renderRunScores(data, runIdx, onSelectRun));
 
   if (sample?.justification) {
     card.append(el('h4', {}, 'Justification'));
@@ -339,8 +324,9 @@ function bestMatch(item, candidates) {
 
 // One badge-bar per run, stacked vertically, shows the spread of the 5 scores so the reader
 // can eyeball run-to-run noise instead of just the mean. Falls back to the mean-bar when per-run
-// scores aren't on the diff JSON (older builds).
-function renderRunScores(data) {
+// scores aren't on the diff JSON (older builds). When onSelectRun is given, each run row becomes
+// a click target and the active row is highlighted.
+function renderRunScores(data, runIdx = 0, onSelectRun = null) {
   const wrap = el('div', { class: 'runscores' });
   const scores = Array.isArray(data?.scores) ? data.scores : null;
   if (!scores || !scores.length) {
@@ -349,10 +335,21 @@ function renderRunScores(data) {
   }
   for (let i = 0; i < scores.length; i++) {
     const s = scores[i];
-    wrap.append(el('div', { class: 'runrow' }, [
+    const rec = data.runs?.[i]?.response?.recommend_interview;
+    const recClass = ['yes', 'no', 'maybe'].includes(rec) ? rec : '';
+    const isSelected = i === runIdx;
+    const classes = ['runrow'];
+    if (onSelectRun) classes.push('clickable');
+    if (isSelected) classes.push('selected');
+    const attrs = { class: classes.join(' ') };
+    if (onSelectRun) {
+      attrs.onclick = () => onSelectRun(i);
+      attrs.title = `show run ${i + 1} (${rec || 'no recommendation'})`;
+    }
+    wrap.append(el('div', attrs, [
       el('span', { class: 'rl' }, `r${i + 1}`),
       badges(s, 10),
-      el('span', { class: 'rn' }, String(s))
+      el('span', { class: `rn ${recClass}` }, String(s))
     ]));
   }
   // Mean line at the bottom, dimmer
