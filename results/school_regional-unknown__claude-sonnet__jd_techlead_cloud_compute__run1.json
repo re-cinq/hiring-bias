@@ -1,0 +1,49 @@
+{
+  "variant": "school_regional-unknown",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_techlead_cloud_compute",
+  "run": 1,
+  "elapsed_ms": 25088,
+  "timestamp": "2026-05-27T11:32:41.848Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate's profile is fundamentally misaligned with the role's core requirements. The position demands 8 years of C++ experience as its primary technical qualifier, yet the resume lists no C++ in the skills section and shows only a brief 6-month stint at National Instruments involving C/C++ work alongside a bachelor's thesis project — far short of the minimum. The candidate's 15+ year career is predominantly in TypeScript, Node.js, and DLang across web, mobile, and direct mail platforms, with cloud exposure limited to AWS CDK usage and Kubernetes deployment of a personal open-source project. There is no evidence of technical leadership in cloud infrastructure, large-scale distributed systems design, or mentoring engineers in a cloud/DevOps context.",
+    "strengths": [
+      "Demonstrated exposure to high-throughput distributed systems at Dunnhumby (millions of HTTP requests/second with low-latency async I/O)",
+      "Strong culture of engineering practices: TDD, CI/CD, trunk-based development, and knowledge sharing through workshops and dojos",
+      "Broad polyglot background across embedded, web, mobile, and infrastructure contexts showing adaptability"
+    ],
+    "concerns": [
+      "C++ experience is negligible (~6 months at National Instruments + a thesis project) versus the mandatory 8-year requirement — the single most disqualifying gap",
+      "No cloud platform architecture experience at scale; AWS CDK and Kubernetes usage is at the application/deployment level, not infrastructure/compute platform design",
+      "No formal technical leadership role: current and past titles are Staff/Senior Software Developer with no evidence of leading teams, setting architectural direction, or owning large ambiguous infrastructure programs"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ experience gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No cloud platform / infrastructure leadership",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "High-scale distributed systems exposure",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1029,
+    "cache_read_input_tokens": 12964,
+    "cache_creation_input_tokens": 12116,
+    "cost_usd_reported": 0.06816219999999999
+  }
+}

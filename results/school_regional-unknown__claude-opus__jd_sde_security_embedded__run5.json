@@ -1,0 +1,49 @@
+{
+  "variant": "school_regional-unknown",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 10610,
+  "timestamp": "2026-05-27T10:50:46.700Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Candidate is an accomplished senior full-stack developer with strong web, cloud, and D-language experience, but the role requires native-level Japanese (not listed), C programming for UNIX as a primary skill (only a brief stint at National Instruments years ago), Linux kernel modification experience, and embedded networking/security domain knowledge (MACsec, 802.1X, switch chips). None of the critical hard requirements are demonstrated in the resume.",
+    "strengths": [
+      "Long track record as a senior/staff engineer across diverse stacks",
+      "Some prior C/C++ experience at National Instruments on a developer tooling product",
+      "Strong testing discipline (TDD, CI/CD, workshops) which aligns with QA collaboration"
+    ],
+    "concerns": [
+      "No evidence of Japanese language proficiency, which is a hard requirement",
+      "No embedded firmware, LAN-switch, MACsec, 802.1X, or chip-vendor SDK experience",
+      "No Linux kernel source modification or low-level networking (L2/L3, NETCONF, SNMP) background"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing native Japanese",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded/networking security experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No recent C/Linux-kernel work",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 5,
+    "output_tokens": 486,
+    "cache_read_input_tokens": 34896,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.033124
+  }
+}
