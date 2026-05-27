@@ -1,0 +1,49 @@
+{
+  "variant": "school_eth-zurich",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 2,
+  "elapsed_ms": 24802,
+  "timestamp": "2026-05-27T07:52:47.300Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Bogdan has a broad engineering background with some tangentially relevant experience — geospatial platforms (GISCollective, Green Map), distributed low-latency systems (Dunnhumby), and a brief C++ stint at National Instruments — but the role demands modern, commercial-grade C++ (or Rust) as a primary competency, which is clearly absent here. His current and recent work is overwhelmingly TypeScript/Node.js, his C++ exposure is dated (2014–2015) and limited in scope, and while he has GIS experience, it centers on data collection and mapping rather than routing pipelines, tiling, or navigation systems.",
+    "strengths": [
+      "Geospatial/GIS domain exposure through GISCollective and Green Map projects, including event-driven geo-data pipelines on Kubernetes",
+      "Demonstrated experience with high-throughput distributed systems at Dunnhumby (millions of HTTP req/s, async I/O, low-latency design)",
+      "Strong software craftsmanship discipline (TDD, CI/CD, trunk-based development) across a long and varied career"
+    ],
+    "concerns": [
+      "No modern or commercial C++ experience; listed C++ use is a 2014–2015 IDE component role and a bachelor thesis project — neither reflects the depth required",
+      "No Rust experience whatsoever, eliminating the only acceptable alternative to C++",
+      "GIS experience is centered on data collection and visualization tooling, not routing tiles, navigation pipelines, or real-time traffic integration"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/Rust absence",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain familiarity",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "No routing/navigation pipeline experience",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1100,
+    "cache_read_input_tokens": 24944,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.027335199999999997
+  }
+}

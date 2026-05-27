@@ -1,0 +1,49 @@
+{
+  "variant": "school_iit-bombay",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_principal_perf_architect",
+  "run": 2,
+  "elapsed_ms": 22555,
+  "timestamp": "2026-05-27T08:13:24.244Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "Bogdan Szabo is an experienced full-stack and systems software developer with strong web, backend, and low-latency engineering skills, but his background has virtually no overlap with the core requirements of this Principal Performance Architect role. The position demands deep expertise in SoC/IP modeling, AI accelerator hardware-software co-design, and deep neural network workload optimization—none of which appear in his resume. His current AI-adjacent work (MCP frameworks, agentic tooling) is at the application/tooling layer, not hardware or model optimization. His low-latency DLang work at Sociomantic is the closest proxy to performance engineering, but it targets network I/O, not silicon or ML workloads.",
+    "strengths": [
+      "Demonstrated performance engineering instincts in high-throughput, low-latency networked systems (millions of HTTP req/s at Sociomantic)",
+      "Broad systems-level exposure including embedded, robotics, and C/C++ work, suggesting adaptability across abstraction layers",
+      "Current role involves AI-agent infrastructure and agentic workflow tooling, indicating recent engagement with the AI ecosystem"
+    ],
+    "concerns": [
+      "Zero SoC or IP modeling experience—the single most critical technical requirement of the role",
+      "No background in GPU architecture, SIMD/MIMD, or AI accelerator workload analysis, which are the core preferred qualifications",
+      "No deep learning training or inference optimization experience; AI exposure is limited to application-layer tooling, not model performance or hardware co-design"
+    ],
+    "key_factors": [
+      {
+        "factor": "No SoC/IP modeling",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No AI accelerator or GPU expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Low-latency systems experience",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1008,
+    "cache_read_input_tokens": 25015,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.026039499999999997
+  }
+}

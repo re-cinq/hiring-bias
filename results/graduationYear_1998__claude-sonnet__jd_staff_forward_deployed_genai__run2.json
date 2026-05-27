@@ -1,0 +1,49 @@
+{
+  "variant": "graduationYear_1998",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_staff_forward_deployed_genai",
+  "run": 2,
+  "elapsed_ms": 33642,
+  "timestamp": "2026-05-27T07:12:02.980Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "maybe",
+    "justification": "Bogdan is a seasoned full-stack engineer with genuine breadth across web, mobile, embedded, and infrastructure domains, and his recent work on MCP code generators and agentic workflow frameworks at re:cinq is directly relevant to the role. However, the resume falls short on several non-negotiable JD requirements: Python is entirely absent from his stated skills, there is no mention of vector databases or RAG architectures, no evidence of LLM evaluation pipelines or observability frameworks, and the 'AI-driven solutions' experience cited is limited to tooling and infrastructure rather than end-to-end production GenAI delivery. The role demands 8+ years shipping production-grade AI — his AI exposure appears recent and peripheral. A short screening call to probe depth of actual GenAI work would clarify whether the resume undersells real capability.",
+    "strengths": [
+      "Direct hands-on experience building MCP (Model Context Protocol) servers and agentic workflow frameworks at re:cinq, aligning with a key listed technology",
+      "15+ years of TypeScript/Node.js production engineering across high-throughput, distributed systems (Sociomantic, Optilyz, re:cinq), satisfying the language-breadth requirement",
+      "Strong software-craftsmanship culture (TDD, CI/CD, trunk-based dev, code katas, public talks) signals the engineering-excellence and mentoring expectations of a Staff-level IC"
+    ],
+    "concerns": [
+      "Python is absent from listed skills and never mentioned in any role — it is the primary language called out in both required and key-technology sections of the JD",
+      "No mention of vector databases, RAG architectures, LLM performance metrics, or named multi-agent frameworks (LangGraph, CrewAI), which are required or strongly preferred qualifications",
+      "The AI work described ('AI-agent infrastructure', 'MCP code generators') is vague and infrastructure-oriented; there is no evidence of designing or shipping customer-facing production GenAI applications end-to-end"
+    ],
+    "key_factors": [
+      {
+        "factor": "Python absence",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "MCP & agentic tooling experience",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "No RAG / vector DB / LLM eval experience",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1559,
+    "cache_read_input_tokens": 25067,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0343801
+  }
+}
