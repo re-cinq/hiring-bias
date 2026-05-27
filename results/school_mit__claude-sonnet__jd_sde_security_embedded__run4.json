@@ -1,0 +1,49 @@
+{
+  "variant": "school_mit",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 4,
+  "elapsed_ms": 28760,
+  "timestamp": "2026-05-27T09:51:12.197Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate brings over 15 years of broad software development experience and some embedded systems exposure, but fails to meet the most critical requirements for this role. Most importantly, there is no indication of Japanese language proficiency anywhere in the resume — this is explicitly listed as a hard, non-negotiable requirement. Beyond the language gap, the candidate's background is overwhelmingly web and full-stack oriented (TypeScript, Node.js, JavaScript), with only minimal and dated C/C++ experience. There is no demonstrated expertise in network security technologies, L2/L3 switching, embedded firmware, or Linux kernel development, all of which are core to the role.",
+    "strengths": [
+      "Over 15 years of diverse software engineering experience including some embedded systems and low-level work (robotic arms, C/C++ at National Instruments).",
+      "Demonstrated Linux familiarity and some systems-level experience, including a C++ sound synthesis project using Linux and Jack audio server.",
+      "Strong software craftsmanship practices (TDD, CI/CD, trunk-based development) and cross-functional collaboration across hardware and software teams."
+    ],
+    "concerns": [
+      "No Japanese language proficiency listed at any level — this is a non-negotiable hard requirement and represents an immediate disqualifier.",
+      "No expertise in network security technologies required for the role (MACsec, IEEE 802.1X, Captive Portal, device attack detection, encryption key exchange).",
+      "C programming experience is minimal and dated; primary technical stack is web-focused (TypeScript, Node.js), with no evidence of embedded firmware or Linux kernel work."
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing Japanese language proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No network security or embedded firmware background",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Broad software engineering experience and some embedded exposure",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1421,
+    "cache_read_input_tokens": 12964,
+    "cache_creation_input_tokens": 12167,
+    "cost_usd_reported": 0.07434344999999999
+  }
+}
