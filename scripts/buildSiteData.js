@@ -663,6 +663,68 @@ async function loadAudits() {
   return out;
 }
 
+// Loads the raw audit records (preserving first_run / median_run / samples_coincide), used for
+// the stability stat and the audit-verdicts CSV. loadAudits() above embeds a flattened verdict
+// per cell for the diff JSONs; this one keeps the structure intact.
+async function loadAuditsRaw() {
+  const out = [];
+  if (!(await fs.access(AUDITS_DIR).then(() => true, () => false))) return out;
+  const files = (await fs.readdir(AUDITS_DIR)).filter((f) => f.endsWith('.json'));
+  for (const file of files) {
+    out.push(JSON.parse(await fs.readFile(path.join(AUDITS_DIR, file), 'utf8')));
+  }
+  return out;
+}
+
+// Two-sample audit stability: of the audits where the auditor judged TWO genuinely different
+// sampled pairs, how often did the verdict flip? Records where samples_coincide=true cannot
+// disagree by construction (only one pair was actually judged) and so don't enter the denominator.
+function auditStabilityStats(records) {
+  const total = records.length;
+  let coincide = 0, agree = 0, disagree = 0;
+  for (const r of records) {
+    if (!r.first_run || !r.median_run) continue;
+    if (r.samples_coincide) { coincide++; continue; }
+    if (r.verdicts_agree) agree++; else disagree++;
+  }
+  const distinctPairs = agree + disagree;
+  return {
+    total,
+    coincide,
+    distinct_pairs: distinctPairs,
+    disagree,
+    disagree_pct: distinctPairs ? (100 * disagree / distinctPairs) : null
+  };
+}
+
+function csvEscape(v) {
+  if (v == null) return '';
+  const s = String(v);
+  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+async function writeAuditVerdictsCsv(records) {
+  const headers = [
+    'id', 'variant', 'axis', 'level', 'model', 'jd', 'delta',
+    'samples_coincide', 'first_verdict', 'first_confidence',
+    'median_verdict', 'median_confidence', 'verdicts_agree', 'auditor', 'timestamp'
+  ];
+  const lines = [headers.join(',')];
+  for (const r of records) {
+    lines.push([
+      r.id, r.variant, r.axis, r.level, r.model, r.jd, r.delta,
+      r.samples_coincide, r.first_run?.verdict, r.first_run?.confidence,
+      r.median_run?.verdict, r.median_run?.confidence, r.verdicts_agree,
+      r.auditor, r.timestamp
+    ].map(csvEscape).join(','));
+  }
+  const full = path.join(OUT_DIR, 'raw/audit-verdicts.csv');
+  await fs.mkdir(path.dirname(full), { recursive: true });
+  await fs.writeFile(full, lines.join('\n') + '\n');
+  const stat = await fs.stat(full);
+  return { relpath: 'raw/audit-verdicts.csv', size: stat.size };
+}
+
 async function loadVariantResumes() {
   const files = await fs.readdir(VARIANTS_DIR);
   const out = {};
@@ -765,6 +827,10 @@ async function main() {
   const ndjson = records.map((r) => JSON.stringify(r)).join('\n') + '\n';
   outputs.push(await gzipFile(ndjson, 'raw/results.ndjson.gz'));
 
+  const auditsRaw = await loadAuditsRaw();
+  const auditStability = auditStabilityStats(auditsRaw);
+  outputs.push(await writeAuditVerdictsCsv(auditsRaw));
+
   const status = {
     n_records: records.length,
     n_cells_complete: cells.length,
@@ -777,7 +843,7 @@ async function main() {
   await prerenderHtml({
     status, matrixData, topDiffs: topDiffsForPrerender,
     axes, models, jds, jdLabels, jdShortLabels, jdTexts, cells,
-    axisLabels, levelLabels, axisDescriptions
+    axisLabels, levelLabels, axisDescriptions, auditStability
   });
   await writeSitemap();
   await writeRobots();
@@ -1148,7 +1214,20 @@ function jdsPageHtml({ matrix, jds, jdLabels, jdShortLabels, jdTexts, cells }) {
   ${sections}`;
 }
 
-function methodologyHtml({ matrix, jds, jdLabels }) {
+function auditStabilityPanelHtml(stats) {
+  if (!stats || stats.total === 0) return '';
+  const pct = stats.disagree_pct == null ? '—' : stats.disagree_pct.toFixed(2) + '%';
+  const denom = stats.distinct_pairs;
+  return `<div class="panel">
+    <div class="panel-head"><span>AUDITOR STABILITY · DOES THE JUDGE FLIP?</span></div>
+    <p>Every audited cell is judged twice — once on the first-run sample and once on the median-typical sample. When the two samples are different evaluations, the auditor can in principle disagree with itself. This stat measures how often it does.</p>
+    <p><strong>Disagreement rate (when two distinct sampled pairs were judged): <span class="alert">${pct}</span></strong> &nbsp;(${stats.disagree} of ${denom} cells).</p>
+    <p class="dim">Of <strong>${stats.total.toLocaleString()}</strong> total audited cells, <strong>${stats.coincide.toLocaleString()}</strong> had identical first-and-median samples (a single pair selected twice, no disagreement possible by construction) and were excluded from the denominator. The remaining <strong>${denom.toLocaleString()}</strong> cells had two genuinely different sampled pairs from the same cell — and on that set, the auditor returned a different verdict <strong>${pct}</strong> of the time. This is the empirical reason we aggregate over five runs per cell rather than relying on a single judgement: at temperature 0.7, even an LLM judge faced with two different samples of <em>the same</em> bias case will not always agree with itself.</p>
+  </div>
+  `;
+}
+
+function methodologyHtml({ matrix, jds, jdLabels, auditStability }) {
   const dims = matrix.axes.map((axis) => {
     const levels = (matrix.levels_by_axis?.[axis] ?? []).map((id) => esc(matrix.level_labels?.[axis]?.[id] ?? id)).join(' · ');
     return `<tr><td>${esc(matrix.axis_labels?.[axis] ?? axis)}</td><td>${levels}</td></tr>`;
@@ -1197,6 +1276,7 @@ function methodologyHtml({ matrix, jds, jdLabels }) {
     <p><strong>Why not cross-judge validation.</strong> A defensible alternative is running two judges per cell and treating disagreement as a third signal. We opted instead for the two-sample design (first-run + median-typical run, same judge) because it isolates a different error source — sample selection — that the current single-pair audit was most exposed to. Cross-judge can be layered on later without re-running collection.</p>
     <p><strong>Self-judging caveat.</strong> Every Gemini variant — including the chosen judge — is itself in the audited set, so the audit is asking <code>gemini-2.5-pro</code> to render verdicts on outputs from <code>gemini-2.5-pro</code>, <code>gemini-2.5-flash</code>, and <code>gemini-3.1-pro-preview</code> among others. Models are known to favour their own family's outputs in head-to-head judging; the structured rubric and verbatim <code>bias_signals</code> quotes blunt this but do not eliminate it. A fully external judge (e.g. a frontier OpenAI model not in this study) would close that gap at additional cost.</p>
   </div>
+  ${auditStabilityPanelHtml(auditStability)}
   <div class="panel">
     <div class="panel-head"><span>BIAS DIMENSIONS</span></div>
     <table class="data">
@@ -1220,6 +1300,7 @@ function downloadsHtml({ status, matrix }) {
         <tr><td><code>summary.md</code></td><td class="dim">Same table as data.csv plus per-model cost &amp; token breakdown.</td></tr>
         <tr><td><code>matrix.json</code></td><td class="dim">Per-(axis, variant, model) mean Δ aggregated across JDs.</td></tr>
         <tr><td><code>results.ndjson.gz</code></td><td class="dim">Full run-level corpus. One JSON object per inference run.</td></tr>
+        <tr><td><code>raw/audit-verdicts.csv</code></td><td class="dim">One row per audited cell. Both first-run and median-run verdicts plus the <code>verdicts_agree</code> flag, so you can recompute the disagreement rate yourself.</td></tr>
         <tr><td><code>resumes.json</code></td><td class="dim">Full text of all ${variantCountOf(matrix)} résumé variants.</td></tr>
       </tbody>
     </table>
@@ -1238,7 +1319,7 @@ function aboutHtml({ status }) {
   </div>`;
 }
 
-async function prerenderHtml({ status, matrixData, topDiffs, axes, models, jds, jdLabels, jdShortLabels, jdTexts, cells, axisLabels, levelLabels, axisDescriptions }) {
+async function prerenderHtml({ status, matrixData, topDiffs, axes, models, jds, jdLabels, jdShortLabels, jdTexts, cells, axisLabels, levelLabels, axisDescriptions, auditStability }) {
   const replacements = {
     'hero': heroHtml(topDiffs, matrixData),
     'bias-index': biasIndexTableHtml(matrixData, {
@@ -1251,7 +1332,7 @@ async function prerenderHtml({ status, matrixData, topDiffs, axes, models, jds, 
     'top-counterfactuals': topCounterfactualsHtml(topDiffs, matrixData),
     'resume-diff-index': resumeDiffIndexHtml(matrixData),
     'jds': jdsPageHtml({ matrix: matrixData, jds, jdLabels, jdShortLabels, jdTexts, cells }),
-    'methodology': methodologyHtml({ matrix: matrixData, jds, jdLabels }),
+    'methodology': methodologyHtml({ matrix: matrixData, jds, jdLabels, auditStability }),
     'downloads': downloadsHtml({ status, matrix: matrixData }),
     'about': aboutHtml({ status }),
     'model-agreement': modelAgreementHtml(cells, axes, models)

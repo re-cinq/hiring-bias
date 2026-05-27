@@ -78,6 +78,13 @@
     <p><strong>Self-judging caveat.</strong> Every Gemini variant — including the chosen judge — is itself in the audited set, so the audit is asking <code>gemini-2.5-pro</code> to render verdicts on outputs from <code>gemini-2.5-pro</code>, <code>gemini-2.5-flash</code>, and <code>gemini-3.1-pro-preview</code> among others. Models are known to favour their own family's outputs in head-to-head judging; the structured rubric and verbatim <code>bias_signals</code> quotes blunt this but do not eliminate it. A fully external judge (e.g. a frontier OpenAI model not in this study) would close that gap at additional cost.</p>
   </div>
   <div class="panel">
+    <div class="panel-head"><span>AUDITOR STABILITY · DOES THE JUDGE FLIP?</span></div>
+    <p>Every audited cell is judged twice — once on the first-run sample and once on the median-typical sample. When the two samples are different evaluations, the auditor can in principle disagree with itself. This stat measures how often it does.</p>
+    <p><strong>Disagreement rate (when two distinct sampled pairs were judged): <span class="alert">46.19%</span></strong> &nbsp;(922 of 1996 cells).</p>
+    <p class="dim">Of <strong>4,930</strong> total audited cells, <strong>2,934</strong> had identical first-and-median samples (a single pair selected twice, no disagreement possible by construction) and were excluded from the denominator. The remaining <strong>1,996</strong> cells had two genuinely different sampled pairs from the same cell — and on that set, the auditor returned a different verdict <strong>46.19%</strong> of the time. This is the empirical reason we aggregate over five runs per cell rather than relying on a single judgement: at temperature 0.7, even an LLM judge faced with two different samples of <em>the same</em> bias case will not always agree with itself.</p>
+  </div>
+  
+  <div class="panel">
     <div class="panel-head"><span>BIAS DIMENSIONS</span></div>
     <table class="data">
       <thead><tr><th>Dimension</th><th>Variants tested</th></tr></thead>
