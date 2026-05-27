@@ -2,7 +2,7 @@ import { mountChrome } from './nav.js';
 import { loadJson, el, header } from './lib.js';
 
 await mountChrome();
-document.getElementById('header').append(header('DOWNLOADS', 'raw and aggregated data'));
+document.getElementById('header').append(header('DOWNLOADS'));
 
 const status = await loadJson('data/status.json');
 const summary = await loadJson('data/summary.json');

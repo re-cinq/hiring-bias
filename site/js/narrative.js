@@ -4,7 +4,7 @@ import { computeBiasIndex, renderBiasIndex, renderDimensionBias } from './bias-i
 import { renderVolcano } from './volcano.js';
 
 await mountChrome();
-document.getElementById('header').append(header('IDENTICAL RÉSUMÉ.  DIFFERENT NAME.  DIFFERENT VERDICT.', 'a counterfactual audit of LLM résumé scoring'));
+document.getElementById('header').append(header('IDENTICAL RÉSUMÉ.  DIFFERENT NAME.  DIFFERENT VERDICT.'));
 
 const status = await loadJson('data/status.json');
 const matrix = await loadJson('data/matrix.json');

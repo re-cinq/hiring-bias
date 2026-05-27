@@ -85,7 +85,7 @@ export function copyLinkButton() {
   return btn;
 }
 
-export function header(title, subtitle) {
+export function header(title) {
   const w = (title || '').length;
   const inner = Math.max(w + 4, 32);
   const horiz = '═'.repeat(inner);
@@ -98,12 +98,5 @@ export function header(title, subtitle) {
   node.append('╔' + horiz + '╗\n║  ');
   node.append(t);
   node.append(rightPad + '║\n╚' + horiz + '╝');
-  if (subtitle) {
-    const s = document.createElement('div');
-    s.className = 'dim';
-    s.style.marginTop = '4px';
-    s.textContent = subtitle;
-    node.append(s);
-  }
   return node;
 }

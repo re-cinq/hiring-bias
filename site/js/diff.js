@@ -4,7 +4,7 @@ import { diffLines, wordDiff } from './linediff.js';
 import { mdToHtml } from './markdown.js';
 
 await mountChrome();
-document.getElementById('header').append(header('COUNTERFACTUAL DIFF', 'one line changes on the résumé · read what the model said about each version'));
+document.getElementById('header').append(header('COUNTERFACTUAL DIFF'));
 
 const summary = await loadJson('data/summary.json');
 const matrix = await loadJson('data/matrix.json');
@@ -213,8 +213,9 @@ function plainSummary(delta, ciOverlap, variant) {
 function renderAudit(audit) {
   const box = el('div', { class: 'audit' });
   const klass = AUDIT_CLASS[audit.verdict] ?? 'dim';
+  const auditorLabel = audit.auditor ? ` by ${audit.auditor}` : '';
   box.append(el('div', {}, [
-    el('span', { class: 'dim' }, 'AUDITOR VERDICT: '),
+    el('span', { class: 'dim' }, `AUDITOR VERDICT${auditorLabel}: `),
     el('span', { class: `audit-badge ${klass}` }, AUDIT_LABEL[audit.verdict] ?? audit.verdict.toUpperCase()),
     audit.confidence ? el('span', { class: 'dim' }, ` · ${audit.confidence} confidence`) : null
   ]));

@@ -554,10 +554,11 @@ function buildNgrams(records, axis, baselines) {
   return { axis, by_level: byLevel };
 }
 
-// Pick the lowest-run record per cell as the displayed/audited sample. Deterministic
-// and stable: backfilling only adds higher run numbers, so the sample never changes —
-// which keeps audit verdicts valid across re-runs.
-function indexSampleRecord(records) {
+// Per-cell sampling for the audit + diff UI. We expose two samples:
+//   sample        — the lowest-run record (stable, backfill-safe; what the UI shows by default)
+//   sample_median — the record whose score is closest to the cell mean (most-typical run; used
+//                    as the second opinion in the audit so verdicts aren't held hostage to run 1).
+function indexFirstRunRecord(records) {
   const byCell = new Map();
   for (const r of records) {
     const key = `${r.variant}__${r.model}__${r.jd}`;
@@ -567,21 +568,67 @@ function indexSampleRecord(records) {
   return byCell;
 }
 
+function indexMedianRunRecord(records) {
+  const groups = new Map();
+  for (const r of records) {
+    const key = `${r.variant}__${r.model}__${r.jd}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(r);
+  }
+  const out = new Map();
+  for (const [key, group] of groups) {
+    const scored = group.filter((r) => typeof r.response?.score === 'number');
+    if (scored.length === 0) continue;
+    const m = mean(scored.map((r) => r.response.score));
+    const pick = scored.reduce((acc, r) =>
+      Math.abs(r.response.score - m) < Math.abs(acc.response.score - m) ? r : acc);
+    out.set(key, pick);
+  }
+  return out;
+}
+
+function countRunsByCell(records) {
+  const counts = new Map();
+  for (const r of records) {
+    const key = `${r.variant}__${r.model}__${r.jd}`;
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  return counts;
+}
+
 function buildDiffObjects(cells, records) {
-  const recByCell = indexSampleRecord(records);
+  const firstByCell = indexFirstRunRecord(records);
+  const medianByCell = indexMedianRunRecord(records);
+  const countByCell = countRunsByCell(records);
   const out = [];
   for (const c of cells) {
     if (c.delta == null || c.variant === 'baseline') continue;
-    const variantRec = recByCell.get(`${c.variant}__${c.model}__${c.jd}`);
-    const baselineRec = recByCell.get(`baseline__${c.model}__${c.jd}`);
-    if (!variantRec || !baselineRec) continue;
+    const variantKey = `${c.variant}__${c.model}__${c.jd}`;
+    const baselineKey = `baseline__${c.model}__${c.jd}`;
+    const variantFirst = firstByCell.get(variantKey);
+    const baselineFirst = firstByCell.get(baselineKey);
+    if (!variantFirst || !baselineFirst) continue;
+    const variantMedian = medianByCell.get(variantKey);
+    const baselineMedian = medianByCell.get(baselineKey);
     out.push({
-      id: `${c.variant}__${c.model}__${c.jd}`,
+      id: variantKey,
       variant: c.variant, axis: axisOf(c.variant), level: levelOf(c.variant),
       model: c.model, jd: c.jd,
       delta: c.delta, ci_overlap: !c.significant,
-      baseline: { mean: c.baseline_mean, recommend_rate: c.baseline_recommend_rate, sample: baselineRec.response },
-      variant_data: { mean: c.mean, recommend_rate: c.recommend_yes_rate, sample: variantRec.response }
+      n_runs_variant: countByCell.get(variantKey) ?? 0,
+      n_runs_baseline: countByCell.get(baselineKey) ?? 0,
+      baseline: {
+        mean: c.baseline_mean,
+        recommend_rate: c.baseline_recommend_rate,
+        sample: baselineFirst.response,
+        sample_median: baselineMedian?.response ?? null
+      },
+      variant_data: {
+        mean: c.mean,
+        recommend_rate: c.recommend_yes_rate,
+        sample: variantFirst.response,
+        sample_median: variantMedian?.response ?? null
+      }
     });
   }
   return out;
@@ -593,7 +640,25 @@ async function loadAudits() {
   const files = (await fs.readdir(AUDITS_DIR)).filter((f) => f.endsWith('.json'));
   for (const file of files) {
     const a = JSON.parse(await fs.readFile(path.join(AUDITS_DIR, file), 'utf8'));
-    out.set(a.id, { verdict: a.verdict, confidence: a.confidence, rationale: a.rationale, bias_signals: a.bias_signals ?? [] });
+    // New shape stores first_run + median_run; old shape is a single flat verdict. Take median
+    // as primary (more representative of the cell) and surface the run-1 second opinion separately.
+    const isTwoVerdict = a.first_run && a.median_run;
+    const primary = isTwoVerdict ? a.median_run : a;
+    const second = isTwoVerdict ? a.first_run : null;
+    out.set(a.id, {
+      verdict: primary.verdict,
+      confidence: primary.confidence,
+      rationale: primary.rationale,
+      bias_signals: primary.bias_signals ?? [],
+      auditor: a.auditor ?? null,
+      second_opinion: second ? {
+        verdict: second.verdict,
+        confidence: second.confidence,
+        rationale: second.rationale,
+        bias_signals: second.bias_signals ?? []
+      } : null,
+      verdicts_agree: isTwoVerdict ? primary.verdict === second.verdict : null
+    });
   }
   return out;
 }
@@ -1086,6 +1151,35 @@ function methodologyHtml({ matrix, jds, jdLabels }) {
     <p><strong>Why this matters for significance.</strong> 0.7 is a relatively high temperature, so run-to-run variance is substantial. With only 5 runs per cell the noise floor is high, which is why most per-cell deltas do not clear the 95% confidence threshold against baseline. A future run at lower temperature, or with more samples per cell, would tighten the confidence intervals.</p>
   </div>
   <div class="panel">
+    <div class="panel-head"><span>AUDIT METHODOLOGY · HOW VERDICTS ARE PRODUCED</span></div>
+    <p>Each (variant, model, JD) cell with 5 collected runs is audited by <code>gemini-2.5-pro</code> acting as an LLM-as-judge. Cells with fewer than 5 runs are skipped until backfill completes, so every verdict is produced against a complete sample.</p>
+    <p><strong>Two samples per cell, two verdicts.</strong> The auditor sees the cell's mean Δ and run count as statistical context, then judges <em>two</em> matched evaluation pairs from the run set: (1) the first run and (2) the run whose score sits closest to the cell's mean (the "most-typical" run). The site shows the median-run verdict as the headline; the first-run verdict is kept as a second opinion. A <code>verdicts_agree</code> flag marks cells where the two samples reached different conclusions — those are the cases where a single-pair audit would have been brittle.</p>
+    <p><strong>What an audit verdict means and does not mean.</strong> A verdict is a judgement on the <em>reasoning</em> visible in one evaluation pair, not on the per-cell statistical effect. A "bias" verdict says the model's justification keyed off the demographic signal in the sample shown to the auditor; it does not by itself certify that the mean Δ over 5 runs would clear a 95% significance threshold. Read verdicts alongside the volcano plot and per-cell CIs.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><span>WHY THIS AUDIT EXISTS</span></div>
+    <p>Aggregate score deltas tell you <em>that</em> a model shifted its verdict when a demographic signal changed. They do not tell you <em>why</em>. A 0.5-point drop on a candidate from Lagos could be the model penalizing the location, or it could be the model legitimately picking up on a different concern that happened to surface in that pair. The audit reads the model's own justification and decides which of those is happening — a kind of post-hoc explainability layer for the counterfactual signal.</p>
+    <p>The verdict triple — <code>justified</code> / <code>bias</code> / <code>mixed</code> — plus the verbatim <code>bias_signals</code> quotes give a human reader something to grep for and verify directly against the model's own words. That is the artifact a reader can argue with: not an opaque score, but a quotation.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><span>JUDGE SELECTION · COSTS AND TRADEOFFS</span></div>
+    <p>We considered five candidate judges before settling on <code>gemini-2.5-pro</code>. Costs below assume a complete corpus (~4,930 variant cells × ~1.8 prompts/cell × ~1.2k input / ~200 output tokens per prompt).</p>
+    <table class="data">
+      <thead><tr><th>Candidate</th><th class="num">Est. cost</th><th>Quality trade-off</th></tr></thead>
+      <tbody>
+        <tr><td><code>gemini-3.1-flash-lite</code> (batch)</td><td class="num">~$3</td><td class="dim">Cheapest. Risk of false negatives on subtle bias — under-calling justified what a stronger model would flag.</td></tr>
+        <tr><td><code>gemini-2.5-flash</code></td><td class="num">~$8</td><td class="dim">Acceptable on clear cases. Same false-negative concern as Lite, smaller magnitude.</td></tr>
+        <tr><td><strong><code>gemini-2.5-pro</code></strong> (chosen)</td><td class="num"><strong>~$31</strong></td><td>Strong nuanced reasoning. Reliable structured-JSON output. Best quality-for-money on this task and not one of the models being audited.</td></tr>
+        <tr><td><code>gemini-3.1-pro-preview</code></td><td class="num">~$53</td><td class="dim">Highest quality but preview-tier (rate-limit and price churn risk).</td></tr>
+        <tr><td><code>claude-opus</code></td><td class="num">~$294*</td><td class="dim">High quality but expensive at the API tier. Also one of the audited models — risk of self-judging.</td></tr>
+      </tbody>
+    </table>
+    <p class="dim">* API-equivalent. The pilot audits were run via the Claude CLI subscription where token spend doesn't appear on an API invoice.</p>
+    <p><strong>Why not a cheaper judge.</strong> Under-calling bias (false negatives) is the more damaging failure mode for an audit whose purpose is to surface bias. The Lite/Flash tiers historically trade reasoning depth for cost; on a binary "is this reasoning biased" task with subtle linguistic cues, that trade hurts the audit's headline claim more than it saves on the bill.</p>
+    <p><strong>Why not cross-judge validation.</strong> A defensible alternative is running two judges per cell and treating disagreement as a third signal. We opted instead for the two-sample design (first-run + median-typical run, same judge) because it isolates a different error source — sample selection — that the current single-pair audit was most exposed to. Cross-judge can be layered on later without re-running collection.</p>
+    <p><strong>Self-judging caveat.</strong> Every Gemini variant — including the chosen judge — is itself in the audited set, so the audit is asking <code>gemini-2.5-pro</code> to render verdicts on outputs from <code>gemini-2.5-pro</code>, <code>gemini-2.5-flash</code>, and <code>gemini-3.1-pro-preview</code> among others. Models are known to favour their own family's outputs in head-to-head judging; the structured rubric and verbatim <code>bias_signals</code> quotes blunt this but do not eliminate it. A fully external judge (e.g. a frontier OpenAI model not in this study) would close that gap at additional cost.</p>
+  </div>
+  <div class="panel">
     <div class="panel-head"><span>BIAS DIMENSIONS</span></div>
     <table class="data">
       <thead><tr><th>Dimension</th><th>Variants tested</th></tr></thead>
@@ -1153,7 +1247,9 @@ async function prerenderHtml({ status, matrixData, topDiffs, axes, models, jds, 
     let changed = false;
     for (const [key, content] of Object.entries(replacements)) {
       const re = new RegExp(`(<!-- @PRERENDER:${key}:START -->)[\\s\\S]*?(<!-- @PRERENDER:${key}:END -->)`, 'g');
-      const next = html.replace(re, `$1\n${content}\n$2`);
+      // Use a callback so any `$` characters in content (e.g. dollar amounts) aren't
+      // interpreted as regex back-references by String.prototype.replace.
+      const next = html.replace(re, (_, startTag, endTag) => `${startTag}\n${content}\n${endTag}`);
       if (next !== html) { html = next; changed = true; }
     }
     if (changed) {

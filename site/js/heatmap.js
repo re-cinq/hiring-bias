@@ -3,7 +3,7 @@ import { loadJson, el, header, fmtNum, fmtSignedDelta, deltaClass, setParam, par
 import { wallView } from './charts.js';
 
 await mountChrome();
-document.getElementById('header').append(header('BIAS MATRIX                 ', 'pick a model and a dimension to see the wall of résumé variants × jobs'));
+document.getElementById('header').append(header('BIAS MATRIX                 '));
 
 const matrix = await loadJson('data/matrix.json');
 const summary = await loadJson('data/summary.json');
