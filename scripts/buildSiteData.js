@@ -686,11 +686,15 @@ async function loadAuditsRaw() {
 // disagree by construction (only one pair was actually judged) and so don't enter the denominator.
 function auditStabilityStats(records) {
   const total = records.length;
+  const verdicts = ['bias', 'justified', 'mixed'];
+  const matrix = Object.fromEntries(verdicts.map((v) => [v, Object.fromEntries(verdicts.map((w) => [w, 0]))]));
   let coincide = 0, agree = 0, disagree = 0;
   for (const r of records) {
     if (!r.first_run || !r.median_run) continue;
     if (r.samples_coincide) { coincide++; continue; }
     if (r.verdicts_agree) agree++; else disagree++;
+    const a = r.first_run.verdict, b = r.median_run.verdict;
+    if (matrix[a] && matrix[a][b] != null) matrix[a][b]++;
   }
   const distinctPairs = agree + disagree;
   return {
@@ -698,7 +702,9 @@ function auditStabilityStats(records) {
     coincide,
     distinct_pairs: distinctPairs,
     disagree,
-    disagree_pct: distinctPairs ? (100 * disagree / distinctPairs) : null
+    disagree_pct: distinctPairs ? (100 * disagree / distinctPairs) : null,
+    verdicts,
+    matrix
   };
 }
 
@@ -1227,7 +1233,62 @@ function auditStabilityPanelHtml(stats) {
     <div class="panel-head"><span>AUDITOR STABILITY · DOES THE JUDGE FLIP?</span></div>
     <p>Every audited cell is judged twice — once on the first-run sample and once on the median-typical sample. When the two samples are different evaluations, the auditor can in principle disagree with itself. This stat measures how often it does.</p>
     <p><strong>Disagreement rate (when two distinct sampled pairs were judged): <span class="alert">${pct}</span></strong> &nbsp;(${stats.disagree} of ${denom} cells).</p>
+    ${confusionMatrixHtml(stats)}
     <p class="dim">Of <strong>${stats.total.toLocaleString()}</strong> total audited cells, <strong>${stats.coincide.toLocaleString()}</strong> had identical first-and-median samples (a single pair selected twice, no disagreement possible by construction) and were excluded from the denominator. The remaining <strong>${denom.toLocaleString()}</strong> cells had two genuinely different sampled pairs from the same cell — and on that set, the auditor returned a different verdict <strong>${pct}</strong> of the time. This is the empirical reason we aggregate over five runs per cell rather than relying on a single judgement: at temperature 0.7, even an LLM judge faced with two different samples of <em>the same</em> bias case will not always agree with itself.</p>
+  </div>
+  `;
+}
+
+// 3x3 confusion matrix of first-run vs median-run verdicts. Diagonals = agreement (accent-tinted),
+// off-diagonals = disagreement (alert-tinted), with cell-shade intensity scaled to the count.
+function confusionMatrixHtml(stats) {
+  const verdicts = stats.verdicts;
+  const mat = stats.matrix;
+  let maxCount = 0;
+  for (const a of verdicts) for (const b of verdicts) maxCount = Math.max(maxCount, mat[a][b]);
+  const cell = (a, b) => {
+    const c = mat[a][b];
+    const intensity = maxCount ? c / maxCount : 0;
+    const klass = a === b ? 'agree' : 'disagree';
+    const alpha = (0.08 + 0.5 * intensity).toFixed(3);
+    const bg = a === b
+      ? `rgba(111, 174, 114, ${alpha})`
+      : `rgba(184, 91, 91, ${alpha})`;
+    return `<td class="num cm-${klass}" style="background:${bg}">${c}</td>`;
+  };
+  const header = verdicts.map((v) => `<th class="num">${v}</th>`).join('');
+  const rowTotals = verdicts.map((a) => verdicts.reduce((s, b) => s + mat[a][b], 0));
+  const rows = verdicts.map((a, i) => `
+    <tr>
+      <th class="cm-row">${a}</th>
+      ${verdicts.map((b) => cell(a, b)).join('')}
+      <td class="num dim cm-rowtotal">${rowTotals[i]}</td>
+    </tr>`).join('');
+  const colsTotal = verdicts.map((b) => verdicts.reduce((s, a) => s + mat[a][b], 0));
+  const grandTotal = colsTotal.reduce((s, c) => s + c, 0);
+  const flipBJ = mat.bias.justified;
+  const flipJB = mat.justified.bias;
+  const asymmetry = flipJB ? (flipBJ / flipJB).toFixed(2) : '—';
+  return `<div class="cm-wrap">
+    <p class="cm-howto"><strong>How to read this:</strong> each cell counts (variant × model × JD) pairs where the judge said <em>X</em> about the first sampled run and <em>Y</em> about the median-typical run. <span class="cm-key cm-key-agree">●</span> green = same verdict (judge agreed with itself); <span class="cm-key cm-key-disagree">●</span> red = different verdict (judge flipped).</p>
+    <table class="data cm">
+      <thead>
+        <tr><th></th><th colspan="${verdicts.length}" class="cm-axis-label">JUDGE'S VERDICT ON THE MEDIAN-TYPICAL SAMPLE →</th><th></th></tr>
+        <tr><th class="cm-axis-label rot">JUDGE'S VERDICT ON THE FIRST SAMPLE ↓</th>${header}<th class="num cm-axis-label">row total</th></tr>
+      </thead>
+      <tbody>${rows}</tbody>
+      <tfoot>
+        <tr>
+          <th class="dim">col total</th>
+          ${colsTotal.map((c) => `<td class="num dim">${c}</td>`).join('')}
+          <td class="num dim"><strong>${grandTotal}</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+    <p class="dim cm-caption">
+      Diagonal cells (green) are where the auditor agreed with itself; off-diagonal cells (red) are flips. The largest flip cell is
+      <strong>bias → justified</strong> at <strong>${flipBJ}</strong> cases — the judge said the first sample looked like bias but later judged the median sample as justified. The reverse direction, <strong>justified → bias</strong>, is only <strong>${flipJB}</strong> cases. That ${asymmetry}× asymmetry matters: it means a single-sample audit on the <em>first</em> run would systematically over-call bias compared to one that picks a more representative sample.
+    </p>
   </div>
   `;
 }

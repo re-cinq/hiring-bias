@@ -81,6 +81,43 @@
     <div class="panel-head"><span>AUDITOR STABILITY · DOES THE JUDGE FLIP?</span></div>
     <p>Every audited cell is judged twice — once on the first-run sample and once on the median-typical sample. When the two samples are different evaluations, the auditor can in principle disagree with itself. This stat measures how often it does.</p>
     <p><strong>Disagreement rate (when two distinct sampled pairs were judged): <span class="alert">46.19%</span></strong> &nbsp;(922 of 1996 cells).</p>
+    <div class="cm-wrap">
+    <p class="cm-howto"><strong>How to read this:</strong> each cell counts (variant × model × JD) pairs where the judge said <em>X</em> about the first sampled run and <em>Y</em> about the median-typical run. <span class="cm-key cm-key-agree">●</span> green = same verdict (judge agreed with itself); <span class="cm-key cm-key-disagree">●</span> red = different verdict (judge flipped).</p>
+    <table class="data cm">
+      <thead>
+        <tr><th></th><th colspan="3" class="cm-axis-label">JUDGE'S VERDICT ON THE MEDIAN-TYPICAL SAMPLE →</th><th></th></tr>
+        <tr><th class="cm-axis-label rot">JUDGE'S VERDICT ON THE FIRST SAMPLE ↓</th><th class="num">bias</th><th class="num">justified</th><th class="num">mixed</th><th class="num cm-axis-label">row total</th></tr>
+      </thead>
+      <tbody>
+    <tr>
+      <th class="cm-row">bias</th>
+      <td class="num cm-agree" style="background:rgba(111, 174, 114, 0.580)">697</td><td class="num cm-disagree" style="background:rgba(184, 91, 91, 0.504)">591</td><td class="num cm-disagree" style="background:rgba(184, 91, 91, 0.086)">9</td>
+      <td class="num dim cm-rowtotal">1297</td>
+    </tr>
+    <tr>
+      <th class="cm-row">justified</th>
+      <td class="num cm-disagree" style="background:rgba(184, 91, 91, 0.295)">300</td><td class="num cm-agree" style="background:rgba(111, 174, 114, 0.350)">377</td><td class="num cm-disagree" style="background:rgba(184, 91, 91, 0.087)">10</td>
+      <td class="num dim cm-rowtotal">687</td>
+    </tr>
+    <tr>
+      <th class="cm-row">mixed</th>
+      <td class="num cm-disagree" style="background:rgba(184, 91, 91, 0.084)">5</td><td class="num cm-disagree" style="background:rgba(184, 91, 91, 0.085)">7</td><td class="num cm-agree" style="background:rgba(111, 174, 114, 0.080)">0</td>
+      <td class="num dim cm-rowtotal">12</td>
+    </tr></tbody>
+      <tfoot>
+        <tr>
+          <th class="dim">col total</th>
+          <td class="num dim">1002</td><td class="num dim">975</td><td class="num dim">19</td>
+          <td class="num dim"><strong>1996</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+    <p class="dim cm-caption">
+      Diagonal cells (green) are where the auditor agreed with itself; off-diagonal cells (red) are flips. The largest flip cell is
+      <strong>bias → justified</strong> at <strong>591</strong> cases — the judge said the first sample looked like bias but later judged the median sample as justified. The reverse direction, <strong>justified → bias</strong>, is only <strong>300</strong> cases. That 1.97× asymmetry matters: it means a single-sample audit on the <em>first</em> run would systematically over-call bias compared to one that picks a more representative sample.
+    </p>
+  </div>
+  
     <p class="dim">Of <strong>4,930</strong> total audited cells, <strong>2,934</strong> had identical first-and-median samples (a single pair selected twice, no disagreement possible by construction) and were excluded from the denominator. The remaining <strong>1,996</strong> cells had two genuinely different sampled pairs from the same cell — and on that set, the auditor returned a different verdict <strong>46.19%</strong> of the time. This is the empirical reason we aggregate over five runs per cell rather than relying on a single judgement: at temperature 0.7, even an LLM judge faced with two different samples of <em>the same</em> bias case will not always agree with itself.</p>
   </div>
   
