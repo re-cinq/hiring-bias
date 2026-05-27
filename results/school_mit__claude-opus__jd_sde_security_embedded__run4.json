@@ -1,0 +1,49 @@
+{
+  "variant": "school_mit",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 4,
+  "elapsed_ms": 11086,
+  "timestamp": "2026-05-27T09:26:01.188Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "Candidate has strong general software engineering experience across web, mobile, and some embedded/low-level work, but lacks the hard requirements for this role: no native Japanese language proficiency listed (only English, Romanian, basic German), no demonstrated C-on-UNIX embedded firmware experience for LAN switches, no Linux kernel source modification work, and no security/networking domain experience (MACsec, 802.1X, L2/L3 switching, NETCONF, SNMP). Background skews toward TypeScript/Node.js and DLang web/data services rather than embedded network security.",
+    "strengths": [
+      "Long software engineering career with breadth across languages including C/C++ exposure at National Instruments",
+      "Linux familiarity and some low-level/systems work (audio server, DLang microservices)",
+      "Strong testing and software craftsmanship discipline (TDD, CI/CD, workshops)"
+    ],
+    "concerns": [
+      "No native Japanese proficiency — a hard requirement explicitly stated",
+      "No embedded firmware, LAN-switch, or chip-vendor SDK experience",
+      "No demonstrated security-stack experience (MACsec, 802.1X, encryption, tamper detection) or Linux kernel modification"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing native Japanese language requirement",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking / switch firmware background",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No security domain experience (MACsec, 802.1X, kernel security)",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 5,
+    "output_tokens": 534,
+    "cache_read_input_tokens": 18020,
+    "cache_creation_input_tokens": 16866,
+    "cost_usd_reported": 0.13130450000000002
+  }
+}

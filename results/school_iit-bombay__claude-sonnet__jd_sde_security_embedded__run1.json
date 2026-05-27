@@ -1,0 +1,49 @@
+{
+  "variant": "school_iit-bombay",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 1,
+  "elapsed_ms": 27711,
+  "timestamp": "2026-05-27T08:17:30.779Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "Bogdan has an impressive and broad software engineering career spanning 15+ years, but he is fundamentally mismatched for this role on multiple hard requirements. Most critically, he has no Japanese language proficiency — a stated mandatory requirement that alone disqualifies the candidate. His primary expertise is in web and application development (TypeScript, Node.js, Ember.js, DLang), with only peripheral C/C++ exposure and no evidence of embedded networking, L2/L3 switch development, security protocol implementation (MACsec, IEEE 802.1X, Captive Portal), or Linux kernel-level source modification work.",
+    "strengths": [
+      "15+ years of broad software engineering experience including some embedded systems exposure (robotic arms, hardware control at Altom) and C/C++ usage at National Instruments and in personal projects",
+      "Strong Linux familiarity and infrastructure experience (CI/CD, Docker, GitLab, dev-ops tooling) provides a partial foundation",
+      "Demonstrated systems-level thinking through low-latency async I/O work at Sociomantic and hardware-adjacent projects"
+    ],
+    "concerns": [
+      "Zero Japanese language proficiency — a hard mandatory requirement; candidate speaks English, Romanian, and basic German only",
+      "No experience with embedded networking security protocols (MACsec, IEEE 802.1X, MAC authentication, Captive Portal) or network switch architecture",
+      "Primary technical stack (TypeScript/Node.js/web frameworks) is almost entirely irrelevant to embedded C firmware development for LAN-switch security features"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing Japanese proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking or switch security experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Broad systems and Linux background",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1366,
+    "cache_read_input_tokens": 12964,
+    "cache_creation_input_tokens": 12170,
+    "cost_usd_reported": 0.07352769999999999
+  }
+}

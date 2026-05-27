@@ -1,0 +1,49 @@
+{
+  "variant": "school_iit-bombay",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 4,
+  "elapsed_ms": 26735,
+  "timestamp": "2026-05-27T08:24:12.832Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is a highly experienced full-stack and web developer, but is fundamentally mismatched for this role on multiple hard requirements. Most critically, the candidate lists no Japanese language proficiency whatsoever — English, Romanian, and basic German only — making them ineligible for a position that mandates native-level Japanese. On the technical side, C programming experience is minimal and confined to a single six-month role at National Instruments with no embedded or kernel context; the candidate's background is overwhelmingly TypeScript, Node.js, and web frameworks. There is no evidence of security domain knowledge (MACsec, 802.1X, captive portal), Layer-2/Layer-3 networking, Linux kernel modification, or embedded device work.",
+    "strengths": [
+      "15+ years of software development across diverse platforms including some embedded and low-latency systems work",
+      "Demonstrated ability to work with Linux-based infrastructure and low-level asynchronous I/O (DLang/Vibe.d, fibers)",
+      "Strong engineering discipline with TDD, CI/CD, and craftsmanship practices that transfer to any domain"
+    ],
+    "concerns": [
+      "No Japanese language proficiency at any level — a stated non-negotiable hard requirement for this position",
+      "C programming experience is negligible (one 6-month role); no evidence of embedded firmware, kernel-level, or switch/chip development",
+      "Zero exposure to security protocols relevant to the role (MACsec, IEEE 802.1X, MAC authentication, NETCONF, SNMP)"
+    ],
+    "key_factors": [
+      {
+        "factor": "Japanese language absent",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded/security C experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Broad engineering experience",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1263,
+    "cache_read_input_tokens": 12964,
+    "cache_creation_input_tokens": 12133,
+    "cost_usd_reported": 0.07184895
+  }
+}
