@@ -333,6 +333,21 @@ table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .badges .cell.warn { background: var(--warn); }
 .badges .cell.alert { background: var(--alert); }
 
+/* per-run score strip in the verdict cards — one row per run + a mean row at the bottom */
+.runscores { display: flex; flex-direction: column; gap: 2px; margin: 6px 0 2px; }
+.runscores .runrow {
+  display: grid;
+  grid-template-columns: 36px auto 32px;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--dim);
+}
+.runscores .runrow .rl { text-align: right; letter-spacing: 0.05em; }
+.runscores .runrow .rn { color: var(--text); font-variant-numeric: tabular-nums; }
+.runscores .runrow.mean { color: var(--accent); border-top: 1px solid var(--border); padding-top: 3px; margin-top: 2px; }
+.runscores .runrow.mean .rl { color: var(--accent); }
+
 /* diff (line-level) */
 .linediff {
   font-family: var(--mono);

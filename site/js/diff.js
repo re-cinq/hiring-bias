@@ -240,7 +240,7 @@ function verdictCard(title, data, compare = null) {
     ' · Mean: ', el('strong', {}, fmtNum(data.mean, 2)),
     ' · Recommend rate: ', el('strong', {}, data.recommend_rate != null ? `${(data.recommend_rate * 100).toFixed(0)}%` : '—')
   ]));
-  card.append(badges(Math.round((data.mean ?? 0)), 10));
+  card.append(renderRunScores(data));
 
   if (data.sample?.justification) {
     card.append(el('h4', {}, 'Justification'));
@@ -298,6 +298,33 @@ function bestMatch(item, candidates) {
     if (score > bestScore) { bestScore = score; best = candidate; }
   }
   return best;
+}
+
+// One badge-bar per run, stacked vertically — shows the spread of the 5 scores so the reader
+// can eyeball run-to-run noise instead of just the mean. Falls back to the mean-bar when per-run
+// scores aren't on the diff JSON (older builds).
+function renderRunScores(data) {
+  const wrap = el('div', { class: 'runscores' });
+  const scores = Array.isArray(data?.scores) ? data.scores : null;
+  if (!scores || !scores.length) {
+    wrap.append(badges(Math.round((data?.mean ?? 0)), 10));
+    return wrap;
+  }
+  for (let i = 0; i < scores.length; i++) {
+    const s = scores[i];
+    wrap.append(el('div', { class: 'runrow' }, [
+      el('span', { class: 'rl' }, `r${i + 1}`),
+      badges(s, 10),
+      el('span', { class: 'rn' }, String(s))
+    ]));
+  }
+  // Mean line at the bottom, dimmer
+  wrap.append(el('div', { class: 'runrow mean' }, [
+    el('span', { class: 'rl' }, 'mean'),
+    badges(Math.round(data.mean ?? 0), 10),
+    el('span', { class: 'rn' }, fmtNum(data.mean, 2))
+  ]));
+  return wrap;
 }
 
 function variantLabel(variant) {

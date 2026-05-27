@@ -600,6 +600,8 @@ function buildDiffObjects(cells, records) {
   const firstByCell = indexFirstRunRecord(records);
   const medianByCell = indexMedianRunRecord(records);
   const countByCell = countRunsByCell(records);
+  // Index baseline cells so we can pull baseline per-run scores for the run-bar display.
+  const cellByKey = new Map(cells.map((c) => [`${c.variant}__${c.model}__${c.jd}`, c]));
   const out = [];
   for (const c of cells) {
     if (c.delta == null || c.variant === 'baseline') continue;
@@ -610,6 +612,7 @@ function buildDiffObjects(cells, records) {
     if (!variantFirst || !baselineFirst) continue;
     const variantMedian = medianByCell.get(variantKey);
     const baselineMedian = medianByCell.get(baselineKey);
+    const baselineCell = cellByKey.get(baselineKey);
     out.push({
       id: variantKey,
       variant: c.variant, axis: axisOf(c.variant), level: levelOf(c.variant),
@@ -620,12 +623,14 @@ function buildDiffObjects(cells, records) {
       baseline: {
         mean: c.baseline_mean,
         recommend_rate: c.baseline_recommend_rate,
+        scores: baselineCell?.scores ?? null,
         sample: baselineFirst.response,
         sample_median: baselineMedian?.response ?? null
       },
       variant_data: {
         mean: c.mean,
         recommend_rate: c.recommend_yes_rate,
+        scores: c.scores ?? null,
         sample: variantFirst.response,
         sample_median: variantMedian?.response ?? null
       }
