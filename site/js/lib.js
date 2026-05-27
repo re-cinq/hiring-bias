@@ -17,23 +17,23 @@ export function setParam(key, value, { replace = false } = {}) {
 }
 
 export function fmtNum(x, digits = 2) {
-  if (x == null || Number.isNaN(x)) return '—';
+  if (x == null || Number.isNaN(x)) return '–';
   return Number(x).toFixed(digits);
 }
 
 export function fmtPct(x, digits = 0) {
-  if (x == null || Number.isNaN(x)) return '—';
+  if (x == null || Number.isNaN(x)) return '–';
   return `${(x * 100).toFixed(digits)}%`;
 }
 
 export function fmtSignedDelta(x, digits = 2) {
-  if (x == null || Number.isNaN(x)) return '—';
+  if (x == null || Number.isNaN(x)) return '–';
   const s = Number(x).toFixed(digits);
   return x > 0 ? `+${s}` : s;
 }
 
 export function fmtDate(iso) {
-  if (!iso) return '—';
+  if (!iso) return '–';
   return iso.replace(/T.*$/, '');
 }
 
@@ -70,7 +70,7 @@ export function badges(filled, total = 10, klass = 'on') {
 export function pill(recommend) {
   const r = (recommend ?? '').toLowerCase();
   const cls = ['yes', 'no', 'maybe'].includes(r) ? r : '';
-  return el('span', { class: `pill ${cls}` }, r || '—');
+  return el('span', { class: `pill ${cls}` }, r || '–');
 }
 
 export function copyLinkButton() {

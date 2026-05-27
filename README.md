@@ -12,8 +12,8 @@ The method is counterfactual paired testing: start from one real baseline
 résumé, generate variants that change **exactly one signal at a time**, hold
 everything else constant, and measure how each model's score and recommendation
 move. Any delta between a variant and the baseline is attributable to the single
-signal that changed — the same logic as the classic Bertrand–Mullainathan audit
-study, run against today's models.
+signal that changed — the same logic as the classic [Bertrand–Mullainathan audit
+study](https://www.nber.org/papers/w9873), run against today's models.
 
 Results are explorable as a static site under [`site/`](site/) — heatmaps,
 counterfactual diffs, and per-job-description breakdowns.

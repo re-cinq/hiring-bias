@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Methodology — Bias Research</title>
+  <title>Methodology, Bias Research</title>
   <meta name="description" content="How the data was collected. The exact prompt, the 7 demographic dimensions, the variant generation, the limitations.">
-  <meta property="og:title" content="Methodology — Bias Research">
+  <meta property="og:title" content="Methodology, Bias Research">
   <meta property="og:description" content="Experiment design, verbatim prompt, dimensions, limitations.">
   <meta property="og:type" content="article">
   <meta name="twitter:card" content="summary">
@@ -51,13 +51,13 @@
   <div class="panel">
     <div class="panel-head"><span>AUDIT METHODOLOGY · HOW VERDICTS ARE PRODUCED</span></div>
     <p>Each (variant, model, JD) cell with 5 collected runs is audited by <code>gemini-2.5-pro</code> acting as an LLM-as-judge. Cells with fewer than 5 runs are skipped until backfill completes, so every verdict is produced against a complete sample.</p>
-    <p><strong>Two samples per cell, two verdicts.</strong> The auditor sees the cell's mean Δ and run count as statistical context, then judges <em>two</em> matched evaluation pairs from the run set: (1) the first run and (2) the run whose score sits closest to the cell's mean (the "most-typical" run). The site shows the median-run verdict as the headline; the first-run verdict is kept as a second opinion. A <code>verdicts_agree</code> flag marks cells where the two samples reached different conclusions — those are the cases where a single-pair audit would have been brittle.</p>
+    <p><strong>Two samples per cell, two verdicts.</strong> The auditor sees the cell's mean Δ and run count as statistical context, then judges <em>two</em> matched evaluation pairs from the run set: (1) the first run and (2) the run whose score sits closest to the cell's mean (the "most-typical" run). The site shows the median-run verdict as the headline; the first-run verdict is kept as a second opinion. A <code>verdicts_agree</code> flag marks cells where the two samples reached different conclusions, those are the cases where a single-pair audit would have been brittle.</p>
     <p><strong>What an audit verdict means and does not mean.</strong> A verdict is a judgement on the <em>reasoning</em> visible in one evaluation pair, not on the per-cell statistical effect. A "bias" verdict says the model's justification keyed off the demographic signal in the sample shown to the auditor; it does not by itself certify that the mean Δ over 5 runs would clear a 95% significance threshold. Read verdicts alongside the volcano plot and per-cell CIs.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>WHY THIS AUDIT EXISTS</span></div>
-    <p>Aggregate score deltas tell you <em>that</em> a model shifted its verdict when a demographic signal changed. They do not tell you <em>why</em>. A 0.5-point drop on a candidate from Lagos could be the model penalizing the location, or it could be the model legitimately picking up on a different concern that happened to surface in that pair. The audit reads the model's own justification and decides which of those is happening — a kind of post-hoc explainability layer for the counterfactual signal.</p>
-    <p>The verdict triple — <code>justified</code> / <code>bias</code> / <code>mixed</code> — plus the verbatim <code>bias_signals</code> quotes give a human reader something to grep for and verify directly against the model's own words. That is the artifact a reader can argue with: not an opaque score, but a quotation.</p>
+    <p>Aggregate score deltas tell you <em>that</em> a model shifted its verdict when a demographic signal changed. They do not tell you <em>why</em>. A 0.5-point drop on a candidate from Lagos could be the model penalizing the location, or it could be the model legitimately picking up on a different concern that happened to surface in that pair. The audit reads the model's own justification and decides which of those is happening, a kind of post-hoc explainability layer for the counterfactual signal.</p>
+    <p>The verdict triple, <code>justified</code> / <code>bias</code> / <code>mixed</code>, plus the verbatim <code>bias_signals</code> quotes give a human reader something to grep for and verify directly against the model's own words. That is the artifact a reader can argue with: not an opaque score, but a quotation.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>JUDGE SELECTION · COSTS AND TRADEOFFS</span></div>
@@ -65,21 +65,21 @@
     <table class="data">
       <thead><tr><th>Candidate</th><th class="num">Est. cost</th><th>Quality trade-off</th></tr></thead>
       <tbody>
-        <tr><td><code>gemini-3.1-flash-lite</code> (batch)</td><td class="num">~$3</td><td class="dim">Cheapest. Risk of false negatives on subtle bias — under-calling justified what a stronger model would flag.</td></tr>
+        <tr><td><code>gemini-3.1-flash-lite</code> (batch)</td><td class="num">~$3</td><td class="dim">Cheapest. Risk of false negatives on subtle bias, under-calling justified what a stronger model would flag.</td></tr>
         <tr><td><code>gemini-2.5-flash</code></td><td class="num">~$8</td><td class="dim">Acceptable on clear cases. Same false-negative concern as Lite, smaller magnitude.</td></tr>
         <tr><td><strong><code>gemini-2.5-pro</code></strong> (chosen)</td><td class="num"><strong>~$31</strong></td><td>Strong nuanced reasoning. Reliable structured-JSON output. Best quality-for-money on this task and not one of the models being audited.</td></tr>
         <tr><td><code>gemini-3.1-pro-preview</code></td><td class="num">~$53</td><td class="dim">Highest quality but preview-tier (rate-limit and price churn risk).</td></tr>
-        <tr><td><code>claude-opus</code></td><td class="num">~$294*</td><td class="dim">High quality but expensive at the API tier. Also one of the audited models — risk of self-judging.</td></tr>
+        <tr><td><code>claude-opus</code></td><td class="num">~$294*</td><td class="dim">High quality but expensive at the API tier. Also one of the audited models, risk of self-judging.</td></tr>
       </tbody>
     </table>
     <p class="dim">* API-equivalent. The pilot audits were run via the Claude CLI subscription where token spend doesn't appear on an API invoice.</p>
     <p><strong>Why not a cheaper judge.</strong> Under-calling bias (false negatives) is the more damaging failure mode for an audit whose purpose is to surface bias. The Lite/Flash tiers historically trade reasoning depth for cost; on a binary "is this reasoning biased" task with subtle linguistic cues, that trade hurts the audit's headline claim more than it saves on the bill.</p>
-    <p><strong>Why not cross-judge validation.</strong> A defensible alternative is running two judges per cell and treating disagreement as a third signal. We opted instead for the two-sample design (first-run + median-typical run, same judge) because it isolates a different error source — sample selection — that the current single-pair audit was most exposed to. Cross-judge can be layered on later without re-running collection.</p>
-    <p><strong>Self-judging caveat.</strong> Every Gemini variant — including the chosen judge — is itself in the audited set, so the audit is asking <code>gemini-2.5-pro</code> to render verdicts on outputs from <code>gemini-2.5-pro</code>, <code>gemini-2.5-flash</code>, and <code>gemini-3.1-pro-preview</code> among others. Models are known to favour their own family's outputs in head-to-head judging; the structured rubric and verbatim <code>bias_signals</code> quotes blunt this but do not eliminate it. A fully external judge (e.g. a frontier OpenAI model not in this study) would close that gap at additional cost.</p>
+    <p><strong>Why not cross-judge validation.</strong> A defensible alternative is running two judges per cell and treating disagreement as a third signal. We opted instead for the two-sample design (first-run + median-typical run, same judge) because it isolates a different error source, sample selection, that the current single-pair audit was most exposed to. Cross-judge can be layered on later without re-running collection.</p>
+    <p><strong>Self-judging caveat.</strong> Every Gemini variant, including the chosen judge, is itself in the audited set, so the audit is asking <code>gemini-2.5-pro</code> to render verdicts on outputs from <code>gemini-2.5-pro</code>, <code>gemini-2.5-flash</code>, and <code>gemini-3.1-pro-preview</code> among others. Models are known to favour their own family's outputs in head-to-head judging; the structured rubric and verbatim <code>bias_signals</code> quotes blunt this but do not eliminate it. A fully external judge (e.g. a frontier OpenAI model not in this study) would close that gap at additional cost.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>AUDITOR STABILITY · DOES THE JUDGE FLIP?</span></div>
-    <p>Every audited cell is judged twice — once on the first-run sample and once on the median-typical sample. When the two samples are different evaluations, the auditor can in principle disagree with itself. This stat measures how often it does.</p>
+    <p>Every audited cell is judged twice, once on the first-run sample and once on the median-typical sample. When the two samples are different evaluations, the auditor can in principle disagree with itself. This stat measures how often it does.</p>
     <p><strong>Disagreement rate (when two distinct sampled pairs were judged): <span class="alert">46.19%</span></strong> &nbsp;(922 of 1996 cells).</p>
     <div class="cm-wrap">
     <p class="cm-howto"><strong>How to read this:</strong> each cell counts (variant × model × JD) pairs where the judge said <em>X</em> about the first sampled run and <em>Y</em> about the median-typical run. <span class="cm-key cm-key-agree">●</span> green = same verdict (judge agreed with itself); <span class="cm-key cm-key-disagree">●</span> red = different verdict (judge flipped).</p>
@@ -114,11 +114,11 @@
     </table>
     <p class="dim cm-caption">
       Diagonal cells (green) are where the auditor agreed with itself; off-diagonal cells (red) are flips. The largest flip cell is
-      <strong>bias → justified</strong> at <strong>591</strong> cases — the judge said the first sample looked like bias but later judged the median sample as justified. The reverse direction, <strong>justified → bias</strong>, is only <strong>300</strong> cases. That 1.97× asymmetry matters: it means a single-sample audit on the <em>first</em> run would systematically over-call bias compared to one that picks a more representative sample.
+      <strong>bias → justified</strong> at <strong>591</strong> cases, the judge said the first sample looked like bias but later judged the median sample as justified. The reverse direction, <strong>justified → bias</strong>, is only <strong>300</strong> cases. That 1.97× asymmetry matters: it means a single-sample audit on the <em>first</em> run would systematically over-call bias compared to one that picks a more representative sample.
     </p>
   </div>
   
-    <p class="dim">Of <strong>4,930</strong> total audited cells, <strong>2,934</strong> had identical first-and-median samples (a single pair selected twice, no disagreement possible by construction) and were excluded from the denominator. The remaining <strong>1,996</strong> cells had two genuinely different sampled pairs from the same cell — and on that set, the auditor returned a different verdict <strong>46.19%</strong> of the time. This is the empirical reason we aggregate over five runs per cell rather than relying on a single judgement: at temperature 0.7, even an LLM judge faced with two different samples of <em>the same</em> bias case will not always agree with itself.</p>
+    <p class="dim">Of <strong>4,930</strong> total audited cells, <strong>2,934</strong> had identical first-and-median samples (a single pair selected twice, no disagreement possible by construction) and were excluded from the denominator. The remaining <strong>1,996</strong> cells had two genuinely different sampled pairs from the same cell, and on that set, the auditor returned a different verdict <strong>46.19%</strong> of the time. This is the empirical reason we aggregate over five runs per cell rather than relying on a single judgement: at temperature 0.7, even an LLM judge faced with two different samples of <em>the same</em> bias case will not always agree with itself.</p>
   </div>
   
   <div class="panel">
@@ -137,7 +137,7 @@
   </div>
   <div class="panel">
     <div class="panel-head"><span>JOB DESCRIPTIONS · 17 TOTAL</span></div>
-    <ul><li>C++ Developer — Capital Markets / Fixed Income</li><li>Chief Technology Officer — Agentic AI / Fintech</li><li>Head of Development / Tech Lead</li><li>Junior / Mid-Level Fullstack Developer</li><li>Junior Java Developer</li><li>Principal Engineer — Specialized Software (AI Strategy)</li><li>Principal Performance Architect</li><li>Principal Software Engineer — Growth / Experimentation Systems</li><li>Software Development Engineer — Security Features (Embedded Networking)</li><li>Senior Fullstack Developer</li><li>Senior Software Engineer — Enterprise IDE / JVM Tooling</li><li>Senior Manager — Digital Solutions (C++ Developer)</li><li>Senior Software Development Engineer — Routing Tiling</li><li>Staff Forward Deployed Engineer, GenAI, Cloud</li><li>Staff Software Engineer</li><li>Software Engineering Manager — Engineering Productivity</li><li>Technical Lead — Cloud Compute Platform</li></ul>
+    <ul><li>C++ Developer, Capital Markets / Fixed Income</li><li>Chief Technology Officer, Agentic AI / Fintech</li><li>Head of Development / Tech Lead</li><li>Junior / Mid-Level Fullstack Developer</li><li>Junior Java Developer</li><li>Principal Engineer, Specialized Software (AI Strategy)</li><li>Principal Performance Architect</li><li>Principal Software Engineer, Growth / Experimentation Systems</li><li>Software Development Engineer, Security Features (Embedded Networking)</li><li>Senior Fullstack Developer</li><li>Senior Software Engineer, Enterprise IDE / JVM Tooling</li><li>Senior Manager, Digital Solutions (C++ Developer)</li><li>Senior Software Development Engineer, Routing Tiling</li><li>Staff Forward Deployed Engineer, GenAI, Cloud</li><li>Staff Software Engineer</li><li>Software Engineering Manager, Engineering Productivity</li><li>Technical Lead, Cloud Compute Platform</li></ul>
   </div>
 <!-- @PRERENDER:methodology:END -->
     </div>

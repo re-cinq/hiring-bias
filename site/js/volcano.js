@@ -1,6 +1,6 @@
 import { el, fmtSignedDelta } from './lib.js';
 
-// Volcano plot: every (variant × model × job) cell as a point — x = score Δ vs baseline,
+// Volcano plot: every (variant × model × job) cell as a point, x = score Δ vs baseline,
 // y = significance (−log10 p). Real effects rise to the top corners; run-to-run noise
 // sinks to the bottom middle. Points are coloured by model with the same spectrum as the
 // jobs-page waves, blended additively: where many models pile on the same spot the colours
@@ -8,7 +8,7 @@ import { el, fmtSignedDelta } from './lib.js';
 const SVGNS = 'http://www.w3.org/2000/svg';
 const H = 380, PADL = 52, PADR = 16, PADT = 16, PADB = 38;
 
-// Same pure-spectrum hues as waves.js — additive sum is white, so dense overlap → white.
+// Same pure-spectrum hues as waves.js, additive sum is white, so dense overlap → white.
 const modelColor = (i, n) => `hsl(${Math.round((i * 360) / n)} 100% 50%)`;
 
 let tip;

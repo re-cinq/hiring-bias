@@ -17,7 +17,7 @@ const files = [
   { href: 'data/status.json', name: 'status.json', desc: 'Cell completeness, total cost, last-updated timestamp.' },
   { href: 'data/summary.json', name: 'summary.json', desc: 'Axes, models, JDs, labels: the schema map for everything else.' },
   { href: 'data/raw/results.ndjson.gz', name: 'results.ndjson.gz', desc: 'Full run-level corpus. One JSON object per inference run. Gzipped.' },
-  { href: 'data/raw/audit-verdicts.csv', name: 'audit-verdicts.csv', desc: 'One row per audited cell. Both first-run and median-run verdicts plus a verdicts_agree flag — lets you recompute the auditor disagreement rate yourself.' },
+  { href: 'data/raw/audit-verdicts.csv', name: 'audit-verdicts.csv', desc: 'One row per audited cell. Both first-run and median-run verdicts plus a verdicts_agree flag, lets you recompute the auditor disagreement rate yourself.' },
   { href: 'data/resumes.json', name: 'resumes.json', desc: `Full text of all ${variantCount} résumé variants.` },
   { href: 'data/resume_base.md', name: 'resume_base.md', desc: 'The unmodified baseline résumé.' }
 ];

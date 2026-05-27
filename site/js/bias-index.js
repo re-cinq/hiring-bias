@@ -80,7 +80,7 @@ function signedClass(v) {
 }
 
 function variantWithDelta(matrix, entry, klass) {
-  if (!entry) return el('span', { class: 'dim' }, '—');
+  if (!entry) return el('span', { class: 'dim' }, '–');
   const label = `${matrix.axis_labels?.[entry.axis] ?? entry.axis} · ${matrix.level_labels?.[entry.axis]?.[entry.level] ?? entry.level}`;
   return el('span', {}, [
     label, ' ',
@@ -147,18 +147,18 @@ export function renderDimensionBias(host, matrix, { title = 'WHICH DIMENSION TRI
   ])));
   const tbody = el('tbody');
   for (const s of indexes) {
-    const worstLabel = s.worst ? `${matrix.level_labels?.[s.axis]?.[s.worst.level] ?? s.worst.level} on ${MODEL_DISPLAY[s.worst.model] ?? s.worst.model}` : '—';
+    const worstLabel = s.worst ? `${matrix.level_labels?.[s.axis]?.[s.worst.level] ?? s.worst.level} on ${MODEL_DISPLAY[s.worst.model] ?? s.worst.model}` : '–';
     tbody.append(el('tr', {}, [
       el('td', {}, matrix.axis_labels?.[s.axis] ?? s.axis),
       el('td', { style: { width: '20%' } }, bar(s.mean_abs_delta ?? 0, worldMax)),
       el('td', { class: 'num' }, fmtNum(s.mean_abs_delta, 3)),
-      el('td', { class: `num ${signedClass(s.mean_signed_delta)}` }, s.mean_signed_delta != null ? (s.mean_signed_delta >= 0 ? '+' : '') + s.mean_signed_delta.toFixed(3) : '—'),
-      el('td', { class: 'num' }, s.sig_fraction != null ? fmtPct(s.sig_fraction, 0) : '—'),
+      el('td', { class: `num ${signedClass(s.mean_signed_delta)}` }, s.mean_signed_delta != null ? (s.mean_signed_delta >= 0 ? '+' : '') + s.mean_signed_delta.toFixed(3) : '–'),
+      el('td', { class: 'num' }, s.sig_fraction != null ? fmtPct(s.sig_fraction, 0) : '–'),
       el('td', { class: 'num dim' }, s.n),
       el('td', {}, s.worst ? el('span', {}, [
         worstLabel, ' ',
         el('span', { class: s.worst.mean_delta >= 0 ? 'accent' : 'alert' }, `(${s.worst.mean_delta >= 0 ? '+' : ''}${s.worst.mean_delta.toFixed(2)})`)
-      ]) : el('span', { class: 'dim' }, '—'))
+      ]) : el('span', { class: 'dim' }, '–'))
     ]));
   }
   table.append(tbody);
@@ -166,7 +166,7 @@ export function renderDimensionBias(host, matrix, { title = 'WHICH DIMENSION TRI
   host.append(panel);
 }
 
-export function renderBiasIndex(host, matrix, { title = 'GLOBAL BIAS INDEX — MEAN |Δ| ACROSS ALL CELLS', description = 'For each model, the average absolute score change when a demographic signal is altered, taken over every (axis, variant, JD) cell with data. Higher = the model is more sensitive to demographic signals; lower = more even-handed.' } = {}) {
+export function renderBiasIndex(host, matrix, { title = 'GLOBAL BIAS INDEX, MEAN |Δ| ACROSS ALL CELLS', description = 'For each model, the average absolute score change when a demographic signal is altered, taken over every (axis, variant, JD) cell with data. Higher = the model is more sensitive to demographic signals; lower = more even-handed.' } = {}) {
   host.innerHTML = '';
   const panel = el('div', { class: 'panel' });
   panel.append(el('div', { class: 'panel-head' }, el('span', {}, title)));
@@ -192,8 +192,8 @@ export function renderBiasIndex(host, matrix, { title = 'GLOBAL BIAS INDEX — M
       el('td', {}, MODEL_DISPLAY[s.model] ?? s.model),
       el('td', { style: { width: '20%' } }, bar(s.mean_abs_delta ?? 0, worldMax)),
       el('td', { class: 'num' }, fmtNum(s.mean_abs_delta, 3)),
-      el('td', { class: `num ${signedClass(s.mean_signed_delta)}` }, s.mean_signed_delta != null ? (s.mean_signed_delta >= 0 ? '+' : '') + s.mean_signed_delta.toFixed(3) : '—'),
-      el('td', { class: 'num' }, s.sig_fraction != null ? fmtPct(s.sig_fraction, 0) : '—'),
+      el('td', { class: `num ${signedClass(s.mean_signed_delta)}` }, s.mean_signed_delta != null ? (s.mean_signed_delta >= 0 ? '+' : '') + s.mean_signed_delta.toFixed(3) : '–'),
+      el('td', { class: 'num' }, s.sig_fraction != null ? fmtPct(s.sig_fraction, 0) : '–'),
       el('td', { class: 'num dim' }, s.n),
       el('td', {}, variantWithDelta(matrix, s.most_penalised, 'alert')),
       el('td', {}, variantWithDelta(matrix, s.most_rewarded, 'accent'))
@@ -223,7 +223,7 @@ function variantDelta(matrix, id, model) {
 }
 
 function deltaBar(l, r) {
-  if (l == null && r == null) return el('span', { class: 'dim' }, '—');
+  if (l == null && r == null) return el('span', { class: 'dim' }, '–');
   const pos = (v) => `${Math.max(0, Math.min(100, (v + 3) / 6 * 100)).toFixed(1)}%`;
   const cls = (v) => v == null ? '' : (Math.abs(v) < 0.005 ? 'zero' : v > 0 ? 'pos' : 'neg');
   const bar = el('div', { class: 'delta-bar' });

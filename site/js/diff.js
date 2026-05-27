@@ -150,7 +150,23 @@ async function renderVerdict(variant, model, jd) {
   try { prebuilt = await loadJson(`data/diffs/${id}.json`); } catch {}
 
   if (prebuilt) {
-    panel.append(renderVerdictCards(prebuilt.baseline, prebuilt.variant_data, variant, model, jd, prebuilt.delta, prebuilt.ci_overlap, prebuilt.audit));
+    panel.append(renderSummaryBlock(prebuilt, variant));
+    const cardsHost = el('div', { class: 'verdict-cards-host' });
+    panel.append(cardsHost);
+
+    const nB = prebuilt.baseline.runs?.length ?? 0;
+    const nV = prebuilt.variant_data.runs?.length ?? 0;
+    let bIdx = 0, vIdx = 0;
+    function rebuild() {
+      cardsHost.innerHTML = '';
+      cardsHost.append(renderRunCards(prebuilt, variant, bIdx, vIdx, {
+        onPrevB: () => { if (nB) { bIdx = (bIdx - 1 + nB) % nB; rebuild(); } },
+        onNextB: () => { if (nB) { bIdx = (bIdx + 1) % nB; rebuild(); } },
+        onPrevV: () => { if (nV) { vIdx = (vIdx - 1 + nV) % nV; rebuild(); } },
+        onNextV: () => { if (nV) { vIdx = (vIdx + 1) % nV; rebuild(); } }
+      }));
+    }
+    rebuild();
   } else {
     const axis = variant.split('_')[0];
     const level = variant.slice(axis.length + 1);
@@ -161,7 +177,11 @@ async function renderVerdict(variant, model, jd) {
     } else {
       const base = { mean: cell.baseline_mean, recommend_rate: cell.baseline_recommend_rate, sample: null };
       const vari = { mean: cell.mean, recommend_rate: cell.recommend_yes_rate, sample: null };
-      panel.append(renderVerdictCards(base, vari, variant, model, jd, cell.delta, !cell.significant));
+      panel.append(renderSummaryBlock({ delta: cell.delta, ci_overlap: !cell.significant, audit: null }, variant));
+      const wrap = el('div', { class: 'grid grid-2' });
+      wrap.append(verdictCard('Baseline (unmodified resume)', base, 0, null, null));
+      wrap.append(verdictCard(`Variant · ${variantLabel(variant)}`, vari, 0, null, null));
+      panel.append(wrap);
     }
   }
 
@@ -169,25 +189,32 @@ async function renderVerdict(variant, model, jd) {
   verdictHost.append(panel);
 }
 
-function renderVerdictCards(baseline, variantData, variant, model, jd, delta, ciOverlap, audit) {
-  const wrap = el('div', { class: 'grid grid-2' });
-
-  wrap.append(verdictCard('Baseline (unmodified resume)', baseline));
-  wrap.append(verdictCard(`Variant · ${variantLabel(variant)}`, variantData, baseline.sample));
-
+// Aggregate summary (Δ, significance, plain-language, audit verdict). Stable across runs.
+function renderSummaryBlock(prebuilt, variant) {
   const summary = el('div', { class: 'panel' });
   summary.append(el('div', { class: 'panel-head' }, el('span', {}, 'SUMMARY')));
   summary.append(el('div', {}, [
-    `Δ score: `, el('span', { class: deltaClass(delta) }, fmtSignedDelta(delta, 2)),
+    `Δ score: `, el('span', { class: deltaClass(prebuilt.delta) }, fmtSignedDelta(prebuilt.delta, 2)),
     ' · ',
-    ciOverlap ? el('span', { class: 'dim' }, 'CI overlaps baseline (not significant)') : el('span', { class: 'accent' }, '✓ CI excludes baseline (significant)')
+    prebuilt.ci_overlap ? el('span', { class: 'dim' }, 'CI overlaps baseline (not significant)') : el('span', { class: 'accent' }, '✓ CI excludes baseline (significant)')
   ]));
-  summary.append(el('p', { class: 'plain-summary' }, plainSummary(delta, ciOverlap, variant)));
-  if (audit?.verdict) summary.append(renderAudit(audit));
+  summary.append(el('p', { class: 'plain-summary' }, plainSummary(prebuilt.delta, prebuilt.ci_overlap, variant)));
+  if (prebuilt.audit?.verdict) summary.append(renderAudit(prebuilt.audit));
+  return summary;
+}
 
-  const both = document.createElement('div');
-  both.append(summary, wrap);
-  return both;
+// Two cards with prev/next run navigation. The variant card's word-diff highlighting is
+// re-computed against whichever baseline run is currently selected.
+function renderRunCards(prebuilt, variant, bIdx, vIdx, handlers) {
+  const nB = prebuilt.baseline.runs?.length ?? 0;
+  const nV = prebuilt.variant_data.runs?.length ?? 0;
+  const baselineRun = prebuilt.baseline.runs?.[bIdx]?.response ?? prebuilt.baseline.sample;
+  const wrap = el('div', { class: 'grid grid-2' });
+  wrap.append(verdictCard('Baseline (unmodified resume)', prebuilt.baseline, bIdx, null,
+    nB > 1 ? { nRuns: nB, onPrev: handlers.onPrevB, onNext: handlers.onNextB } : null));
+  wrap.append(verdictCard(`Variant · ${variantLabel(variant)}`, prebuilt.variant_data, vIdx, baselineRun,
+    nV > 1 ? { nRuns: nV, onPrev: handlers.onPrevV, onNext: handlers.onNextV } : null));
+  return wrap;
 }
 
 // A math-free reading of the Δ score + significance, for non-statisticians.
@@ -228,40 +255,50 @@ function renderAudit(audit) {
   return box;
 }
 
-function verdictCard(title, data, compare = null) {
+function verdictCard(title, data, runIdx = 0, compare = null, nav = null) {
   const card = el('div', { class: 'card' });
-  card.append(el('div', { class: 'head' }, [
-    el('span', { class: 'label' }, title),
-    data.sample ? pill(data.sample.recommend_interview) : el('span', {})
-  ]));
+  // Selected per-run response (from data.runs[runIdx]); fall back to legacy data.sample.
+  const sample = data.runs?.[runIdx]?.response ?? data.sample;
+
+  // Head row: title · run-nav (if multi-run) · recommend pill
+  const headChildren = [el('span', { class: 'label' }, title)];
+  if (nav && nav.nRuns > 1) {
+    headChildren.push(el('span', { class: 'run-nav' }, [
+      el('button', { class: 'run-nav-btn', onclick: nav.onPrev, title: 'previous run' }, '◀'),
+      el('span', { class: 'run-idx' }, `run ${runIdx + 1} / ${nav.nRuns}`),
+      el('button', { class: 'run-nav-btn', onclick: nav.onNext, title: 'next run' }, '▶')
+    ]));
+  }
+  headChildren.push(sample ? pill(sample.recommend_interview) : el('span', {}));
+  card.append(el('div', { class: 'head' }, headChildren));
 
   card.append(el('div', {}, [
-    'Score: ', el('strong', {}, data.sample?.score ?? fmtNum(data.mean, 2) ?? '—'),
+    'Score: ', el('strong', {}, sample?.score ?? fmtNum(data.mean, 2) ?? '–'),
     ' · Mean: ', el('strong', {}, fmtNum(data.mean, 2)),
-    ' · Recommend rate: ', el('strong', {}, data.recommend_rate != null ? `${(data.recommend_rate * 100).toFixed(0)}%` : '—')
+    ' · Recommend rate: ', el('strong', {}, data.recommend_rate != null ? `${(data.recommend_rate * 100).toFixed(0)}%` : '–')
   ]));
   card.append(renderRunScores(data));
 
-  if (data.sample?.justification) {
+  if (sample?.justification) {
     card.append(el('h4', {}, 'Justification'));
-    card.append(el('p', { class: 'dim' }, diffText(compare?.justification, data.sample.justification)));
+    card.append(el('p', { class: 'dim' }, diffText(compare?.justification, sample.justification)));
   }
-  if (data.sample?.strengths?.length) {
+  if (sample?.strengths?.length) {
     card.append(el('h4', {}, 'Strengths'));
     const ul = el('ul');
-    for (const s of data.sample.strengths) ul.append(el('li', {}, diffText(bestMatch(s, compare?.strengths), s)));
+    for (const s of sample.strengths) ul.append(el('li', {}, diffText(bestMatch(s, compare?.strengths), s)));
     card.append(ul);
   }
-  if (data.sample?.concerns?.length) {
+  if (sample?.concerns?.length) {
     card.append(el('h4', {}, 'Concerns'));
     const ul = el('ul');
-    for (const c of data.sample.concerns) ul.append(el('li', {}, diffText(bestMatch(c, compare?.concerns), c)));
+    for (const c of sample.concerns) ul.append(el('li', {}, diffText(bestMatch(c, compare?.concerns), c)));
     card.append(ul);
   }
-  if (data.sample?.key_factors?.length) {
+  if (sample?.key_factors?.length) {
     card.append(el('h4', {}, 'Key factors'));
     const ul = el('ul');
-    for (const f of data.sample.key_factors) {
+    for (const f of sample.key_factors) {
       ul.append(el('li', {}, [
         `${f.factor} `,
         el('span', { class: f.direction === 'positive' ? 'accent' : 'alert' }, f.direction),
@@ -300,7 +337,7 @@ function bestMatch(item, candidates) {
   return best;
 }
 
-// One badge-bar per run, stacked vertically — shows the spread of the 5 scores so the reader
+// One badge-bar per run, stacked vertically, shows the spread of the 5 scores so the reader
 // can eyeball run-to-run noise instead of just the mean. Falls back to the mean-bar when per-run
 // scores aren't on the diff JSON (older builds).
 function renderRunScores(data) {

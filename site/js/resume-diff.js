@@ -90,7 +90,7 @@ function render() {
   panel.append(head);
 
   if (from === to) {
-    panel.append(el('p', { class: 'dim' }, '(same variant on both sides — pick two different variants to see a diff)'));
+    panel.append(el('p', { class: 'dim' }, '(same variant on both sides, pick two different variants to see a diff)'));
   } else {
     panel.append(renderLineDiff(fromText, toText, { context: 2 }));
   }

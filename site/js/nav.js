@@ -96,7 +96,7 @@ function linkRow(prefix, links) {
 
 export function renderFooter() {
   const inner = el('div', { class: 'footer-inner' });
-  inner.append(el('div', { class: 'footer-row footer-id' }, 'BIAS://research — a counterfactual audit of LLM hiring bias'));
+  inner.append(el('div', { class: 'footer-row footer-id' }, 'BIAS://research, a counterfactual audit of LLM hiring bias'));
   inner.append(linkRow('Built by Bogdan Szabo', AUTHOR_LINKS));
   inner.append(el('div', { class: 'footer-row footer-meta' }, [
     `© ${new Date().getFullYear()} Bogdan Szabo`,

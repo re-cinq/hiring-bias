@@ -13,7 +13,7 @@ const intro = el('div', { class: 'panel' });
 intro.append(el('div', { class: 'panel-head' }, el('span', {}, 'DESIGN')));
 intro.append(el('p', {}, 'For each (axis, level, model, job description) cell we run the same prompt several times and record the response. The only thing that varies within an axis is one demographic signal on the résumé. The rest of the document is byte-identical to the baseline.'));
 intro.append(el('p', {}, [
-  'Expected cell count: ', el('strong', {}, `${summary.axes.length} axes × ${summary.models.length} models × ${summary.jds.length} jobs × ~5 runs each ≈ ${summary.expected_total_records ?? '—'} inferences.`)
+  'Expected cell count: ', el('strong', {}, `${summary.axes.length} axes × ${summary.models.length} models × ${summary.jds.length} jobs × ~5 runs each ≈ ${summary.expected_total_records ?? '–'} inferences.`)
 ]));
 page.append(intro);
 

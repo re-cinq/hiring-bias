@@ -96,9 +96,9 @@ single-axis attribution. For a first pass, attribution is more useful than
 interaction.
 
 This is the same logic that drives the classic Bertrand and Mullainathan
-audit study from the early 2000s, in which fictitious resumes identical
-except for the candidate's name were sent to real job postings. The
-counterfactual is the inference engine.
+audit study from the early 2000s ([NBER w9873](https://www.nber.org/papers/w9873)),
+in which fictitious resumes identical except for the candidate's name were
+sent to real job postings. The counterfactual is the inference engine.
 
 ---
 

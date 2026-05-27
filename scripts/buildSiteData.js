@@ -119,16 +119,16 @@ const JD_SHORT = {
   jd_senior_ide_jvm: 'Sr. IDE / JVM',
   jd_senior_routing_cpp: 'Sr. Routing (C++)',
   jd_cpp_finance: 'C++ Finance',
-  jd_swe_manager_engineering_productivity: 'SWE Manager — Eng Productivity',
-  jd_techlead_cloud_compute: 'Tech Lead — Cloud',
+  jd_swe_manager_engineering_productivity: 'SWE Manager, Eng Productivity',
+  jd_techlead_cloud_compute: 'Tech Lead, Cloud',
   jd_senior_manager_cpp: 'Sr. Manager (C++)',
   jd_head_of_dev_techlead: 'Head of Dev',
-  jd_staff_swe_ai_native: 'Staff SWE — AI Native',
+  jd_staff_swe_ai_native: 'Staff SWE, AI Native',
   jd_staff_forward_deployed_genai: 'Staff Forward-Deployed (GenAI)',
-  jd_principal_swe_growth: 'Principal SWE — Growth',
+  jd_principal_swe_growth: 'Principal SWE, Growth',
   jd_principal_perf_architect: 'Principal Perf Architect',
-  jd_principal_engineer_specialized: 'Principal — Specialised',
-  jd_cto_agentic_fintech: 'CTO — Agentic / Fintech'
+  jd_principal_engineer_specialized: 'Principal, Specialised',
+  jd_cto_agentic_fintech: 'CTO, Agentic / Fintech'
 };
 
 function axisLabel(axis) {
@@ -392,7 +392,7 @@ function modelAgreementHtml(cells, axes, models) {
     const tds = models.map((cm) => {
       if (rm === cm) return '<td class="num agree-cell" style="background:rgba(111,174,114,1)">1.00</td>';
       const c = pearson(vec[rm], vec[cm]);
-      const txt = c == null ? '—' : (c >= 0 ? '+' : '') + c.toFixed(2);
+      const txt = c == null ? '–' : (c >= 0 ? '+' : '') + c.toFixed(2);
       return `<td class="num agree-cell" style="background:${agreementColor(c)}">${txt}</td>`;
     }).join('');
     return `<tr><th>${esc(MODEL_SHORT[rm] ?? rm)}</th>${tds}</tr>`;
@@ -409,7 +409,7 @@ function variance(arr) {
   return arr.length ? arr.reduce((s, x) => s + (x - m) * (x - m), 0) / arr.length : 0;
 }
 
-// Standard-normal CDF (Abramowitz & Stegun 7.1.26) — enough for a two-sided p approximation.
+// Standard-normal CDF (Abramowitz & Stegun 7.1.26), enough for a two-sided p approximation.
 function normalCdf(z) {
   const t = 1 / (1 + 0.2316419 * Math.abs(z));
   const d = 0.3989422804014327 * Math.exp(-z * z / 2);
@@ -417,7 +417,7 @@ function normalCdf(z) {
   return z > 0 ? 1 - p : p;
 }
 
-// Volcano data: one point per (variant, model, jd) — effect size (Δ) vs significance
+// Volcano data: one point per (variant, model, jd), effect size (Δ) vs significance
 // (−log10 p of a Welch t-test, variant scores against the baseline scores for that model+jd).
 function buildVolcano(cells, baselines, axes) {
   const points = [];
@@ -555,8 +555,8 @@ function buildNgrams(records, axis, baselines) {
 }
 
 // Per-cell sampling for the audit + diff UI. We expose two samples:
-//   sample        — the lowest-run record (stable, backfill-safe; what the UI shows by default)
-//   sample_median — the record whose score is closest to the cell mean (most-typical run; used
+//   sample       , the lowest-run record (stable, backfill-safe; what the UI shows by default)
+//   sample_median, the record whose score is closest to the cell mean (most-typical run; used
 //                    as the second opinion in the audit so verdicts aren't held hostage to run 1).
 function indexFirstRunRecord(records) {
   const byCell = new Map();
@@ -596,10 +596,24 @@ function countRunsByCell(records) {
   return counts;
 }
 
+// Group all run records per cell, sorted by run number ascending. Used to expose every
+// per-run evaluation on the diff page so a reader can step through the 5 runs.
+function indexAllRunsByCell(records) {
+  const byCell = new Map();
+  for (const r of records) {
+    const key = `${r.variant}__${r.model}__${r.jd}`;
+    if (!byCell.has(key)) byCell.set(key, []);
+    byCell.get(key).push(r);
+  }
+  for (const arr of byCell.values()) arr.sort((a, b) => (a.run ?? 0) - (b.run ?? 0));
+  return byCell;
+}
+
 function buildDiffObjects(cells, records) {
   const firstByCell = indexFirstRunRecord(records);
   const medianByCell = indexMedianRunRecord(records);
   const countByCell = countRunsByCell(records);
+  const allByCell = indexAllRunsByCell(records);
   // Index baseline cells so we can pull baseline per-run scores for the run-bar display.
   const cellByKey = new Map(cells.map((c) => [`${c.variant}__${c.model}__${c.jd}`, c]));
   const out = [];
@@ -625,14 +639,16 @@ function buildDiffObjects(cells, records) {
         recommend_rate: c.baseline_recommend_rate,
         scores: baselineCell?.scores ?? null,
         sample: baselineFirst.response,
-        sample_median: baselineMedian?.response ?? null
+        sample_median: baselineMedian?.response ?? null,
+        runs: (allByCell.get(baselineKey) ?? []).map((r) => ({ run: r.run, response: r.response }))
       },
       variant_data: {
         mean: c.mean,
         recommend_rate: c.recommend_yes_rate,
         scores: c.scores ?? null,
         sample: variantFirst.response,
-        sample_median: variantMedian?.response ?? null
+        sample_median: variantMedian?.response ?? null,
+        runs: (allByCell.get(variantKey) ?? []).map((r) => ({ run: r.run, response: r.response }))
       }
     });
   }
@@ -901,7 +917,7 @@ function signedClass(v) {
 }
 
 function fmtSigned(v, digits = 2) {
-  if (v == null) return '—';
+  if (v == null) return '–';
   return (v >= 0 ? '+' : '') + Number(v).toFixed(digits);
 }
 
@@ -960,7 +976,7 @@ function computeDimensionBiasSnapshot(matrix) {
 }
 
 function variantWithDeltaHtml(matrix, entry, klass) {
-  if (!entry) return '<span class="dim">—</span>';
+  if (!entry) return '<span class="dim">–</span>';
   const lbl = `${esc(matrix.axis_labels?.[entry.axis] ?? entry.axis)} · ${esc(matrix.level_labels?.[entry.axis]?.[entry.level] ?? entry.level)}`;
   return `${lbl} <span class="${klass}">(${fmtSigned(entry.mean_delta, 2)})</span>`;
 }
@@ -975,9 +991,9 @@ function biasIndexTableHtml(matrix, opts = {}) {
     return `<tr>
       <td>${esc(modelDisplay(s.model))}</td>
       <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:${pct}%;background:var(--accent)"></div></div></div></td>
-      <td class="num">${s.mean_abs != null ? s.mean_abs.toFixed(3) : '—'}</td>
+      <td class="num">${s.mean_abs != null ? s.mean_abs.toFixed(3) : '–'}</td>
       <td class="num ${signedClass(s.mean_signed)}">${fmtSigned(s.mean_signed, 3)}</td>
-      <td class="num">${s.sig_frac != null ? (s.sig_frac * 100).toFixed(0) + '%' : '—'}</td>
+      <td class="num">${s.sig_frac != null ? (s.sig_frac * 100).toFixed(0) + '%' : '–'}</td>
       <td class="num dim">${s.n}</td>
       <td>${variantWithDeltaHtml(matrix, s.worst, 'alert')}</td>
       <td>${variantWithDeltaHtml(matrix, s.best, 'accent')}</td>
@@ -1004,9 +1020,9 @@ function dimensionBiasTableHtml(matrix) {
     return `<tr>
       <td>${esc(s.label)}</td>
       <td style="width:20%"><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="height:100%;width:${pct}%;background:var(--accent)"></div></div></div></td>
-      <td class="num">${s.mean_abs != null ? s.mean_abs.toFixed(3) : '—'}</td>
+      <td class="num">${s.mean_abs != null ? s.mean_abs.toFixed(3) : '–'}</td>
       <td class="num ${signedClass(s.mean_signed)}">${fmtSigned(s.mean_signed, 3)}</td>
-      <td class="num">${s.sig_frac != null ? (s.sig_frac * 100).toFixed(0) + '%' : '—'}</td>
+      <td class="num">${s.sig_frac != null ? (s.sig_frac * 100).toFixed(0) + '%' : '–'}</td>
       <td class="num dim">${s.n}</td>
     </tr>`;
   }).join('\n');
@@ -1068,7 +1084,7 @@ function topCounterfactualsHtml(topDiffs, matrix) {
 
 function heatmapSummaryHtml(matrix) {
   const stats = computeBiasIndexSnapshot(matrix);
-  const lines = stats.slice(0, 3).map((s) => `<li><strong>${esc(modelDisplay(s.model))}</strong>: mean |Δ| ${s.mean_abs != null ? s.mean_abs.toFixed(3) : '—'}. Most penalised ${variantWithDeltaHtml(matrix, s.worst, 'alert')}, most rewarded ${variantWithDeltaHtml(matrix, s.best, 'accent')}.</li>`).join('\n');
+  const lines = stats.slice(0, 3).map((s) => `<li><strong>${esc(modelDisplay(s.model))}</strong>: mean |Δ| ${s.mean_abs != null ? s.mean_abs.toFixed(3) : '–'}. Most penalised ${variantWithDeltaHtml(matrix, s.worst, 'alert')}, most rewarded ${variantWithDeltaHtml(matrix, s.best, 'accent')}.</li>`).join('\n');
   return `<div class="panel">
     <div class="panel-head"><span>WHAT THE WALL SHOWS · TOP MODELS BY BIAS INDEX</span></div>
     <p class="dim">The interactive 3D wall above lets you inspect every (variant, JD) cell for any (model, dimension) pair. Below is a static summary of the three most demographically-sensitive models. Pick another pair in the controls to update the wall.</p>
@@ -1095,7 +1111,7 @@ function variantDelta(matrix, id, model) {
 }
 
 function deltaBarHtml(l, r) {
-  if (l == null && r == null) return '<span class="dim">—</span>';
+  if (l == null && r == null) return '<span class="dim">–</span>';
   const pos = (v) => `${Math.max(0, Math.min(100, (v + 3) / 6 * 100)).toFixed(1)}%`;
   const cls = (v) => v == null ? '' : (Math.abs(v) < 0.005 ? 'zero' : v > 0 ? 'pos' : 'neg');
   const leftDot = l == null ? '' : `<div class="marker filled ${cls(l)}" style="left:${pos(l)}" title="Left: ${fmtSigned(l, 3)}"></div>`;
@@ -1192,7 +1208,7 @@ function jdsPageHtml({ matrix, jds, jdLabels, jdShortLabels, jdTexts, cells }) {
   }
   const renderEntry = (entry, klass) => entry
     ? `${esc(entry.label)} <span class="${klass}">(${fmtSigned(entry.delta, 2)})</span><br><span class="dim">on ${esc(modelDisplay(entry.model))}</span>`
-    : '<span class="dim">—</span>';
+    : '<span class="dim">–</span>';
 
   const sections = [...grouped].map(([bucket, ids]) => {
     const rows = ids.map((id) => {
@@ -1227,14 +1243,14 @@ function jdsPageHtml({ matrix, jds, jdLabels, jdShortLabels, jdTexts, cells }) {
 
 function auditStabilityPanelHtml(stats) {
   if (!stats || stats.total === 0) return '';
-  const pct = stats.disagree_pct == null ? '—' : stats.disagree_pct.toFixed(2) + '%';
+  const pct = stats.disagree_pct == null ? '–' : stats.disagree_pct.toFixed(2) + '%';
   const denom = stats.distinct_pairs;
   return `<div class="panel">
     <div class="panel-head"><span>AUDITOR STABILITY · DOES THE JUDGE FLIP?</span></div>
-    <p>Every audited cell is judged twice — once on the first-run sample and once on the median-typical sample. When the two samples are different evaluations, the auditor can in principle disagree with itself. This stat measures how often it does.</p>
+    <p>Every audited cell is judged twice, once on the first-run sample and once on the median-typical sample. When the two samples are different evaluations, the auditor can in principle disagree with itself. This stat measures how often it does.</p>
     <p><strong>Disagreement rate (when two distinct sampled pairs were judged): <span class="alert">${pct}</span></strong> &nbsp;(${stats.disagree} of ${denom} cells).</p>
     ${confusionMatrixHtml(stats)}
-    <p class="dim">Of <strong>${stats.total.toLocaleString()}</strong> total audited cells, <strong>${stats.coincide.toLocaleString()}</strong> had identical first-and-median samples (a single pair selected twice, no disagreement possible by construction) and were excluded from the denominator. The remaining <strong>${denom.toLocaleString()}</strong> cells had two genuinely different sampled pairs from the same cell — and on that set, the auditor returned a different verdict <strong>${pct}</strong> of the time. This is the empirical reason we aggregate over five runs per cell rather than relying on a single judgement: at temperature 0.7, even an LLM judge faced with two different samples of <em>the same</em> bias case will not always agree with itself.</p>
+    <p class="dim">Of <strong>${stats.total.toLocaleString()}</strong> total audited cells, <strong>${stats.coincide.toLocaleString()}</strong> had identical first-and-median samples (a single pair selected twice, no disagreement possible by construction) and were excluded from the denominator. The remaining <strong>${denom.toLocaleString()}</strong> cells had two genuinely different sampled pairs from the same cell, and on that set, the auditor returned a different verdict <strong>${pct}</strong> of the time. This is the empirical reason we aggregate over five runs per cell rather than relying on a single judgement: at temperature 0.7, even an LLM judge faced with two different samples of <em>the same</em> bias case will not always agree with itself.</p>
   </div>
   `;
 }
@@ -1268,7 +1284,7 @@ function confusionMatrixHtml(stats) {
   const grandTotal = colsTotal.reduce((s, c) => s + c, 0);
   const flipBJ = mat.bias.justified;
   const flipJB = mat.justified.bias;
-  const asymmetry = flipJB ? (flipBJ / flipJB).toFixed(2) : '—';
+  const asymmetry = flipJB ? (flipBJ / flipJB).toFixed(2) : '–';
   return `<div class="cm-wrap">
     <p class="cm-howto"><strong>How to read this:</strong> each cell counts (variant × model × JD) pairs where the judge said <em>X</em> about the first sampled run and <em>Y</em> about the median-typical run. <span class="cm-key cm-key-agree">●</span> green = same verdict (judge agreed with itself); <span class="cm-key cm-key-disagree">●</span> red = different verdict (judge flipped).</p>
     <table class="data cm">
@@ -1287,7 +1303,7 @@ function confusionMatrixHtml(stats) {
     </table>
     <p class="dim cm-caption">
       Diagonal cells (green) are where the auditor agreed with itself; off-diagonal cells (red) are flips. The largest flip cell is
-      <strong>bias → justified</strong> at <strong>${flipBJ}</strong> cases — the judge said the first sample looked like bias but later judged the median sample as justified. The reverse direction, <strong>justified → bias</strong>, is only <strong>${flipJB}</strong> cases. That ${asymmetry}× asymmetry matters: it means a single-sample audit on the <em>first</em> run would systematically over-call bias compared to one that picks a more representative sample.
+      <strong>bias → justified</strong> at <strong>${flipBJ}</strong> cases, the judge said the first sample looked like bias but later judged the median sample as justified. The reverse direction, <strong>justified → bias</strong>, is only <strong>${flipJB}</strong> cases. That ${asymmetry}× asymmetry matters: it means a single-sample audit on the <em>first</em> run would systematically over-call bias compared to one that picks a more representative sample.
     </p>
   </div>
   `;
@@ -1316,13 +1332,13 @@ function methodologyHtml({ matrix, jds, jdLabels, auditStability }) {
   <div class="panel">
     <div class="panel-head"><span>AUDIT METHODOLOGY · HOW VERDICTS ARE PRODUCED</span></div>
     <p>Each (variant, model, JD) cell with 5 collected runs is audited by <code>gemini-2.5-pro</code> acting as an LLM-as-judge. Cells with fewer than 5 runs are skipped until backfill completes, so every verdict is produced against a complete sample.</p>
-    <p><strong>Two samples per cell, two verdicts.</strong> The auditor sees the cell's mean Δ and run count as statistical context, then judges <em>two</em> matched evaluation pairs from the run set: (1) the first run and (2) the run whose score sits closest to the cell's mean (the "most-typical" run). The site shows the median-run verdict as the headline; the first-run verdict is kept as a second opinion. A <code>verdicts_agree</code> flag marks cells where the two samples reached different conclusions — those are the cases where a single-pair audit would have been brittle.</p>
+    <p><strong>Two samples per cell, two verdicts.</strong> The auditor sees the cell's mean Δ and run count as statistical context, then judges <em>two</em> matched evaluation pairs from the run set: (1) the first run and (2) the run whose score sits closest to the cell's mean (the "most-typical" run). The site shows the median-run verdict as the headline; the first-run verdict is kept as a second opinion. A <code>verdicts_agree</code> flag marks cells where the two samples reached different conclusions, those are the cases where a single-pair audit would have been brittle.</p>
     <p><strong>What an audit verdict means and does not mean.</strong> A verdict is a judgement on the <em>reasoning</em> visible in one evaluation pair, not on the per-cell statistical effect. A "bias" verdict says the model's justification keyed off the demographic signal in the sample shown to the auditor; it does not by itself certify that the mean Δ over 5 runs would clear a 95% significance threshold. Read verdicts alongside the volcano plot and per-cell CIs.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>WHY THIS AUDIT EXISTS</span></div>
-    <p>Aggregate score deltas tell you <em>that</em> a model shifted its verdict when a demographic signal changed. They do not tell you <em>why</em>. A 0.5-point drop on a candidate from Lagos could be the model penalizing the location, or it could be the model legitimately picking up on a different concern that happened to surface in that pair. The audit reads the model's own justification and decides which of those is happening — a kind of post-hoc explainability layer for the counterfactual signal.</p>
-    <p>The verdict triple — <code>justified</code> / <code>bias</code> / <code>mixed</code> — plus the verbatim <code>bias_signals</code> quotes give a human reader something to grep for and verify directly against the model's own words. That is the artifact a reader can argue with: not an opaque score, but a quotation.</p>
+    <p>Aggregate score deltas tell you <em>that</em> a model shifted its verdict when a demographic signal changed. They do not tell you <em>why</em>. A 0.5-point drop on a candidate from Lagos could be the model penalizing the location, or it could be the model legitimately picking up on a different concern that happened to surface in that pair. The audit reads the model's own justification and decides which of those is happening, a kind of post-hoc explainability layer for the counterfactual signal.</p>
+    <p>The verdict triple, <code>justified</code> / <code>bias</code> / <code>mixed</code>, plus the verbatim <code>bias_signals</code> quotes give a human reader something to grep for and verify directly against the model's own words. That is the artifact a reader can argue with: not an opaque score, but a quotation.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>JUDGE SELECTION · COSTS AND TRADEOFFS</span></div>
@@ -1330,17 +1346,17 @@ function methodologyHtml({ matrix, jds, jdLabels, auditStability }) {
     <table class="data">
       <thead><tr><th>Candidate</th><th class="num">Est. cost</th><th>Quality trade-off</th></tr></thead>
       <tbody>
-        <tr><td><code>gemini-3.1-flash-lite</code> (batch)</td><td class="num">~$3</td><td class="dim">Cheapest. Risk of false negatives on subtle bias — under-calling justified what a stronger model would flag.</td></tr>
+        <tr><td><code>gemini-3.1-flash-lite</code> (batch)</td><td class="num">~$3</td><td class="dim">Cheapest. Risk of false negatives on subtle bias, under-calling justified what a stronger model would flag.</td></tr>
         <tr><td><code>gemini-2.5-flash</code></td><td class="num">~$8</td><td class="dim">Acceptable on clear cases. Same false-negative concern as Lite, smaller magnitude.</td></tr>
         <tr><td><strong><code>gemini-2.5-pro</code></strong> (chosen)</td><td class="num"><strong>~$31</strong></td><td>Strong nuanced reasoning. Reliable structured-JSON output. Best quality-for-money on this task and not one of the models being audited.</td></tr>
         <tr><td><code>gemini-3.1-pro-preview</code></td><td class="num">~$53</td><td class="dim">Highest quality but preview-tier (rate-limit and price churn risk).</td></tr>
-        <tr><td><code>claude-opus</code></td><td class="num">~$294*</td><td class="dim">High quality but expensive at the API tier. Also one of the audited models — risk of self-judging.</td></tr>
+        <tr><td><code>claude-opus</code></td><td class="num">~$294*</td><td class="dim">High quality but expensive at the API tier. Also one of the audited models, risk of self-judging.</td></tr>
       </tbody>
     </table>
     <p class="dim">* API-equivalent. The pilot audits were run via the Claude CLI subscription where token spend doesn't appear on an API invoice.</p>
     <p><strong>Why not a cheaper judge.</strong> Under-calling bias (false negatives) is the more damaging failure mode for an audit whose purpose is to surface bias. The Lite/Flash tiers historically trade reasoning depth for cost; on a binary "is this reasoning biased" task with subtle linguistic cues, that trade hurts the audit's headline claim more than it saves on the bill.</p>
-    <p><strong>Why not cross-judge validation.</strong> A defensible alternative is running two judges per cell and treating disagreement as a third signal. We opted instead for the two-sample design (first-run + median-typical run, same judge) because it isolates a different error source — sample selection — that the current single-pair audit was most exposed to. Cross-judge can be layered on later without re-running collection.</p>
-    <p><strong>Self-judging caveat.</strong> Every Gemini variant — including the chosen judge — is itself in the audited set, so the audit is asking <code>gemini-2.5-pro</code> to render verdicts on outputs from <code>gemini-2.5-pro</code>, <code>gemini-2.5-flash</code>, and <code>gemini-3.1-pro-preview</code> among others. Models are known to favour their own family's outputs in head-to-head judging; the structured rubric and verbatim <code>bias_signals</code> quotes blunt this but do not eliminate it. A fully external judge (e.g. a frontier OpenAI model not in this study) would close that gap at additional cost.</p>
+    <p><strong>Why not cross-judge validation.</strong> A defensible alternative is running two judges per cell and treating disagreement as a third signal. We opted instead for the two-sample design (first-run + median-typical run, same judge) because it isolates a different error source, sample selection, that the current single-pair audit was most exposed to. Cross-judge can be layered on later without re-running collection.</p>
+    <p><strong>Self-judging caveat.</strong> Every Gemini variant, including the chosen judge, is itself in the audited set, so the audit is asking <code>gemini-2.5-pro</code> to render verdicts on outputs from <code>gemini-2.5-pro</code>, <code>gemini-2.5-flash</code>, and <code>gemini-3.1-pro-preview</code> among others. Models are known to favour their own family's outputs in head-to-head judging; the structured rubric and verbatim <code>bias_signals</code> quotes blunt this but do not eliminate it. A fully external judge (e.g. a frontier OpenAI model not in this study) would close that gap at additional cost.</p>
   </div>
   ${auditStabilityPanelHtml(auditStability)}
   <div class="panel">

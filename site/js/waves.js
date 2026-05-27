@@ -2,7 +2,7 @@ import { loadJson, el, fmtSignedDelta, deltaClass } from './lib.js';
 
 // Per-role "bias fingerprint": one polyline per model over the résumé variants
 // (x, grouped by dimension), score Δ on y. Lines are blended additively so where
-// the models agree their colours sum toward white — a shared bias.
+// the models agree their colours sum toward white, a shared bias.
 const HEIGHT = 40;
 const PAD = 4;
 

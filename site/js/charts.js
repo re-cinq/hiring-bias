@@ -123,7 +123,7 @@ function applyEdgeFade(ctx, c) {
   ctx.restore();
 }
 
-// Tiny 5x7 bitmap font — just the glyphs we need for model initials.
+// Tiny 5x7 bitmap font, just the glyphs we need for model initials.
 const BITMAP_FONT = {
   'C': ['01110','10001','10000','10000','10000','10001','01110'],
   'G': ['01110','10001','10000','10111','10001','10001','01110'],
@@ -727,7 +727,7 @@ export function wallView({ container, title, levels, jds, getCell, modelLabel, a
       if (s.length <= n) return s;
       const cut = s.slice(0, n - 1);
       const lastSpace = cut.lastIndexOf(' ');
-      return (lastSpace > n * 0.5 ? cut.slice(0, lastSpace) : cut.replace(/[\s\-—_/]+$/, '')) + '…';
+      return (lastSpace > n * 0.5 ? cut.slice(0, lastSpace) : cut.replace(/[\s\-–_/]+$/, '')) + '…';
     };
     const LABEL_Z = 8;
     for (let i = 0; i < jds.length; i++) {
@@ -977,10 +977,10 @@ export function wallView({ container, title, levels, jds, getCell, modelLabel, a
         tooltip.innerHTML = [
           fmtTooltipRow('Variant:', inst.meta.levelLabel ?? inst.meta.level ?? ''),
           fmtTooltipRow('Job:', inst.meta.jdLabel ?? inst.meta.jd ?? ''),
-          fmtTooltipRow('Δ:', (inst.meta.delta != null ? ((inst.meta.delta >= 0 ? '+' : '') + inst.meta.delta.toFixed(2)) : '—')),
-          fmtTooltipRow('Mean:', inst.meta.mean != null ? inst.meta.mean.toFixed(2) : '—'),
-          fmtTooltipRow('Baseline:', inst.meta.baseline_mean != null ? inst.meta.baseline_mean.toFixed(2) : '—'),
-          fmtTooltipRow('Runs:', inst.meta.n ?? '—'),
+          fmtTooltipRow('Δ:', (inst.meta.delta != null ? ((inst.meta.delta >= 0 ? '+' : '') + inst.meta.delta.toFixed(2)) : '–')),
+          fmtTooltipRow('Mean:', inst.meta.mean != null ? inst.meta.mean.toFixed(2) : '–'),
+          fmtTooltipRow('Baseline:', inst.meta.baseline_mean != null ? inst.meta.baseline_mean.toFixed(2) : '–'),
+          fmtTooltipRow('Runs:', inst.meta.n ?? '–'),
           fmtTooltipRow('Significant:', inst.meta.significant ? 'yes (CI excludes baseline)' : 'no')
         ].join('<br>');
         tooltip.style.display = 'block';
@@ -1259,10 +1259,10 @@ export function cityHeatmap({ container, title, axes, models, heights, signs, si
     formatTooltip: (meta) => meta ? [
       fmtTooltipRow('axis:', meta.axis),
       fmtTooltipRow('model:', meta.model),
-      fmtTooltipRow('mean |Δ|:', meta.mean_abs?.toFixed(2) ?? '—'),
-      fmtTooltipRow('signed Δ:', meta.signed != null ? ((meta.signed >= 0 ? '+' : '') + meta.signed.toFixed(2)) : '—'),
+      fmtTooltipRow('mean |Δ|:', meta.mean_abs?.toFixed(2) ?? '–'),
+      fmtTooltipRow('signed Δ:', meta.signed != null ? ((meta.signed >= 0 ? '+' : '') + meta.signed.toFixed(2)) : '–'),
       fmtTooltipRow('worst:', `${meta.worst_level} @ ${meta.worst_jd}`),
-      fmtTooltipRow('sig%:', meta.sig_rate != null ? ((meta.sig_rate * 100).toFixed(0) + '%') : '—')
+      fmtTooltipRow('sig%:', meta.sig_rate != null ? ((meta.sig_rate * 100).toFixed(0) + '%') : '–')
     ].join('<br>') : '',
     onClick,
     cameraOffset: [0.9, 0.5, 1.3],
@@ -1327,7 +1327,7 @@ export function landscape({ container, title, jds, axes, heights, metadata, onCl
       fmtTooltipRow('jd:', meta.jd),
       fmtTooltipRow('seniority:', meta.seniority),
       fmtTooltipRow('axis:', meta.axis),
-      fmtTooltipRow('mean |Δ|:', meta.value?.toFixed(2) ?? '—')
+      fmtTooltipRow('mean |Δ|:', meta.value?.toFixed(2) ?? '–')
     ].join('<br>') : '',
     onClick,
     cameraOffset: [0.8, 0.9, 1.3]

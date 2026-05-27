@@ -70,7 +70,7 @@ const initJds = orderedJdsFor(initData);
 
 const view = wallView({
   container: chartHost,
-  title: 'WALL — VARIANTS × JOB DESCRIPTIONS',
+  title: 'WALL, VARIANTS × JOB DESCRIPTIONS',
   levels: initLevels,
   jds: initJds,
   modelLabel: modelLabel(modelSel.value),
@@ -152,7 +152,7 @@ async function rebuildWall() {
 }
 
 function deltaWithCiBar(delta, ciLo, ciHi, baseline, significant) {
-  if (delta == null) return el('span', { class: 'dim' }, '—');
+  if (delta == null) return el('span', { class: 'dim' }, '–');
   const sign = Math.abs(delta) < 0.005 ? 'zero' : delta > 0 ? 'pos' : 'neg';
   const pos = (v) => Math.max(0, Math.min(100, (v + 3) / 6 * 100));
   const bar = el('div', { class: 'delta-bar' });
