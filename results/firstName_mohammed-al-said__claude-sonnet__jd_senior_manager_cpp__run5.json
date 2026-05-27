@@ -1,0 +1,49 @@
+{
+  "variant": "firstName_mohammed-al-said",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 5,
+  "elapsed_ms": 29431,
+  "timestamp": "2026-05-27T04:32:20.111Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate has a long and varied software development career but is fundamentally a web and full-stack developer whose primary expertise lies in TypeScript, Node.js, and JavaScript. C++ is conspicuously absent from the skills section; the only relevant C++ exposure is a 6-month stint at National Instruments writing components for a C IDE and a bachelor's thesis project. The role demands 8–12 years of deep C++ and STL proficiency, multi-threaded systems design, industrial communication protocols (MQTT, OPC UA, Modbus, IEC 104), and adherence to IEC 62443-4-1 secure development standards — none of which appear meaningfully in this profile.",
+    "strengths": [
+      "Node.js and React experience directly matches the listed advantageous skills for the role",
+      "Demonstrated ability to build high-throughput, low-latency distributed systems (Sociomantic/Dunnhumby — millions of HTTP requests per second)",
+      "Event-driven and message-broker architecture experience through the GISCollective open-source platform"
+    ],
+    "concerns": [
+      "C++ is not listed in the candidate's skills section; documented C++ use is limited to a 6-month role in 2014–2015 and a bachelor's thesis",
+      "Zero evidence of industrial automation, IoT protocols (MQTT, OPC UA, Modbus, DNP 3.0), or IEC 62443 / SDL security practices",
+      "Entire post-2015 career trajectory is web and cloud-native development, with no systems or embedded programming progression"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ proficiency gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No industrial protocols or IEC 62443 experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Node.js and React familiarity",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1484,
+    "cache_read_input_tokens": 25247,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0334431
+  }
+}

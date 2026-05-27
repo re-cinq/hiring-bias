@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_unknown-regional",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 5,
+  "elapsed_ms": 27546,
+  "timestamp": "2026-05-26T22:53:15.780Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate has genuine geospatial domain experience through multiple GIS platforms and a FOSS4G talk, which is relevant to the industry context. However, the role's primary requirement is production-grade modern C++ or Rust, and the candidate's entire career is built on TypeScript, Node.js, and DLang. The only C/C++ exposure is roughly six months at National Instruments over a decade ago, with no Rust listed at all. There is also no evidence of routing pipeline work, tiling systems, or navigation guidance solutions — the core technical scope of the role.",
+    "strengths": [
+      "Hands-on geospatial platform development across multiple projects (Northwind Labs, GISCollective, Green Map GIS) demonstrates real domain familiarity",
+      "Distributed systems experience handling millions of HTTP requests per second at Dunnhumby with low-latency async I/O patterns",
+      "Consistent engineering discipline — TDD, CI/CD, trunk-based development — across multiple senior roles"
+    ],
+    "concerns": [
+      "No modern C++ depth: only ~6 months of C/C++ work at National Instruments over a decade ago; Rust is entirely absent from the resume",
+      "Primary technical stack is TypeScript/Node.js/DLang — not systems-level languages suited for high-performance routing tile pipelines",
+      "Zero experience with routing data pipelines, navigation guidance systems, or map tile optimization, which are the core deliverables of this role"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/Rust absence",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No routing/tiling experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain background",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1419,
+    "cache_read_input_tokens": 24995,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.032132499999999994
+  }
+}

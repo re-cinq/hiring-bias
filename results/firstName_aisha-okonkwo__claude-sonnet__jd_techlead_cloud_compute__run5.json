@@ -1,0 +1,49 @@
+{
+  "variant": "firstName_aisha-okonkwo",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_techlead_cloud_compute",
+  "run": 5,
+  "elapsed_ms": 28121,
+  "timestamp": "2026-05-27T00:23:51.239Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate's profile is fundamentally misaligned with the role's core requirements. The job demands 8 years of C++ experience as a minimum qualifier, yet the resume shows only a brief ~6-month stint writing C/C++ components at National Instruments in 2014–2015, with C++ absent entirely from the skills section. The primary technical identity is TypeScript/Node.js and DLang, not systems-level C++. While there is noteworthy experience with high-throughput distributed systems at Sociomantic and some AWS/Kubernetes exposure, neither the depth of cloud compute platform ownership nor formal cloud/DevOps technical leadership is present, making the candidate ineligible against both minimum and preferred qualifications.",
+    "strengths": [
+      "High-throughput distributed systems exposure: built low-latency microservices handling millions of HTTP requests per second at Sociomantic",
+      "Broad infrastructure breadth: hands-on with Kubernetes, Docker, AWS CDK, CI/CD pipelines, and GitLab administration across multiple roles",
+      "Demonstrated knowledge-sharing culture: organized Refactoring Dojos, Code Katas, and multi-day Selenium courses — signals mentoring capacity"
+    ],
+    "concerns": [
+      "C++ experience is critically insufficient: roughly 6 months total (~2014–2015), versus the 8-year minimum — this alone disqualifies the application",
+      "No cloud compute platform ownership: AWS CDK usage for pricing logic at Optilyz does not constitute production-level cloud infrastructure architecture or leadership",
+      "No formal technical lead role for cloud or DevOps teams: staff engineer titles appear, but the resume describes individual contributor and open-source founder work, not leading a platform engineering organization"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ experience gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No cloud platform leadership",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "High-scale distributed systems exposure",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1276,
+    "cache_read_input_tokens": 25057,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0300711
+  }
+}

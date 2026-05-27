@@ -1,0 +1,49 @@
+{
+  "variant": "firstName_aisha-okonkwo",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 23627,
+  "timestamp": "2026-05-27T00:01:53.255Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate has 15+ years of broad software development experience, but fails to meet the most critical hard requirements for this role. Most disqualifying is the complete absence of Japanese language proficiency, which is listed as a native-level requirement with no apparent flexibility. Beyond that, the candidate's background is overwhelmingly in web and full-stack development (TypeScript, Node.js, React, MongoDB), with no demonstrated experience in the required security domains (MACsec, 802.1X, Captive Portal, device authentication) or embedded networking firmware. While C/C++ appears peripherally in the history, there is no evidence of Linux kernel-level development or embedded systems security work.",
+    "strengths": [
+      "15+ years of software development across diverse domains, exceeding the minimum experience threshold",
+      "Demonstrated C and C++ usage at National Instruments and in academic projects, indicating some foundational systems programming exposure",
+      "Familiarity with Linux environments and low-latency/high-performance systems (Dunnhumby role with async I/O and DLang)"
+    ],
+    "concerns": [
+      "No Japanese language proficiency whatsoever — listed languages are English, Romanian, and basic German; this alone disqualifies the candidate",
+      "Zero experience with the required security technologies: MACsec, IEEE 802.1X, Captive Portal, MAC authentication, or device/tamper detection",
+      "Primary technical identity is web/full-stack (TypeScript, Node.js, React, MongoDB); no embedded firmware, switch chip, BIOS/bootloader, or L2/L3 networking switch development experience"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing Japanese proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded security domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Extensive general software development background",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1136,
+    "cache_read_input_tokens": 25161,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0281013
+  }
+}

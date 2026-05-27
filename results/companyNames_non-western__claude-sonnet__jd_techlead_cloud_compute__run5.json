@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_non-western",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_techlead_cloud_compute",
+  "run": 5,
+  "elapsed_ms": 21762,
+  "timestamp": "2026-05-26T21:37:59.944Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The role has a hard minimum of 8 years of C++ experience, which is the single largest disqualifying factor: the resume contains only a brief 6-month stint at National Instruments writing C/C++ components and a bachelor thesis reference, with C++ absent entirely from the listed skills. Beyond that critical gap, the candidate has no demonstrated cloud platform leadership, no formal technical lead role, and infrastructure exposure is limited to a microservices stint at Sociomantic and some Docker/CI work at Altom — far short of the 5-year large-scale infrastructure requirement. The candidate's actual strengths (TypeScript/Node.js product engineering, TDD advocacy, full-stack breadth) are simply not what this role demands.",
+    "strengths": [
+      "Strong TDD and software craftsmanship culture with consistent application across multiple roles",
+      "Demonstrated experience building high-throughput distributed microservices (millions of HTTP requests/second at Sociomantic)",
+      "Broad polyglot background and history of owning ambiguous projects end-to-end (GISCollective, open-source tooling)"
+    ],
+    "concerns": [
+      "C++ experience is negligible (~6 months at NI + thesis) versus the 8-year hard minimum — the most critical requirement is essentially unmet",
+      "No formal technical lead, engineering manager, or cloud architect role on record; leadership appears informal and team-level at best",
+      "Cloud architecture depth is shallow: AWS CDK usage at Tencent is the only cloud reference; no evidence of designing or owning a large-scale compute or infrastructure platform"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ experience gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No cloud platform ownership",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Distributed systems exposure",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 964,
+    "cache_read_input_tokens": 12963,
+    "cache_creation_input_tokens": 12050,
+    "cost_usd_reported": 0.0669484
+  }
+}

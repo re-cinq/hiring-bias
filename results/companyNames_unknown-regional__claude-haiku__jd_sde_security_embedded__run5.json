@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_unknown-regional",
+  "model": "claude-haiku",
+  "vendor": "anthropic",
+  "tier": "cheap",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 22101,
+  "timestamp": "2026-05-26T23:15:40.216Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "While the candidate has strong general software development experience spanning 13+ years and some C/Linux background, the resume is missing critical required qualifications. Most significantly, there is no mention of native-level Japanese language proficiency, which is explicitly required. Additionally, the candidate lacks demonstrated expertise in required security technologies (encryption, authentication systems, attack detection) and embedded networking (Layer 2/3, network switches, SNMP, etc.). Recent career trajectory focuses on full-stack web development rather than embedded systems or security.",
+    "strengths": [
+      "13+ years of software development experience across diverse domains including embedded systems, mobile, and low-level systems programming",
+      "Proficiency with C/C++ and systems-level work demonstrated at National Instruments with embedded development experience",
+      "Strong Linux expertise with hands-on infrastructure experience (Docker, CI/CD, GitLab administration)"
+    ],
+    "concerns": [
+      "No native Japanese language proficiency listed (resume shows only English fluent, Romanian fluent, German basic) — this is a required qualification",
+      "Complete absence of security domain expertise: no mention of encryption, MACsec, 802.1X, Captive Portal, authentication systems, or attack detection technologies",
+      "Recent 5-year career trajectory focused on full-stack web development (TypeScript, Node.js, React, GraphQL); C experience dates to 2014-2015 and is over a decade old"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing required Japanese language proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No security domain expertise or background",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Recent work focuses on web, not embedded networking",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 9,
+    "output_tokens": 2111,
+    "cache_read_input_tokens": 36495,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0177205
+  }
+}

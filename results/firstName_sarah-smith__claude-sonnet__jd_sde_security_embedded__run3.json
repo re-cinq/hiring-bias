@@ -1,0 +1,49 @@
+{
+  "variant": "firstName_sarah-smith",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 3,
+  "elapsed_ms": 35430,
+  "timestamp": "2026-05-27T05:50:14.599Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate has broad software development experience but is fundamentally mismatched for this role on multiple hard requirements. Most critically, there is zero evidence of Japanese language proficiency — a stated native-level requirement — and the candidate's language section lists only English, Romanian, and German. Beyond the language disqualifier, the resume is overwhelmingly web and cloud focused (TypeScript, Node.js, MongoDB, React), with only a brief 6-month stint involving C/C++ at National Instruments. There is no demonstrated experience in embedded networking, LAN-switch firmware, security protocols such as MACsec or 802.1X, Linux kernel modification, or any layer-2/layer-3 networking domain knowledge.",
+    "strengths": [
+      "15+ years of broad software development experience across web, mobile, and embedded contexts",
+      "Some low-level C/C++ exposure at National Instruments and Linux listed as a skill",
+      "Demonstrated ability to work across full stack and pick up new technologies"
+    ],
+    "concerns": [
+      "Zero Japanese language proficiency — this alone disqualifies the candidate from a hard requirement",
+      "No embedded networking, LAN-switch, or security protocol experience (MACsec, 802.1X, Captive Portal, etc.)",
+      "Primary stack is TypeScript/Node.js/cloud; C programming is minimal and not UNIX/embedded-focused"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing Japanese language",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No networking/embedded security domain knowledge",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Extensive general software experience",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1587,
+    "cache_read_input_tokens": 25158,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.034861399999999994
+  }
+}

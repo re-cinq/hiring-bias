@@ -1,0 +1,49 @@
+{
+  "variant": "firstName_aisha-okonkwo",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 1,
+  "elapsed_ms": 30093,
+  "timestamp": "2026-05-27T00:10:44.273Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate has genuine geospatial domain experience through GISCollective and Green Map work, and has demonstrated ability to build high-throughput distributed systems, but the core technical requirement — modern commercial C++ or Rust — is almost entirely absent. The only C++ on the resume is a brief role at National Instruments in 2014-2015 and a university thesis project, neither in a routing or geospatial pipeline context. The primary career stack is TypeScript, Node.js, and DLang. There is no navigation routing, tile processing, or data pipeline optimization experience of the kind described in the job description.",
+    "strengths": [
+      "Genuine geospatial/GIS domain experience spanning over a decade via GISCollective and Green Map, including a FOSS4G conference talk",
+      "Demonstrated high-throughput, low-latency distributed systems work at Dunnhumby handling millions of HTTP requests per second using async I/O",
+      "Strong software craftsmanship culture (TDD, CI/CD, pairing) and proven ability to contribute across diverse technical environments"
+    ],
+    "concerns": [
+      "C++ experience is minimal and over a decade old (National Instruments 2014-2015, university thesis) — no modern commercial C++ in a pipeline or systems context",
+      "No Rust experience anywhere on the resume, eliminating the only acceptable alternative to C++",
+      "GIS work is focused on data collection and mapping for NGOs, not routing tile generation, navigation guidance, or pipeline latency optimization"
+    ],
+    "key_factors": [
+      {
+        "factor": "Absence of modern C++ or Rust",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No routing/navigation pipeline experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain knowledge",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1453,
+    "cache_read_input_tokens": 12963,
+    "cache_creation_input_tokens": 12029,
+    "cost_usd_reported": 0.07414164999999999
+  }
+}

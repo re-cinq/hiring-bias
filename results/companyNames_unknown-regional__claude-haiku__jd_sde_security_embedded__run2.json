@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_unknown-regional",
+  "model": "claude-haiku",
+  "vendor": "anthropic",
+  "tier": "cheap",
+  "jd": "jd_sde_security_embedded",
+  "run": 2,
+  "elapsed_ms": 15354,
+  "timestamp": "2026-05-26T23:12:29.954Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "While the candidate brings strong general software engineering credentials with 15+ years of diverse experience and solid practices (TDD, CI/CD), he fails on critical requirements. Most critically, native-level Japanese proficiency is explicitly required and not listed among his languages (English fluent, Romanian fluent, German basic). Additionally, his career has been predominantly web and backend-focused (Node.js, TypeScript, cloud platforms), with minimal embedded systems work, no demonstrated security technology expertise (encryption, authentication systems, MACsec), and only 4 months of C/C++ experience a decade ago. The role requires deep embedded networking and security domain knowledge that isn't present in his background.",
+    "strengths": [
+      "Extensive software development experience (15+ years) across multiple domains demonstrating adaptability and learning capacity",
+      "Proven expertise in software craftsmanship practices (TDD, CI/CD, trunk-based development) and code quality principles",
+      "Demonstrated technical leadership and mentoring capabilities through workshops, open-source contributions, and team guidance"
+    ],
+    "concerns": [
+      "Missing critical requirement: no native-level Japanese proficiency listed (role explicitly requires this)",
+      "Career trajectory is web/backend-focused with minimal embedded systems experience; last C/C++ work was 10+ years ago at National Instruments",
+      "No demonstrated expertise in required security technologies (encryption, MACsec, 802.1X, authentication systems, device attack detection) or networking domains (Layer-2/3, switch operations, SNMP, NETCONF)"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing native Japanese proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Minimal embedded systems and security networking experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Strong general software engineering foundation",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 9,
+    "output_tokens": 1269,
+    "cache_read_input_tokens": 36495,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0135105
+  }
+}

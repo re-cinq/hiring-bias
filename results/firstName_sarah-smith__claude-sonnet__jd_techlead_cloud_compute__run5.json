@@ -1,0 +1,49 @@
+{
+  "variant": "firstName_sarah-smith",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_techlead_cloud_compute",
+  "run": 5,
+  "elapsed_ms": 35316,
+  "timestamp": "2026-05-27T06:12:17.823Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The role carries a hard minimum of 8 years C++ programming experience; this candidate's resume shows at most six months of C++ work at National Instruments (late 2014 – mid 2015) plus a bachelor-thesis side project, and C++ does not appear in the skills section at all. Beyond that critical language gap, the candidate has no formal technical leadership or cloud-platform ownership history, and their primary stack (TypeScript, Node.js, D-lang) is entirely misaligned with the systems-level, cloud-compute-platform context the role demands.",
+    "strengths": [
+      "Hands-on exposure to genuinely high-scale distributed systems at Sociomantic/Dunnhumby — millions of HTTP requests per second — demonstrating comfort with low-latency, performance-critical infrastructure",
+      "Consistent TDD advocacy and a track record of teaching engineering best practices through workshops, code katas, and refactoring dojos across multiple roles",
+      "Demonstrated ability to own and ship end-to-end open-source infrastructure (GISCollective, Kubernetes-deployed, used in production by Green Map) showing project-level technical autonomy"
+    ],
+    "concerns": [
+      "C++ experience is critically absent — the role requires 8 years minimum and the resume shows roughly 6 months; the language is not even listed in the candidate's skills",
+      "No formal technical leadership or team-mentoring role in a cloud or DevOps context; workshop facilitation and informal dojos do not satisfy the 2-year cloud/DevOps leadership requirement",
+      "Cloud architecture depth is superficial — AWS CDK usage for a pricing feature and a personal Kubernetes deployment do not constitute production-level cloud compute platform design or ownership"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ experience gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No formal technical leadership",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "High-scale distributed systems exposure",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1805,
+    "cache_read_input_tokens": 25054,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.03800119999999999
+  }
+}

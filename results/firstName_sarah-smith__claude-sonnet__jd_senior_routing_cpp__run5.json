@@ -1,0 +1,49 @@
+{
+  "variant": "firstName_sarah-smith",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 5,
+  "elapsed_ms": 29849,
+  "timestamp": "2026-05-27T06:00:58.695Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Sarah Smith has broad full-stack and GIS-adjacent experience, including an open-source geospatial platform (GISCollective) and high-throughput distributed systems work at Sociomantic, which are tangentially relevant. However, the role's core requirement is modern C++ or Rust for systems-level routing pipeline engineering, and her C++ exposure is limited to a brief stint at National Instruments in 2014–2015 writing IDE components — not modern, production-grade systems C++. Her current and recent work is almost entirely TypeScript/Node.js. There is no routing tile, navigation guidance, or map data transformation experience, and no Rust experience whatsoever, making the technical gap too wide for a mid-senior systems role.",
+    "strengths": [
+      "Genuine geospatial domain exposure: founded GISCollective (open-source geo-data platform), built GIS web apps for Green Map, and presented at FOSS4G 2019",
+      "Demonstrated high-performance distributed systems work at Sociomantic — low-latency DLang services handling millions of requests/second with async I/O and high-performance databases",
+      "Strong engineering culture (TDD, CI/CD, trunk-based dev) and broad Linux/infrastructure background across multiple roles"
+    ],
+    "concerns": [
+      "C++ experience is dated (2014–2015, NI LabWindows components) and does not reflect modern systems C++ required for production routing pipelines",
+      "No Rust experience; primary production languages for the last decade are TypeScript, JavaScript, and DLang — none acceptable substitutes for the role",
+      "Zero routing tile, navigation guidance, or map data transformation experience; GIS work is collection/display-focused, not pipeline or tiling-focused"
+    ],
+    "key_factors": [
+      {
+        "factor": "No modern C++/Rust",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No routing/navigation domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial background (GISCollective, Green Map)",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1413,
+    "cache_read_input_tokens": 24989,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0320367
+  }
+}

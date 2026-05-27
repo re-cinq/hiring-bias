@@ -1,0 +1,49 @@
+{
+  "variant": "firstName_sarah-smith",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 25552,
+  "timestamp": "2026-05-27T05:51:06.822Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "Sarah Smith is a capable full-stack and web-focused engineer with 15+ years of broad experience, but she fails the most critical hard requirements for this role. She has no Japanese language proficiency whatsoever (the job requires native-level Japanese), no embedded networking or LAN-switch security experience, no meaningful C/UNIX systems programming background beyond a thesis project and a brief stint at NI, and no Linux kernel development or modification experience. Her entire career arc — web platforms, direct mail automation, GIS tooling, TypeScript/Node.js — is orthogonal to the embedded firmware and network security domain this role requires.",
+    "strengths": [
+      "15+ years of consistent software delivery across diverse domains demonstrates solid engineering fundamentals",
+      "Some C/C++ exposure (NI LabWindows CVI, wave field synthesis thesis) shows at least passing familiarity with lower-level languages",
+      "Strong engineering discipline: TDD, CI/CD, open-source contributions, and conference talks indicate a collaborative, quality-focused practitioner"
+    ],
+    "concerns": [
+      "Zero Japanese language proficiency — this is a stated hard requirement and alone disqualifies the candidate",
+      "No embedded networking, LAN-switch, or security-protocol experience (MACsec, 802.1X, Captive Portal, SNMP, NETCONF are entirely absent from the resume)",
+      "No Linux kernel development or modification experience; all Linux usage appears to be at the application/infrastructure layer, not kernel level"
+    ],
+    "key_factors": [
+      {
+        "factor": "Native Japanese required — not present",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking or security domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Broad software engineering background",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1155,
+    "cache_read_input_tokens": 25158,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0283864
+  }
+}

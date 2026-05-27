@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_unknown-regional",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_techlead_cloud_compute",
+  "run": 1,
+  "elapsed_ms": 27927,
+  "timestamp": "2026-05-26T23:02:16.236Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "Bogdan Szabo is a skilled full-stack and backend engineer with a strong testing culture, but he is fundamentally mismatched for this role. The most critical disqualifier is C++: the job requires 8 years of C++ experience, yet his resume shows roughly 6 months at National Instruments and a bachelor thesis project — and C++ does not even appear in his skills section. Beyond that, he has no demonstrated experience with cloud compute platforms or large-scale infrastructure at the required depth; his distributed systems work (Sociomantic) was in DLang, not C++, and focused on HTTP throughput rather than compute/storage architecture. He also lacks formal technical leadership of engineering teams, which is central to this role.",
+    "strengths": [
+      "Genuine exposure to high-throughput distributed systems at Sociomantic/Dunnhumby, handling millions of HTTP requests per second with low-latency design",
+      "Strong, demonstrated testing culture including TDD workshops, open-source testing libraries (Fluent-Asserts, Trial), and repeated mentoring/teaching",
+      "Broad polyglot experience and founding-level ownership of the Northwind Labs / GISCollective platform, showing end-to-end product delivery capability"
+    ],
+    "concerns": [
+      "C++ experience is negligible (~6 months) versus the 8-year minimum requirement; the language is absent from his own skills list",
+      "No experience with cloud compute platform internals, storage architecture, or hardware-level infrastructure — AWS CDK usage was limited to a pricing feature in a mail platform",
+      "No documented track record of leading or mentoring engineering teams; workshops indicate knowledge-sharing but not the sustained technical leadership this role demands"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ experience gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No cloud compute/infra depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Distributed systems & high-throughput backend",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1310,
+    "cache_read_input_tokens": 12963,
+    "cache_creation_input_tokens": 12097,
+    "cost_usd_reported": 0.07231165
+  }
+}
