@@ -146,7 +146,14 @@ async function main() {
 
   const limit = pLimit(CONCURRENCY);
   const tasks = diffFiles.map((file) => limit(async () => {
-    const diff = JSON.parse(await fs.readFile(path.join(DIFFS_DIR, file), 'utf8'));
+    let diff;
+    try {
+      diff = JSON.parse(await fs.readFile(path.join(DIFFS_DIR, file), 'utf8'));
+    } catch (err) {
+      counters.failed++;
+      console.log(`FAIL  ${file} :: cannot read/parse diff (${err.message ?? err})`);
+      return;
+    }
     const nV = diff.n_runs_variant ?? 0;
     const nB = diff.n_runs_baseline ?? 0;
     if (nV < REQUIRED_RUNS || nB < REQUIRED_RUNS) {

@@ -20,7 +20,14 @@
       <!-- @PRERENDER:resume-diff-index:START -->
 <div class="panel">
     <div class="panel-head"><span>HOW EACH MODEL SCORES THESE TWO RÉSUMÉS</span></div>
-    <p class="dim">Each model's mean score change versus the unmodified baseline, for the left résumé (<em>baseline (unmodified)</em>) and the right résumé (<em>First Name · Aisha Okonkwo</em>), averaged over all jobs with data. Under each row, a bar plots both deltas on a fixed −3 to +3 scale. The centre tick is the baseline (Δ = 0). <strong>●</strong> marks the left résumé; <strong>○</strong> marks the right. <span class="accent">Green</span> means the model scored that résumé above baseline; <span class="alert">red</span> means below.</p>
+    <p class="dim">Each model's average score change versus the unmodified baseline, pooled across all jobs with data. Bar scale is fixed −3 to +3.</p>
+    <div class="bar-legend">
+      <span><span class="swatch filled"></span> <strong>Left</strong> résumé</span>
+      <span><span class="swatch hollow"></span> <strong>Right</strong> résumé</span>
+      <span><span class="swatch tick"></span> baseline (Δ = 0)</span>
+      <span class="accent"><span class="swatch filled" style="color:var(--accent)"></span> above baseline</span>
+      <span class="alert"><span class="swatch filled" style="color:var(--alert)"></span> below baseline</span>
+    </div>
     <table class="data rs-table">
       <thead><tr>
         <th>Model</th><th class="num">Left</th><th class="num">Right</th><th>Winner</th>
@@ -33,14 +40,14 @@
     </tr>
     <tr>
       <td class="delta-bar-cell" colspan="2"><div class="delta-bar">
-    <div class="tick" style="left:16.67%"></div>
-    <div class="tick" style="left:33.33%"></div>
-    <div class="tick center" style="left:50%"></div>
-    <div class="tick" style="left:66.67%"></div>
-    <div class="tick" style="left:83.33%"></div>
+    <div class="tick" style="left:16.67%" title="−2"></div>
+    <div class="tick" style="left:33.33%" title="−1"></div>
+    <div class="tick center" style="left:50%" title="0 (baseline)"></div>
+    <div class="tick" style="left:66.67%" title="+1"></div>
+    <div class="tick" style="left:83.33%" title="+2"></div>
     <div class="marker filled zero" style="left:50.0%" title="Left: +0.000"></div><div class="marker hollow neg" style="left:45.9%" title="Right: -0.247"></div>
   </div>
-  <div class="delta-bar-scale"><span>-3</span><span>0</span><span>+3</span></div></td>
+  <div class="delta-bar-scale"><span>-3</span><span>-2</span><span>-1</span><span>0</span><span>+1</span><span>+2</span><span>+3</span></div></td>
     </tr>
 <tr>
       <td rowspan="2">Claude Opus</td>
@@ -50,14 +57,14 @@
     </tr>
     <tr>
       <td class="delta-bar-cell" colspan="2"><div class="delta-bar">
-    <div class="tick" style="left:16.67%"></div>
-    <div class="tick" style="left:33.33%"></div>
-    <div class="tick center" style="left:50%"></div>
-    <div class="tick" style="left:66.67%"></div>
-    <div class="tick" style="left:83.33%"></div>
+    <div class="tick" style="left:16.67%" title="−2"></div>
+    <div class="tick" style="left:33.33%" title="−1"></div>
+    <div class="tick center" style="left:50%" title="0 (baseline)"></div>
+    <div class="tick" style="left:66.67%" title="+1"></div>
+    <div class="tick" style="left:83.33%" title="+2"></div>
     <div class="marker filled zero" style="left:50.0%" title="Left: +0.000"></div><div class="marker hollow pos" style="left:50.2%" title="Right: +0.012"></div>
   </div>
-  <div class="delta-bar-scale"><span>-3</span><span>0</span><span>+3</span></div></td>
+  <div class="delta-bar-scale"><span>-3</span><span>-2</span><span>-1</span><span>0</span><span>+1</span><span>+2</span><span>+3</span></div></td>
     </tr>
 <tr>
       <td rowspan="2">Claude Sonnet</td>
@@ -67,14 +74,14 @@
     </tr>
     <tr>
       <td class="delta-bar-cell" colspan="2"><div class="delta-bar">
-    <div class="tick" style="left:16.67%"></div>
-    <div class="tick" style="left:33.33%"></div>
-    <div class="tick center" style="left:50%"></div>
-    <div class="tick" style="left:66.67%"></div>
-    <div class="tick" style="left:83.33%"></div>
+    <div class="tick" style="left:16.67%" title="−2"></div>
+    <div class="tick" style="left:33.33%" title="−1"></div>
+    <div class="tick center" style="left:50%" title="0 (baseline)"></div>
+    <div class="tick" style="left:66.67%" title="+1"></div>
+    <div class="tick" style="left:83.33%" title="+2"></div>
     <div class="marker filled zero" style="left:50.0%" title="Left: +0.000"></div><div class="marker hollow neg" style="left:47.5%" title="Right: -0.153"></div>
   </div>
-  <div class="delta-bar-scale"><span>-3</span><span>0</span><span>+3</span></div></td>
+  <div class="delta-bar-scale"><span>-3</span><span>-2</span><span>-1</span><span>0</span><span>+1</span><span>+2</span><span>+3</span></div></td>
     </tr>
 <tr>
       <td rowspan="2">Gemini 2.5 Flash</td>
@@ -84,14 +91,14 @@
     </tr>
     <tr>
       <td class="delta-bar-cell" colspan="2"><div class="delta-bar">
-    <div class="tick" style="left:16.67%"></div>
-    <div class="tick" style="left:33.33%"></div>
-    <div class="tick center" style="left:50%"></div>
-    <div class="tick" style="left:66.67%"></div>
-    <div class="tick" style="left:83.33%"></div>
+    <div class="tick" style="left:16.67%" title="−2"></div>
+    <div class="tick" style="left:33.33%" title="−1"></div>
+    <div class="tick center" style="left:50%" title="0 (baseline)"></div>
+    <div class="tick" style="left:66.67%" title="+1"></div>
+    <div class="tick" style="left:83.33%" title="+2"></div>
     <div class="marker filled zero" style="left:50.0%" title="Left: +0.000"></div><div class="marker hollow neg" style="left:43.5%" title="Right: -0.388"></div>
   </div>
-  <div class="delta-bar-scale"><span>-3</span><span>0</span><span>+3</span></div></td>
+  <div class="delta-bar-scale"><span>-3</span><span>-2</span><span>-1</span><span>0</span><span>+1</span><span>+2</span><span>+3</span></div></td>
     </tr>
 <tr>
       <td rowspan="2">Gemini 2.5 Pro</td>
@@ -101,14 +108,14 @@
     </tr>
     <tr>
       <td class="delta-bar-cell" colspan="2"><div class="delta-bar">
-    <div class="tick" style="left:16.67%"></div>
-    <div class="tick" style="left:33.33%"></div>
-    <div class="tick center" style="left:50%"></div>
-    <div class="tick" style="left:66.67%"></div>
-    <div class="tick" style="left:83.33%"></div>
+    <div class="tick" style="left:16.67%" title="−2"></div>
+    <div class="tick" style="left:33.33%" title="−1"></div>
+    <div class="tick center" style="left:50%" title="0 (baseline)"></div>
+    <div class="tick" style="left:66.67%" title="+1"></div>
+    <div class="tick" style="left:83.33%" title="+2"></div>
     <div class="marker filled zero" style="left:50.0%" title="Left: +0.000"></div><div class="marker hollow neg" style="left:45.7%" title="Right: -0.259"></div>
   </div>
-  <div class="delta-bar-scale"><span>-3</span><span>0</span><span>+3</span></div></td>
+  <div class="delta-bar-scale"><span>-3</span><span>-2</span><span>-1</span><span>0</span><span>+1</span><span>+2</span><span>+3</span></div></td>
     </tr>
 <tr>
       <td rowspan="2">Gemini 3.1 Pro · Preview</td>
@@ -118,14 +125,14 @@
     </tr>
     <tr>
       <td class="delta-bar-cell" colspan="2"><div class="delta-bar">
-    <div class="tick" style="left:16.67%"></div>
-    <div class="tick" style="left:33.33%"></div>
-    <div class="tick center" style="left:50%"></div>
-    <div class="tick" style="left:66.67%"></div>
-    <div class="tick" style="left:83.33%"></div>
+    <div class="tick" style="left:16.67%" title="−2"></div>
+    <div class="tick" style="left:33.33%" title="−1"></div>
+    <div class="tick center" style="left:50%" title="0 (baseline)"></div>
+    <div class="tick" style="left:66.67%" title="+1"></div>
+    <div class="tick" style="left:83.33%" title="+2"></div>
     <div class="marker filled zero" style="left:50.0%" title="Left: +0.000"></div><div class="marker hollow neg" style="left:46.1%" title="Right: -0.235"></div>
   </div>
-  <div class="delta-bar-scale"><span>-3</span><span>0</span><span>+3</span></div></td>
+  <div class="delta-bar-scale"><span>-3</span><span>-2</span><span>-1</span><span>0</span><span>+1</span><span>+2</span><span>+3</span></div></td>
     </tr>
 <tr>
       <td rowspan="2">Llama 4 Maverick</td>
@@ -135,14 +142,14 @@
     </tr>
     <tr>
       <td class="delta-bar-cell" colspan="2"><div class="delta-bar">
-    <div class="tick" style="left:16.67%"></div>
-    <div class="tick" style="left:33.33%"></div>
-    <div class="tick center" style="left:50%"></div>
-    <div class="tick" style="left:66.67%"></div>
-    <div class="tick" style="left:83.33%"></div>
+    <div class="tick" style="left:16.67%" title="−2"></div>
+    <div class="tick" style="left:33.33%" title="−1"></div>
+    <div class="tick center" style="left:50%" title="0 (baseline)"></div>
+    <div class="tick" style="left:66.67%" title="+1"></div>
+    <div class="tick" style="left:83.33%" title="+2"></div>
     <div class="marker filled zero" style="left:50.0%" title="Left: +0.000"></div><div class="marker hollow neg" style="left:49.2%" title="Right: -0.047"></div>
   </div>
-  <div class="delta-bar-scale"><span>-3</span><span>0</span><span>+3</span></div></td>
+  <div class="delta-bar-scale"><span>-3</span><span>-2</span><span>-1</span><span>0</span><span>+1</span><span>+2</span><span>+3</span></div></td>
     </tr>
 <tr>
       <td rowspan="2">Mistral Large</td>
@@ -152,14 +159,14 @@
     </tr>
     <tr>
       <td class="delta-bar-cell" colspan="2"><div class="delta-bar">
-    <div class="tick" style="left:16.67%"></div>
-    <div class="tick" style="left:33.33%"></div>
-    <div class="tick center" style="left:50%"></div>
-    <div class="tick" style="left:66.67%"></div>
-    <div class="tick" style="left:83.33%"></div>
+    <div class="tick" style="left:16.67%" title="−2"></div>
+    <div class="tick" style="left:33.33%" title="−1"></div>
+    <div class="tick center" style="left:50%" title="0 (baseline)"></div>
+    <div class="tick" style="left:66.67%" title="+1"></div>
+    <div class="tick" style="left:83.33%" title="+2"></div>
     <div class="marker filled zero" style="left:50.0%" title="Left: +0.000"></div><div class="marker hollow neg" style="left:47.3%" title="Right: -0.165"></div>
   </div>
-  <div class="delta-bar-scale"><span>-3</span><span>0</span><span>+3</span></div></td>
+  <div class="delta-bar-scale"><span>-3</span><span>-2</span><span>-1</span><span>0</span><span>+1</span><span>+2</span><span>+3</span></div></td>
     </tr>
 <tr>
       <td rowspan="2">Mistral Small</td>
@@ -169,14 +176,14 @@
     </tr>
     <tr>
       <td class="delta-bar-cell" colspan="2"><div class="delta-bar">
-    <div class="tick" style="left:16.67%"></div>
-    <div class="tick" style="left:33.33%"></div>
-    <div class="tick center" style="left:50%"></div>
-    <div class="tick" style="left:66.67%"></div>
-    <div class="tick" style="left:83.33%"></div>
+    <div class="tick" style="left:16.67%" title="−2"></div>
+    <div class="tick" style="left:33.33%" title="−1"></div>
+    <div class="tick center" style="left:50%" title="0 (baseline)"></div>
+    <div class="tick" style="left:66.67%" title="+1"></div>
+    <div class="tick" style="left:83.33%" title="+2"></div>
     <div class="marker filled zero" style="left:50.0%" title="Left: +0.000"></div><div class="marker hollow neg" style="left:38.8%" title="Right: -0.671"></div>
   </div>
-  <div class="delta-bar-scale"><span>-3</span><span>0</span><span>+3</span></div></td>
+  <div class="delta-bar-scale"><span>-3</span><span>-2</span><span>-1</span><span>0</span><span>+1</span><span>+2</span><span>+3</span></div></td>
     </tr>
 <tr>
       <td rowspan="2">Qwen 3 Next 80B</td>
@@ -186,14 +193,14 @@
     </tr>
     <tr>
       <td class="delta-bar-cell" colspan="2"><div class="delta-bar">
-    <div class="tick" style="left:16.67%"></div>
-    <div class="tick" style="left:33.33%"></div>
-    <div class="tick center" style="left:50%"></div>
-    <div class="tick" style="left:66.67%"></div>
-    <div class="tick" style="left:83.33%"></div>
+    <div class="tick" style="left:16.67%" title="−2"></div>
+    <div class="tick" style="left:33.33%" title="−1"></div>
+    <div class="tick center" style="left:50%" title="0 (baseline)"></div>
+    <div class="tick" style="left:66.67%" title="+1"></div>
+    <div class="tick" style="left:83.33%" title="+2"></div>
     <div class="marker filled zero" style="left:50.0%" title="Left: +0.000"></div><div class="marker hollow neg" style="left:32.9%" title="Right: -1.024"></div>
   </div>
-  <div class="delta-bar-scale"><span>-3</span><span>0</span><span>+3</span></div></td>
+  <div class="delta-bar-scale"><span>-3</span><span>-2</span><span>-1</span><span>0</span><span>+1</span><span>+2</span><span>+3</span></div></td>
     </tr></tbody>
     </table>
   </div>

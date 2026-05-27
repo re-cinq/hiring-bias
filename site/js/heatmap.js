@@ -151,31 +151,61 @@ async function rebuildWall() {
   renderDetail({ model, axis, cells, levels, jds });
 }
 
+function deltaWithCiBar(delta, ciLo, ciHi, baseline, significant) {
+  if (delta == null) return el('span', { class: 'dim' }, '—');
+  const sign = Math.abs(delta) < 0.005 ? 'zero' : delta > 0 ? 'pos' : 'neg';
+  const pos = (v) => Math.max(0, Math.min(100, (v + 3) / 6 * 100));
+  const bar = el('div', { class: 'delta-bar' });
+  const ticks = [[16.67, '−2'], [33.33, '−1'], [66.67, '+1'], [83.33, '+2']];
+  for (const [x, label] of ticks) {
+    bar.append(el('div', { class: 'tick', style: { left: `${x}%` }, title: label }));
+  }
+  bar.append(el('div', { class: 'tick center', style: { left: '50%' }, title: '0 (baseline)' }));
+  if (baseline != null && ciLo != null && ciHi != null) {
+    const lo = ciLo - baseline;
+    const hi = ciHi - baseline;
+    const left = pos(lo);
+    const width = Math.max(0.5, pos(hi) - left);
+    bar.append(el('div', {
+      class: `ci ${sign}`,
+      style: { left: `${left.toFixed(1)}%`, width: `${width.toFixed(1)}%` },
+      title: `95% CI: Δ ${fmtSignedDelta(lo, 2)} to ${fmtSignedDelta(hi, 2)}`
+    }));
+  }
+  bar.append(el('div', {
+    class: `marker ${significant ? 'filled' : 'hollow'} ${sign}`,
+    style: { left: `${pos(delta).toFixed(1)}%` },
+    title: `Δ ${fmtSignedDelta(delta, 3)} · CI [${fmtNum(ciLo, 2)} … ${fmtNum(ciHi, 2)}] · baseline ${fmtNum(baseline, 2)}`
+  }));
+  const scale = el('div', { class: 'delta-bar-scale' },
+    ['-3', '-2', '-1', '0', '+1', '+2', '+3'].map((s) => el('span', {}, s)));
+  const wrap = document.createElement('div');
+  wrap.append(bar, scale);
+  return wrap;
+}
+
 function renderDetail({ model, axis, cells, levels, jds }) {
   detailHost.innerHTML = '';
   const panel = el('div', { class: 'panel' });
   panel.append(el('div', { class: 'panel-head' }, el('span', {}, `SUMMARY · ${AXIS_LABELS[axis] ?? axis} × ${modelLabel(model)}`)));
 
-  panel.append(el('p', { class: 'dim' }, [
-    'Each row is one (variant, job) experiment for this model, repeated several times. ',
-    el('strong', {}, 'n'), ' is the number of reruns. ',
-    el('strong', {}, 'Mean'), ' is the model\'s average score for the variant across those reruns; ',
-    el('strong', {}, 'Baseline'), ' is its average for the unmodified résumé on the same job. ',
-    el('strong', {}, 'Δ'), ' is Mean minus Baseline (negative = the variant was penalised, positive = boosted). ',
-    el('strong', {}, '95% CI'), ' is the range we expect the variant\'s true average to fall in 95 times out of 100. ',
-    el('strong', {}, 'Sig'), ' shows ✓ when the baseline sits outside that range, meaning the gap is unlikely to be run-to-run noise.'
-  ]));
+  panel.append(el('p', { class: 'dim' }, 'Each row is one (variant, job) experiment. The bar plots the variant\'s score change vs the unmodified baseline on a fixed −3 to +3 scale. Bar scale is the same as the resume-diff page.'));
 
-  const table = el('table', { class: 'data' });
+  const legend = el('div', { class: 'bar-legend' }, [
+    el('span', { class: 'accent' }, [el('span', { class: 'swatch filled', style: { color: 'var(--accent)' } }), ' above baseline']),
+    el('span', { class: 'alert' }, [el('span', { class: 'swatch filled', style: { color: 'var(--alert)' } }), ' below baseline']),
+    el('span', {}, [el('span', { class: 'swatch filled' }), ' significant (CI excludes baseline)']),
+    el('span', {}, [el('span', { class: 'swatch hollow' }), ' not significant (CI overlaps baseline)']),
+    el('span', {}, [el('span', { class: 'swatch errbar pos' }), ' 95% CI']),
+    el('span', {}, [el('span', { class: 'swatch tick' }), ' baseline (Δ = 0)'])
+  ]);
+  panel.append(legend);
+
+  const table = el('table', { class: 'data hm-detail' });
   table.append(el('thead', {}, el('tr', {}, [
     el('th', {}, 'Variant'),
     el('th', {}, 'Job description'),
-    el('th', { class: 'num', title: 'Number of reruns we collected for this cell. More reruns means a tighter confidence interval.' }, 'n'),
-    el('th', { class: 'num', title: 'Average score the model gave the variant across all reruns.' }, 'Mean'),
-    el('th', { class: 'num', title: 'Average score the model gave the unmodified résumé on the same job. The reference point.' }, 'Baseline'),
-    el('th', { class: 'num', title: 'Mean minus Baseline. Negative = the variant was penalised, positive = boosted.' }, 'Δ'),
-    el('th', { class: 'num', title: '95% confidence interval for the variant\'s mean score. The range the true average likely lies in.' }, '95% CI'),
-    el('th', { title: '✓ when the baseline falls outside the variant\'s 95% CI. The gap is unlikely to be run-to-run noise.' }, 'Sig'),
+    el('th', {}, 'Δ vs baseline (n reruns)'),
     el('th', {}, '')
   ])));
   const tbody = el('tbody');
@@ -183,15 +213,19 @@ function renderDetail({ model, axis, cells, levels, jds }) {
   const levelMap = Object.fromEntries(levels.map((l) => [l.id, l.label]));
   const jdMap = Object.fromEntries(jds.map((j) => [j.id, j.fullLabel ?? j.label]));
   for (const r of ranked) {
+    const sign = r.delta == null ? '' : (Math.abs(r.delta) < 0.005 ? 'dim' : r.delta > 0 ? 'accent' : 'alert');
+    const caption = el('div', { class: 'delta-bar-caption' }, [
+      el('span', { class: `delta ${sign}` }, fmtSignedDelta(r.delta, 2)),
+      el('span', {}, `n=${r.n}`),
+      r.significant ? el('span', { class: 'accent' }, '✓ significant') : el('span', { class: 'dim' }, 'within noise')
+    ]);
+    const cell = document.createElement('div');
+    cell.append(deltaWithCiBar(r.delta, r.ci_lo, r.ci_hi, r.baseline_mean, r.significant), caption);
+
     tbody.append(el('tr', { id: rowDomId(r.level, r.jd) }, [
       el('td', {}, levelMap[r.level] ?? r.level),
       el('td', {}, jdMap[r.jd] ?? r.jd),
-      el('td', { class: 'num' }, r.n),
-      el('td', { class: 'num' }, fmtNum(r.mean, 2)),
-      el('td', { class: 'num' }, fmtNum(r.baseline_mean, 2)),
-      el('td', { class: `num ${deltaClass(r.delta)}` }, fmtSignedDelta(r.delta)),
-      el('td', { class: 'num dim' }, `${fmtNum(r.ci_lo, 1)}…${fmtNum(r.ci_hi, 1)}`),
-      el('td', {}, r.significant ? el('span', { class: 'accent' }, '✓') : el('span', { class: 'dim' }, '–')),
+      el('td', { class: 'hm-detail-bar' }, cell),
       el('td', {}, el('a', {
         href: `diff.html?variant=${axis}_${r.level}&model=${model}&jd=${r.jd}`
       }, 'diff →'))

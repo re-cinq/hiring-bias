@@ -1024,14 +1024,14 @@ function deltaBarHtml(l, r) {
   const leftDot = l == null ? '' : `<div class="marker filled ${cls(l)}" style="left:${pos(l)}" title="Left: ${fmtSigned(l, 3)}"></div>`;
   const rightDot = r == null ? '' : `<div class="marker hollow ${cls(r)}" style="left:${pos(r)}" title="Right: ${fmtSigned(r, 3)}"></div>`;
   return `<div class="delta-bar">
-    <div class="tick" style="left:16.67%"></div>
-    <div class="tick" style="left:33.33%"></div>
-    <div class="tick center" style="left:50%"></div>
-    <div class="tick" style="left:66.67%"></div>
-    <div class="tick" style="left:83.33%"></div>
+    <div class="tick" style="left:16.67%" title="−2"></div>
+    <div class="tick" style="left:33.33%" title="−1"></div>
+    <div class="tick center" style="left:50%" title="0 (baseline)"></div>
+    <div class="tick" style="left:66.67%" title="+1"></div>
+    <div class="tick" style="left:83.33%" title="+2"></div>
     ${leftDot}${rightDot}
   </div>
-  <div class="delta-bar-scale"><span>-3</span><span>0</span><span>+3</span></div>`;
+  <div class="delta-bar-scale"><span>-3</span><span>-2</span><span>-1</span><span>0</span><span>+1</span><span>+2</span><span>+3</span></div>`;
 }
 
 function resumeComparisonHtml(matrix, fromId, toId) {
@@ -1060,7 +1060,14 @@ function resumeComparisonHtml(matrix, fromId, toId) {
   }).join('\n');
   return `<div class="panel">
     <div class="panel-head"><span>HOW EACH MODEL SCORES THESE TWO RÉSUMÉS</span></div>
-    <p class="dim">Each model's mean score change versus the unmodified baseline, for the left résumé (<em>${esc(leftLabel)}</em>) and the right résumé (<em>${esc(rightLabel)}</em>), averaged over all jobs with data. Under each row, a bar plots both deltas on a fixed −3 to +3 scale. The centre tick is the baseline (Δ = 0). <strong>●</strong> marks the left résumé; <strong>○</strong> marks the right. <span class="accent">Green</span> means the model scored that résumé above baseline; <span class="alert">red</span> means below.</p>
+    <p class="dim">Each model's average score change versus the unmodified baseline, pooled across all jobs with data. Bar scale is fixed −3 to +3.</p>
+    <div class="bar-legend">
+      <span><span class="swatch filled"></span> <strong>Left</strong> résumé</span>
+      <span><span class="swatch hollow"></span> <strong>Right</strong> résumé</span>
+      <span><span class="swatch tick"></span> baseline (Δ = 0)</span>
+      <span class="accent"><span class="swatch filled" style="color:var(--accent)"></span> above baseline</span>
+      <span class="alert"><span class="swatch filled" style="color:var(--alert)"></span> below baseline</span>
+    </div>
     <table class="data rs-table">
       <thead><tr>
         <th>Model</th><th class="num">Left</th><th class="num">Right</th><th>Winner</th>

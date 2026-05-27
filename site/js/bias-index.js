@@ -227,13 +227,15 @@ function deltaBar(l, r) {
   const pos = (v) => `${Math.max(0, Math.min(100, (v + 3) / 6 * 100)).toFixed(1)}%`;
   const cls = (v) => v == null ? '' : (Math.abs(v) < 0.005 ? 'zero' : v > 0 ? 'pos' : 'neg');
   const bar = el('div', { class: 'delta-bar' });
-  for (const x of [16.67, 33.33, 66.67, 83.33]) {
-    bar.append(el('div', { class: 'tick', style: { left: `${x}%` } }));
+  const ticks = [[16.67, '−2'], [33.33, '−1'], [66.67, '+1'], [83.33, '+2']];
+  for (const [x, label] of ticks) {
+    bar.append(el('div', { class: 'tick', style: { left: `${x}%` }, title: label }));
   }
-  bar.append(el('div', { class: 'tick center', style: { left: '50%' } }));
+  bar.append(el('div', { class: 'tick center', style: { left: '50%' }, title: '0 (baseline)' }));
   if (l != null) bar.append(el('div', { class: `marker filled ${cls(l)}`, style: { left: pos(l) }, title: `Left: ${fmtSignedDelta(l, 3)}` }));
   if (r != null) bar.append(el('div', { class: `marker hollow ${cls(r)}`, style: { left: pos(r) }, title: `Right: ${fmtSignedDelta(r, 3)}` }));
-  const scale = el('div', { class: 'delta-bar-scale' }, [el('span', {}, '-3'), el('span', {}, '0'), el('span', {}, '+3')]);
+  const scale = el('div', { class: 'delta-bar-scale' },
+    ['-3', '-2', '-1', '0', '+1', '+2', '+3'].map((s) => el('span', {}, s)));
   const wrap = document.createElement('div');
   wrap.append(bar, scale);
   return wrap;
@@ -252,14 +254,16 @@ export function renderResumeComparison(host, matrix, fromId, toId) {
 
   const leftLabel = variantLabelFromId(matrix, fromId);
   const rightLabel = variantLabelFromId(matrix, toId);
-  panel.append(el('p', { class: 'dim' }, [
-    'Each model\'s mean score change versus the unmodified baseline, for the left résumé (',
-    el('em', {}, leftLabel), ') and the right résumé (', el('em', {}, rightLabel),
-    '), averaged over all jobs with data. Under each row, a bar plots both deltas on a fixed −3 to +3 scale. The centre tick is the baseline (Δ = 0). ',
-    el('strong', {}, '●'), ' marks the left résumé; ', el('strong', {}, '○'), ' marks the right. ',
-    el('span', { class: 'accent' }, 'Green'), ' means the model scored that résumé above baseline; ',
-    el('span', { class: 'alert' }, 'red'), ' means below.'
-  ]));
+  panel.append(el('p', { class: 'dim' }, 'Each model\'s average score change versus the unmodified baseline, pooled across all jobs with data. Bar scale is fixed −3 to +3.'));
+
+  const legend = el('div', { class: 'bar-legend' }, [
+    el('span', {}, [el('span', { class: 'swatch filled' }), ' ', el('strong', {}, 'Left'), ' résumé']),
+    el('span', {}, [el('span', { class: 'swatch hollow' }), ' ', el('strong', {}, 'Right'), ' résumé']),
+    el('span', {}, [el('span', { class: 'swatch tick' }), ' baseline (Δ = 0)']),
+    el('span', { class: 'accent' }, [el('span', { class: 'swatch filled', style: { color: 'var(--accent)' } }), ' above baseline']),
+    el('span', { class: 'alert' }, [el('span', { class: 'swatch filled', style: { color: 'var(--alert)' } }), ' below baseline'])
+  ]);
+  panel.append(legend);
 
   const rows = matrix.models.map((m) => {
     const l = variantDelta(matrix, fromId, m);

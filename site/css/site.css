@@ -3,7 +3,7 @@
   --panel: #13171c;
   --border: #252b34;
   --text: #c5c8cc;
-  --dim: #777c84;
+  --dim: #a1a6ad;
   --accent: #6fae72;
   --warn: #c89764;
   --alert: #b85b5b;
@@ -19,7 +19,7 @@
   --panel: #f1ecdd;
   --border: #bcb3a0;
   --text: #26221a;
-  --dim: #6e6857;
+  --dim: #50493a;
   --accent: #4a6b3a;
   --warn: #8a5a1f;
   --alert: #8a3032;
@@ -477,20 +477,48 @@ svg.volcano { width: 100%; display: block; background: var(--bg); border: 1px so
 /* Diverging Δ bar shared by the resume-diff table. Fixed scale −3..+3, centre line = baseline. */
 .delta-bar-cell { padding: 4px 8px 8px !important; }
 .delta-bar { position: relative; height: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); }
-.delta-bar .tick { position: absolute; top: 0; height: 100%; width: 1px; background: var(--border); }
-.delta-bar .center { background: var(--dim); width: 1px; }
+.delta-bar .tick { position: absolute; top: 0; height: 100%; width: 1px; background: var(--dim); opacity: 0.5; }
+.delta-bar .tick.center { background: var(--text); width: 2px; opacity: 0.9; margin-left: -1px; }
 .delta-bar .marker { position: absolute; top: 50%; width: 11px; height: 11px; border-radius: 50%; transform: translate(-50%, -50%); z-index: 2; box-sizing: border-box; }
 .delta-bar .marker.filled { background: currentColor; }
 .delta-bar .marker.hollow { background: transparent; border: 2px solid currentColor; }
 .delta-bar .marker.pos { color: var(--accent); }
 .delta-bar .marker.neg { color: var(--alert); }
 .delta-bar .marker.zero { color: var(--dim); }
-.delta-bar-scale { display: flex; justify-content: space-between; font-size: 9px; font-family: var(--mono); color: var(--dim); margin-top: 3px; }
+.delta-bar-scale { display: flex; justify-content: space-between; font-size: 10px; font-family: var(--mono); color: var(--dim); margin-top: 2px; padding: 0 1px; }
+.delta-bar-scale > span { flex: 0 0 auto; width: 16px; text-align: center; }
+.delta-bar-scale > span:first-child { text-align: left; padding-left: 0; }
+.delta-bar-scale > span:last-child { text-align: right; padding-right: 0; }
 .rs-table td { vertical-align: middle; }
 /* Shrink Model + Winner to content width so the bar cell gets most of the row. */
 .rs-table th:first-child, .rs-table th:last-child { width: 1%; }
 .rs-table tbody td[rowspan]:first-child { width: 1%; white-space: nowrap; }
 .rs-table tbody td[rowspan]:last-child { width: 1%; max-width: 22ch; }
+
+/* Visual legend row above the resume-diff bar table. Scannable in a glance. */
+.bar-legend { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin: 6px 0 10px; font-size: 12px; color: var(--text); }
+.bar-legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.bar-legend .swatch { display: inline-block; width: 11px; height: 11px; border-radius: 50%; box-sizing: border-box; }
+.bar-legend .swatch.filled { background: currentColor; }
+.bar-legend .swatch.hollow { background: transparent; border: 2px solid currentColor; }
+.bar-legend .swatch.tick { width: 2px; height: 14px; border-radius: 0; background: var(--dim); }
+.bar-legend .swatch.errbar { width: 18px; height: 2px; border-radius: 0; }
+.bar-legend .swatch.errbar.pos { background: var(--accent); }
+.bar-legend .swatch.errbar.neg { background: var(--alert); }
+
+/* CI error bar inside .delta-bar for the heatmap detail rows. */
+.delta-bar .ci { position: absolute; top: 50%; height: 2px; transform: translateY(-50%); border-radius: 1px; z-index: 1; opacity: 0.75; }
+.delta-bar .ci.pos { background: var(--accent); }
+.delta-bar .ci.neg { background: var(--alert); }
+.delta-bar .ci.zero { background: var(--dim); }
+.delta-bar-caption { font-size: 11px; font-family: var(--mono); color: var(--dim); margin-top: 3px; display: flex; gap: 10px; align-items: center; }
+.delta-bar-caption .delta { font-weight: 600; }
+
+/* Heatmap detail table: let the bar column take all spare horizontal space. */
+.hm-detail th:nth-child(1), .hm-detail th:nth-child(2),
+.hm-detail td:nth-child(1), .hm-detail td:nth-child(2),
+.hm-detail th:last-child, .hm-detail td:last-child { width: 1%; white-space: nowrap; }
+.hm-detail .hm-detail-bar { width: auto; min-width: 320px; }
 /* Additive blending: overlapping model dots brighten toward white (dark) / darken (light). */
 .vol-points { mix-blend-mode: screen; }
 [data-theme="light"] .vol-points { mix-blend-mode: multiply; }
