@@ -47,5 +47,5 @@ const links = el('p', {}, [
   ext('https://www.linkedin.com/in/szabobogdan/', 'LinkedIn')
 ]);
 author.append(links);
-author.append(el('p', {}, ['Source, raw data and issues live on ', ext('https://github.com/gedaiu', 'GitHub'), '.']));
+author.append(el('p', {}, ['Source, raw data and issues live on ', ext('https://github.com/re-cinq/hiring-bias', 'GitHub'), '.']));
 page.append(author);

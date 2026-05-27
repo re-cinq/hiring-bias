@@ -101,7 +101,7 @@ export function renderFooter() {
   inner.append(el('div', { class: 'footer-row footer-meta' }, [
     `© ${new Date().getFullYear()} Bogdan Szabo`,
     el('span', { class: 'footer-sep' }, '·'),
-    extLink('https://github.com/gedaiu', 'source on GitHub')
+    extLink('https://github.com/re-cinq/hiring-bias', 'source on GitHub')
   ]));
   document.body.append(el('footer', { class: 'bottom' }, inner));
 }
