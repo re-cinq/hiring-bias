@@ -222,24 +222,21 @@ function variantDelta(matrix, id, model) {
   return matrix.matrix?.[axis]?.[level]?.[model]?.mean_delta ?? null;
 }
 
-function divergingBar(diff, max) {
-  const half = max > 0 ? Math.min(50, (Math.abs(diff) / max) * 50) : 0;
-  const track = el('div', { style: {
-    position: 'relative', height: '9px',
-    background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'hidden'
-  } });
-  const fill = el('div', { style: {
-    position: 'absolute', top: '0', height: '100%',
-    width: `${half}%`,
-    left: diff >= 0 ? '50%' : `${50 - half}%`,
-    background: diff >= 0 ? 'var(--accent)' : 'var(--alert)',
-    transition: 'all 200ms ease'
-  } });
-  const tick = el('div', { style: {
-    position: 'absolute', left: '50%', top: '0', width: '1px', height: '100%', background: 'var(--border)'
-  } });
-  track.append(fill, tick);
-  return track;
+function deltaBar(l, r) {
+  if (l == null && r == null) return el('span', { class: 'dim' }, '—');
+  const pos = (v) => `${Math.max(0, Math.min(100, (v + 3) / 6 * 100)).toFixed(1)}%`;
+  const cls = (v) => v == null ? '' : (Math.abs(v) < 0.005 ? 'zero' : v > 0 ? 'pos' : 'neg');
+  const bar = el('div', { class: 'delta-bar' });
+  for (const x of [16.67, 33.33, 66.67, 83.33]) {
+    bar.append(el('div', { class: 'tick', style: { left: `${x}%` } }));
+  }
+  bar.append(el('div', { class: 'tick center', style: { left: '50%' } }));
+  if (l != null) bar.append(el('div', { class: `marker filled ${cls(l)}`, style: { left: pos(l) }, title: `Left: ${fmtSignedDelta(l, 3)}` }));
+  if (r != null) bar.append(el('div', { class: `marker hollow ${cls(r)}`, style: { left: pos(r) }, title: `Right: ${fmtSignedDelta(r, 3)}` }));
+  const scale = el('div', { class: 'delta-bar-scale' }, [el('span', {}, '-3'), el('span', {}, '0'), el('span', {}, '+3')]);
+  const wrap = document.createElement('div');
+  wrap.append(bar, scale);
+  return wrap;
 }
 
 export function renderResumeComparison(host, matrix, fromId, toId) {
@@ -248,7 +245,7 @@ export function renderResumeComparison(host, matrix, fromId, toId) {
   panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'HOW EACH MODEL SCORES THESE TWO RÉSUMÉS')));
 
   if (fromId === toId) {
-    panel.append(el('p', { class: 'dim' }, 'Same variant on both sides — pick two different variants to see which one each model scores higher.'));
+    panel.append(el('p', { class: 'dim' }, 'Same variant on both sides. Pick two different variants to see which one each model scores higher.'));
     host.append(panel);
     return;
   }
@@ -256,9 +253,12 @@ export function renderResumeComparison(host, matrix, fromId, toId) {
   const leftLabel = variantLabelFromId(matrix, fromId);
   const rightLabel = variantLabelFromId(matrix, toId);
   panel.append(el('p', { class: 'dim' }, [
-    'Each model’s mean score change versus the unmodified baseline, for the left and right résumé (averaged over all JDs with data). ',
-    el('span', { class: 'accent' }, 'Green'), ' = the right résumé scored higher, ',
-    el('span', { class: 'alert' }, 'red'), ' = the left scored higher. Margin is the size of that gap.'
+    'Each model\'s mean score change versus the unmodified baseline, for the left résumé (',
+    el('em', {}, leftLabel), ') and the right résumé (', el('em', {}, rightLabel),
+    '), averaged over all jobs with data. Under each row, a bar plots both deltas on a fixed −3 to +3 scale. The centre tick is the baseline (Δ = 0). ',
+    el('strong', {}, '●'), ' marks the left résumé; ', el('strong', {}, '○'), ' marks the right. ',
+    el('span', { class: 'accent' }, 'Green'), ' means the model scored that résumé above baseline; ',
+    el('span', { class: 'alert' }, 'red'), ' means below.'
   ]));
 
   const rows = matrix.models.map((m) => {
@@ -267,34 +267,29 @@ export function renderResumeComparison(host, matrix, fromId, toId) {
     const diff = l == null || r == null ? null : r - l;
     return { model: m, l, r, diff };
   });
-  const worldMax = Math.max(...rows.map((s) => (s.diff == null ? 0 : Math.abs(s.diff))), 0.0001);
 
-  const table = el('table', { class: 'data' });
+  const table = el('table', { class: 'data rs-table' });
   table.append(el('thead', {}, el('tr', {}, [
     el('th', {}, 'Model'),
-    el('th', { class: 'num' }, `Left Δ (${leftLabel})`),
-    el('th', { class: 'num' }, `Right Δ (${rightLabel})`),
-    el('th', {}, 'Stronger résumé'),
-    el('th', {}, 'Margin'),
-    el('th', { class: 'num' }, '|Δ|')
+    el('th', { class: 'num' }, 'Left'),
+    el('th', { class: 'num' }, 'Right'),
+    el('th', {}, 'Winner')
   ])));
   const tbody = el('tbody');
   for (const s of rows) {
-    let stronger;
-    if (s.diff == null) {
-      stronger = el('span', { class: 'dim' }, 'no data');
-    } else if (Math.abs(s.diff) < 0.005) {
-      stronger = el('span', { class: 'dim' }, 'tie');
-    } else {
-      stronger = el('span', { class: s.diff > 0 ? 'accent' : 'alert' }, s.diff > 0 ? `Right · ${rightLabel}` : `Left · ${leftLabel}`);
-    }
+    let winner;
+    if (s.diff == null) winner = el('span', { class: 'dim' }, 'no data');
+    else if (Math.abs(s.diff) < 0.005) winner = el('span', { class: 'dim' }, 'tie');
+    else winner = el('span', { class: s.diff > 0 ? 'accent' : 'alert' }, s.diff > 0 ? rightLabel : leftLabel);
+
     tbody.append(el('tr', {}, [
-      el('td', {}, MODEL_DISPLAY[s.model] ?? s.model),
+      el('td', { rowspan: '2' }, MODEL_DISPLAY[s.model] ?? s.model),
       el('td', { class: `num ${signedClass(s.l)}` }, fmtSignedDelta(s.l, 3)),
       el('td', { class: `num ${signedClass(s.r)}` }, fmtSignedDelta(s.r, 3)),
-      el('td', {}, stronger),
-      el('td', { style: { width: '20%' } }, s.diff == null ? el('span', { class: 'dim' }, '—') : divergingBar(s.diff, worldMax)),
-      el('td', { class: 'num dim' }, s.diff == null ? '—' : Math.abs(s.diff).toFixed(3))
+      el('td', { rowspan: '2' }, winner)
+    ]));
+    tbody.append(el('tr', {}, [
+      el('td', { class: 'delta-bar-cell', colspan: '2' }, deltaBar(s.l, s.r))
     ]));
   }
   table.append(tbody);

@@ -1017,6 +1017,23 @@ function variantDelta(matrix, id, model) {
   return matrix.matrix?.[axis]?.[level]?.[model]?.mean_delta ?? null;
 }
 
+function deltaBarHtml(l, r) {
+  if (l == null && r == null) return '<span class="dim">—</span>';
+  const pos = (v) => `${Math.max(0, Math.min(100, (v + 3) / 6 * 100)).toFixed(1)}%`;
+  const cls = (v) => v == null ? '' : (Math.abs(v) < 0.005 ? 'zero' : v > 0 ? 'pos' : 'neg');
+  const leftDot = l == null ? '' : `<div class="marker filled ${cls(l)}" style="left:${pos(l)}" title="Left: ${fmtSigned(l, 3)}"></div>`;
+  const rightDot = r == null ? '' : `<div class="marker hollow ${cls(r)}" style="left:${pos(r)}" title="Right: ${fmtSigned(r, 3)}"></div>`;
+  return `<div class="delta-bar">
+    <div class="tick" style="left:16.67%"></div>
+    <div class="tick" style="left:33.33%"></div>
+    <div class="tick center" style="left:50%"></div>
+    <div class="tick" style="left:66.67%"></div>
+    <div class="tick" style="left:83.33%"></div>
+    ${leftDot}${rightDot}
+  </div>
+  <div class="delta-bar-scale"><span>-3</span><span>0</span><span>+3</span></div>`;
+}
+
 function resumeComparisonHtml(matrix, fromId, toId) {
   const leftLabel = variantLabelFromId(matrix, fromId);
   const rightLabel = variantLabelFromId(matrix, toId);
@@ -1026,33 +1043,27 @@ function resumeComparisonHtml(matrix, fromId, toId) {
     const diff = l == null || r == null ? null : r - l;
     return { model: m, l, r, diff };
   });
-  const worldMax = Math.max(...rows.map((s) => (s.diff == null ? 0 : Math.abs(s.diff))), 0.0001);
   const body = rows.map((s) => {
-    let stronger;
-    if (s.diff == null) stronger = '<span class="dim">no data</span>';
-    else if (Math.abs(s.diff) < 0.005) stronger = '<span class="dim">tie</span>';
-    else stronger = `<span class="${s.diff > 0 ? 'accent' : 'alert'}">${s.diff > 0 ? `Right · ${esc(rightLabel)}` : `Left · ${esc(leftLabel)}`}</span>`;
-    const half = (Math.abs(s.diff ?? 0) / worldMax) * 50;
-    const left = (s.diff ?? 0) >= 0 ? 50 : 50 - half;
-    const barColor = (s.diff ?? 0) >= 0 ? 'var(--accent)' : 'var(--alert)';
-    const bar = s.diff == null ? '<span class="dim">—</span>'
-      : `<div style="position:relative;height:9px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden"><div style="position:absolute;top:0;height:100%;width:${half.toFixed(0)}%;left:${left.toFixed(0)}%;background:${barColor}"></div><div style="position:absolute;left:50%;top:0;width:1px;height:100%;background:var(--border)"></div></div>`;
+    let winner;
+    if (s.diff == null) winner = '<span class="dim">no data</span>';
+    else if (Math.abs(s.diff) < 0.005) winner = '<span class="dim">tie</span>';
+    else winner = `<span class="${s.diff > 0 ? 'accent' : 'alert'}">${esc(s.diff > 0 ? rightLabel : leftLabel)}</span>`;
     return `<tr>
-      <td>${esc(modelDisplay(s.model))}</td>
+      <td rowspan="2">${esc(modelDisplay(s.model))}</td>
       <td class="num ${signedClass(s.l)}">${fmtSigned(s.l, 3)}</td>
       <td class="num ${signedClass(s.r)}">${fmtSigned(s.r, 3)}</td>
-      <td>${stronger}</td>
-      <td style="width:20%">${bar}</td>
-      <td class="num dim">${s.diff == null ? '—' : Math.abs(s.diff).toFixed(3)}</td>
+      <td rowspan="2">${winner}</td>
+    </tr>
+    <tr>
+      <td class="delta-bar-cell" colspan="2">${deltaBarHtml(s.l, s.r)}</td>
     </tr>`;
   }).join('\n');
   return `<div class="panel">
     <div class="panel-head"><span>HOW EACH MODEL SCORES THESE TWO RÉSUMÉS</span></div>
-    <p class="dim">Each model’s mean score change versus the unmodified baseline, for the left and right résumé (averaged over all JDs with data). <span class="accent">Green</span> = the right résumé scored higher, <span class="alert">red</span> = the left scored higher. Margin is the size of that gap.</p>
-    <table class="data">
+    <p class="dim">Each model's mean score change versus the unmodified baseline, for the left résumé (<em>${esc(leftLabel)}</em>) and the right résumé (<em>${esc(rightLabel)}</em>), averaged over all jobs with data. Under each row, a bar plots both deltas on a fixed −3 to +3 scale. The centre tick is the baseline (Δ = 0). <strong>●</strong> marks the left résumé; <strong>○</strong> marks the right. <span class="accent">Green</span> means the model scored that résumé above baseline; <span class="alert">red</span> means below.</p>
+    <table class="data rs-table">
       <thead><tr>
-        <th>Model</th><th class="num">Left Δ (${esc(leftLabel)})</th><th class="num">Right Δ (${esc(rightLabel)})</th>
-        <th>Stronger résumé</th><th>Margin</th><th class="num">|Δ|</th>
+        <th>Model</th><th class="num">Left</th><th class="num">Right</th><th>Winner</th>
       </tr></thead>
       <tbody>${body}</tbody>
     </table>
