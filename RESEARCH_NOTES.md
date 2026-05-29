@@ -4,6 +4,15 @@ A working document capturing the reasoning behind every design choice in this
 study, the experimental flows it executes, and the questions it intends to
 answer. Written to be lifted into an article draft.
 
+> **Status (2026-05-28).** Some specific counts in this document predate the
+> final run. The executed study covers **8 axes** (7 injection + 1 redaction),
+> **10 model slots across 6 vendors**, **17 job descriptions**, and **25,500
+> inference calls**, plus an LLM-as-judge audit layer that produces 4,930
+> per-cell verdicts. See [`README.md`](README.md) and
+> [`site/methodology.html`](site/methodology.html) for the current numbers
+> and the audit design. The narrative reasoning below still describes the
+> motivating logic accurately.
+
 ---
 
 ## 1. Motivation — Why Study This Now
@@ -102,12 +111,14 @@ sent to real job postings. The counterfactual is the inference engine.
 
 ---
 
-## 5. The Seven Axes — Why Each One
+## 5. The Eight Axes — Why Each One
 
-Seven demographic and contextual axes were selected, each chosen because it
-carries a signal that hiring research has previously associated with bias,
-and each independently realistic — a recruiter looking at a resume would in
-fact see each of these.
+Eight axes are tested in total. Seven are **injection axes**, each chosen
+because it carries a signal that hiring research has previously associated
+with bias, and each independently realistic, a recruiter looking at a resume
+would in fact see each of these. The eighth is a **redaction axis**, which
+runs the inverse test: instead of injecting a demographic signal, it removes
+one and asks whether the verdict moves.
 
 **First name.** The single most studied resume-bias variable, and the most
 straightforward to manipulate. Names carry gender and ethnicity signal
@@ -147,44 +158,53 @@ and dates can be attached to MIT, ETH, IIT, or a regional university the
 model has likely never seen. This axis is where elitism bias would show up
 most cleanly.
 
-The seven were chosen partly for breadth and partly because each is something
-a real candidate can in principle control or omit — meaning a practical
-recommendation could come out the other end (for example, "the model
-penalizes unfamiliar schools, so candidates from less prestigious schools
-benefit disproportionately from blind-redaction interventions").
+**Anonymize (redaction).** The mitigation arm of the study. Two levels:
+`anonymize_name` blinds identity only (name, contact, personal links);
+`anonymize_all` additionally blinds employers, schools, locations and dates.
+If hiding a signal moves the verdict on identical underlying work, the model
+was leaning on the hidden signal. This axis directly answers the practical
+question "should we just remove names from CVs?" with a measurement rather
+than an opinion.
+
+The eight axes were chosen partly for breadth and partly because each is
+something a real candidate can in principle control or omit, meaning a
+practical recommendation could come out the other end (for example, "the
+model penalises unfamiliar schools, so candidates from less prestigious
+schools benefit disproportionately from blind-redaction interventions"
+which the anonymize arm tests directly).
 
 ---
 
-## 6. Model Selection — Why These Nine
+## 6. Model Selection — Why These Ten
 
-Nine model slots are tested, organized as flagship-plus-cheap pairs from
-each major vendor where both tiers are available, with one extra
-generational comparison on the Google side. The pairing is the
-methodological backbone of the cross-vendor comparison.
+Ten model slots are tested, organised so that most vendors contribute more
+than one tier and so that at least one within-vendor generational comparison
+is available. The within-vendor pairing is the methodological backbone of
+the cross-vendor comparison.
 
-The pairing matters because without it, any observed cross-vendor
-difference is confounded with model-tier difference. If Claude Opus is more
-biased than Gemini Flash, the analyst cannot tell whether that is a vendor
-fact ("Anthropic's training data") or a tier fact ("flagship models reason
-more elaborately and find more opportunities to apply prejudice"). Including
-both flagship and cheap models from the same vendor lets the report
-distinguish the two.
+The pairing matters because without it, any observed cross-vendor difference
+is confounded with model-tier difference. If Claude Opus is more biased than
+Gemini Flash, the analyst cannot tell whether that is a vendor fact
+("Anthropic's training data") or a tier fact ("flagship models reason more
+elaborately and find more opportunities to apply prejudice"). Including
+multiple tiers from the same vendor lets the report distinguish the two.
 
-The chosen vendors are Anthropic, OpenAI, Google, Meta, and Mistral.
-Anthropic is included via the user's Max subscription using the
-command-line interface, which routes through the same session credentials as
-the chat product — so Claude is represented but cannot easily be paired with
-a cheaper Anthropic model in the same study without consuming additional
-Max quota. OpenAI contributes GPT-5 and GPT-4o-mini. Google contributes
-three Gemini variants — 2.5 Pro, 2.5 Flash, and 3.5 Flash — all served
-through Vertex AI on a single authentication and a single SDK, trading the
-AI Studio free tier for operational simplicity. Including both Flash
-generations from the same vendor lets the analysis answer a second
-question: does a newer cheap model from the same vendor exhibit the same
-biases as its predecessor, or has the training data and tuning meaningfully
-shifted the bias profile? Meta is represented by Llama 3.3 70B served
-through Groq's free tier. Mistral contributes Mistral Large and Mistral
-Small.
+The vendors chosen are Anthropic, Google, Meta, Alibaba, and Mistral.
+Anthropic is included via the user's Max subscription using the command-line
+interface, which routes through the same session credentials as the chat
+product, and contributes three tiers in the same family: Claude Opus, Claude
+Sonnet, and Claude Haiku. Google contributes three Gemini variants, 2.5 Pro,
+2.5 Flash, and 3.1 Pro (preview), served through Vertex AI and the
+`@google/genai` SDK. Including multiple tiers and an in-preview newer
+generation from the same vendor lets the analysis answer a second question:
+does a newer cheap model from the same vendor exhibit the same biases as its
+predecessor, or has the training data and tuning meaningfully shifted the
+bias profile? Meta is represented by Llama 4 Maverick and Alibaba by Qwen 3
+Next 80B, both served through Vertex AI's Model-as-a-Service surface (an
+OpenAI-compatible endpoint), which keeps a single authentication path with
+the Gemini models. Mistral contributes Mistral Large and Mistral Small via
+the Mistral API. OpenAI was in the original plan but was dropped before the
+production run to keep the matrix tractable.
 
 The mix is deliberately weighted toward what would actually be deployed at
 HR-screening volume. The cheap models in particular reflect production
@@ -248,15 +268,17 @@ the cell sizes this study can afford. 0.7 is the standard middle ground.
 
 The study runs in four phases, each with a clear go/no-go decision point.
 
-**Phase 1 — Baseline measurement.** One job description, twenty-two resume
-variants, eight model slots, five runs per cell. Total: roughly nine hundred
-calls. The output is a results table with mean score, recommendation rate,
-and a representative justification for each (variant, model) cell. The
-go/no-go question at the end of Phase 1 is: *are the deltas large enough
-across enough cells to warrant going further?* If only one or two axes show
-signal, the study can focus there. If none do, the study has its first
-finding ("LLMs are less biased than expected on this resume profile") and
-can stop early.
+**Phase 1 — Baseline measurement.** Originally scoped at one job description,
+twenty-two resume variants, eight model slots, five runs per cell, roughly
+nine hundred calls. The output is a results table with mean score,
+recommendation rate, and a representative justification for each (variant,
+model) cell. The go/no-go question at the end of Phase 1 is: *are the deltas
+large enough across enough cells to warrant going further?* If only one or
+two axes show signal, the study can focus there. If none do, the study has
+its first finding ("LLMs are less biased than expected on this resume
+profile") and can stop early. (In practice the signal was strong enough on
+Phase 1 to justify expanding directly to the full corpus, which now sits at
+30 variants × 10 models × 17 JDs × 5 runs = 25,500 calls.)
 
 **Phase 2 — Multi-JD validation.** Repeat the same experiment against two
 or three additional job descriptions. The purpose is to test whether the
@@ -272,7 +294,20 @@ a cliff at some threshold? Does the penalty for unknown schools depend on
 the rest of the resume's strength?
 
 **Phase 4 — Mitigation testing.** This is the prescriptive half of the
-study, described in detail in the next section.
+study, described in detail in the next section. The first mitigation in
+that list (blind redaction) is live in the production corpus as the
+`anonymize` axis and runs alongside the injection axes. The remaining
+mitigations are still future work.
+
+**Audit layer.** After all per-cell scores are collected, an LLM-as-judge
+audit pass reads two matched evaluation pairs per cell (the first run and
+the run closest to the cell mean) and returns a verdict for each:
+`justified`, `bias`, or `mixed`, plus a short rationale and verbatim
+quotes. The default judge is Gemini 2.5 Pro. This layer turns the
+quantitative score delta into a qualitative explainability artifact a
+reader can argue with directly. The audit-design subsection of the
+methodology page on the static site documents the judge selection, the
+two-sample design, and the self-judging caveat.
 
 Each phase is fully resumable. Every individual call writes its result to
 its own JSON file keyed by (variant, model, JD, run). Interrupted runs pick

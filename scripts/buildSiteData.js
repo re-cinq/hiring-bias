@@ -907,7 +907,31 @@ const MODEL_SHORT = {
   'qwen-3-next-80b': 'Qwen 3'
 };
 
+// The Gemini/Llama/Qwen slots already name their version. Claude (CLI tier aliases) and Mistral
+// (-latest API tag) float, so these record the concrete snapshot each resolved to, probed live on
+// 2026-05-29 against the collection window (~2026-05-20).
+const MODEL_RESOLVED = [
+  { model: 'claude-opus', invokedAs: 'opus (Claude CLI)', version: 'claude-opus-4-7' },
+  { model: 'claude-sonnet', invokedAs: 'sonnet (Claude CLI)', version: 'claude-sonnet-4-6' },
+  { model: 'claude-haiku', invokedAs: 'haiku (Claude CLI)', version: 'claude-haiku-4-5-20251001' },
+  { model: 'mistral-large', invokedAs: 'mistral-large-latest', version: 'mistral-large-2512' },
+  { model: 'mistral-small', invokedAs: 'mistral-small-latest', version: 'mistral-small-2603' }
+];
+
 function modelDisplay(m) { return MODEL_DISPLAY[m] ?? m; }
+
+function modelVersionsPanelHtml() {
+  const rows = MODEL_RESOLVED.map((r) => `<tr><td>${esc(modelDisplay(r.model))}</td><td><code>${esc(r.invokedAs)}</code></td><td><code>${esc(r.version)}</code></td></tr>`).join('\n');
+  return `<div class="panel">
+    <div class="panel-head"><span>MODELS &amp; RESOLVED VERSIONS</span></div>
+    <p>Most slots name their version directly (<code>gemini-2.5-pro</code>, <code>llama-4-maverick</code>, <code>qwen-3-next-80b</code>). The Anthropic and Mistral slots were invoked through floating aliases instead, the Claude CLI tier names and Mistral's <code>-latest</code> tag, so the table below records the concrete snapshot each alias resolved to.</p>
+    <table class="data">
+      <thead><tr><th>Model</th><th>Invoked as</th><th>Resolved version</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <p class="dim">Versions were probed live on 2026-05-29; the run set was collected ~2026-05-20. These snapshots were the current production versions across that window. Because the floating aliases were not pinned at collection time, a re-run after a provider promotes a new snapshot could resolve differently.</p>
+  </div>`;
+}
 
 function signedClass(v) {
   if (v == null) return 'dim';
@@ -1329,6 +1353,7 @@ function methodologyHtml({ matrix, jds, jdLabels, auditStability }) {
     <p><strong>Caveat: Claude is not strictly comparable.</strong> <code>claude-opus</code> was invoked through the Claude CLI rather than the API, and the CLI call sets no explicit temperature, so Claude ran at the CLI's own default sampling rather than at 0.7. Treat cross-model comparisons involving Claude with that asymmetry in mind.</p>
     <p><strong>Why this matters for significance.</strong> 0.7 is a relatively high temperature, so run-to-run variance is substantial. With only 5 runs per cell the noise floor is high, which is why most per-cell deltas do not clear the 95% confidence threshold against baseline. A future run at lower temperature, or with more samples per cell, would tighten the confidence intervals.</p>
   </div>
+  ${modelVersionsPanelHtml()}
   <div class="panel">
     <div class="panel-head"><span>AUDIT METHODOLOGY · HOW VERDICTS ARE PRODUCED</span></div>
     <p>Each (variant, model, JD) cell with 5 collected runs is audited by <code>gemini-2.5-pro</code> acting as an LLM-as-judge. Cells with fewer than 5 runs are skipped until backfill completes, so every verdict is produced against a complete sample.</p>

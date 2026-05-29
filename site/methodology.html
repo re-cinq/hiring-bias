@@ -49,6 +49,19 @@
     <p><strong>Why this matters for significance.</strong> 0.7 is a relatively high temperature, so run-to-run variance is substantial. With only 5 runs per cell the noise floor is high, which is why most per-cell deltas do not clear the 95% confidence threshold against baseline. A future run at lower temperature, or with more samples per cell, would tighten the confidence intervals.</p>
   </div>
   <div class="panel">
+    <div class="panel-head"><span>MODELS &amp; RESOLVED VERSIONS</span></div>
+    <p>Most slots name their version directly (<code>gemini-2.5-pro</code>, <code>llama-4-maverick</code>, <code>qwen-3-next-80b</code>). The Anthropic and Mistral slots were invoked through floating aliases instead, the Claude CLI tier names and Mistral's <code>-latest</code> tag, so the table below records the concrete snapshot each alias resolved to.</p>
+    <table class="data">
+      <thead><tr><th>Model</th><th>Invoked as</th><th>Resolved version</th></tr></thead>
+      <tbody><tr><td>Claude Opus</td><td><code>opus (Claude CLI)</code></td><td><code>claude-opus-4-7</code></td></tr>
+<tr><td>Claude Sonnet</td><td><code>sonnet (Claude CLI)</code></td><td><code>claude-sonnet-4-6</code></td></tr>
+<tr><td>Claude Haiku</td><td><code>haiku (Claude CLI)</code></td><td><code>claude-haiku-4-5-20251001</code></td></tr>
+<tr><td>Mistral Large</td><td><code>mistral-large-latest</code></td><td><code>mistral-large-2512</code></td></tr>
+<tr><td>Mistral Small</td><td><code>mistral-small-latest</code></td><td><code>mistral-small-2603</code></td></tr></tbody>
+    </table>
+    <p class="dim">Versions were probed live on 2026-05-29; the run set was collected ~2026-05-20. These snapshots were the current production versions across that window. Because the floating aliases were not pinned at collection time, a re-run after a provider promotes a new snapshot could resolve differently.</p>
+  </div>
+  <div class="panel">
     <div class="panel-head"><span>AUDIT METHODOLOGY · HOW VERDICTS ARE PRODUCED</span></div>
     <p>Each (variant, model, JD) cell with 5 collected runs is audited by <code>gemini-2.5-pro</code> acting as an LLM-as-judge. Cells with fewer than 5 runs are skipped until backfill completes, so every verdict is produced against a complete sample.</p>
     <p><strong>Two samples per cell, two verdicts.</strong> The auditor sees the cell's mean Δ and run count as statistical context, then judges <em>two</em> matched evaluation pairs from the run set: (1) the first run and (2) the run whose score sits closest to the cell's mean (the "most-typical" run). The site shows the median-run verdict as the headline; the first-run verdict is kept as a second opinion. A <code>verdicts_agree</code> flag marks cells where the two samples reached different conclusions, those are the cases where a single-pair audit would have been brittle.</p>

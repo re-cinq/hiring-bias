@@ -1,5 +1,5 @@
 import { mountChrome } from './nav.js';
-import { loadJson, el, header, fmtNum, fmtSignedDelta, deltaClass, setParam, params } from './lib.js';
+import { loadJson, el, header, fmtNum, fmtSignedDelta, deltaClass, setParam, params, modelLabel, modelVersion } from './lib.js';
 import { wallView } from './charts.js';
 
 await mountChrome();
@@ -16,19 +16,6 @@ const JD_LABELS = matrix.jd_labels ?? {};
 const JD_SHORT = matrix.jd_short_labels ?? {};
 const JD_SENIORITY = Object.fromEntries(summary.jds.map((j) => [j.id, j.seniority]));
 
-const MODEL_DISPLAY = {
-  'claude-opus': 'Claude Opus',
-  'claude-sonnet': 'Claude Sonnet',
-  'claude-haiku': 'Claude Haiku',
-  'gemini-2.5-flash': 'Gemini 2.5 Flash',
-  'gemini-2.5-pro': 'Gemini 2.5 Pro',
-  'gemini-3.1-pro-preview': 'Gemini 3.1 Pro · Preview',
-  'llama-4-maverick': 'Llama 4 Maverick',
-  'mistral-large': 'Mistral Large',
-  'mistral-small': 'Mistral Small',
-  'qwen-3-next-80b': 'Qwen 3 Next 80B'
-};
-const modelLabel = (m) => MODEL_DISPLAY[m] ?? m;
 
 const root = document.getElementById('heatmap');
 root.innerHTML = '';
@@ -40,7 +27,7 @@ controls.append(controlsRow);
 
 const initial = params();
 const modelSel = el('select', { id: 'sel-model' });
-for (const m of MODELS) modelSel.append(el('option', { value: m }, modelLabel(m)));
+for (const m of MODELS) modelSel.append(el('option', { value: m, title: modelVersion(m) }, modelLabel(m)));
 modelSel.value = initial.get('model') ?? MODELS[0];
 
 const axisSel = el('select', { id: 'sel-axis' });
@@ -187,7 +174,7 @@ function deltaWithCiBar(delta, ciLo, ciHi, baseline, significant) {
 function renderDetail({ model, axis, cells, levels, jds }) {
   detailHost.innerHTML = '';
   const panel = el('div', { class: 'panel' });
-  panel.append(el('div', { class: 'panel-head' }, el('span', {}, `SUMMARY · ${AXIS_LABELS[axis] ?? axis} × ${modelLabel(model)}`)));
+  panel.append(el('div', { class: 'panel-head' }, el('span', { title: modelVersion(model) }, `SUMMARY · ${AXIS_LABELS[axis] ?? axis} × ${modelLabel(model)}`)));
 
   panel.append(el('p', { class: 'dim' }, 'Each row is one (variant, job) experiment. The bar plots the variant\'s score change vs the unmodified baseline on a fixed −3 to +3 scale. Bar scale is the same as the resume-diff page.'));
 

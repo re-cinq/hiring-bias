@@ -59,6 +59,33 @@ export function el(tag, attrs = {}, children = []) {
   return node;
 }
 
+export const MODEL_DISPLAY = {
+  'claude-opus': 'Claude Opus',
+  'claude-sonnet': 'Claude Sonnet',
+  'claude-haiku': 'Claude Haiku',
+  'gemini-2.5-flash': 'Gemini 2.5 Flash',
+  'gemini-2.5-pro': 'Gemini 2.5 Pro',
+  'gemini-3.1-pro-preview': 'Gemini 3.1 Pro · Preview',
+  'llama-4-maverick': 'Llama 4 Maverick',
+  'mistral-large': 'Mistral Large',
+  'mistral-small': 'Mistral Small',
+  'qwen-3-next-80b': 'Qwen 3 Next 80B'
+};
+
+// The Gemini/Llama/Qwen slots already name their version. Claude (CLI tier aliases) and Mistral
+// (-latest API tag) are floating aliases that carry no version, so these are the concrete
+// snapshots they resolved to, probed live on 2026-05-29 against the collection window (~2026-05-20).
+export const MODEL_VERSION = {
+  'claude-opus': 'claude-opus-4-7',
+  'claude-sonnet': 'claude-sonnet-4-6',
+  'claude-haiku': 'claude-haiku-4-5-20251001',
+  'mistral-large': 'mistral-large-2512',
+  'mistral-small': 'mistral-small-2603'
+};
+
+export const modelLabel = (m) => MODEL_DISPLAY[m] ?? m;
+export const modelVersion = (m) => MODEL_VERSION[m] ?? null;
+
 export function badges(filled, total = 10, klass = 'on') {
   const node = el('span', { class: 'badges' });
   for (let i = 0; i < total; i++) {

@@ -1,5 +1,5 @@
 import { mountChrome } from './nav.js';
-import { loadJson, el, header, params, setParam, badges, pill, fmtNum, fmtSignedDelta, deltaClass, copyLinkButton } from './lib.js';
+import { loadJson, el, header, params, setParam, badges, pill, fmtNum, fmtSignedDelta, deltaClass, copyLinkButton, modelLabel, modelVersion } from './lib.js';
 import { diffLines, wordDiff } from './linediff.js';
 import { mdToHtml } from './markdown.js';
 
@@ -18,19 +18,6 @@ const AXIS_LABELS = matrix.axis_labels ?? {};
 const LEVEL_LABELS = matrix.level_labels ?? {};
 const LEVELS_BY_AXIS = matrix.levels_by_axis ?? {};
 
-const MODEL_DISPLAY = {
-  'claude-opus': 'Claude Opus',
-  'claude-sonnet': 'Claude Sonnet',
-  'claude-haiku': 'Claude Haiku',
-  'gemini-2.5-flash': 'Gemini 2.5 Flash',
-  'gemini-2.5-pro': 'Gemini 2.5 Pro',
-  'gemini-3.1-pro-preview': 'Gemini 3.1 Pro · Preview',
-  'llama-4-maverick': 'Llama 4 Maverick',
-  'mistral-large': 'Mistral Large',
-  'mistral-small': 'Mistral Small',
-  'qwen-3-next-80b': 'Qwen 3 Next 80B'
-};
-const modelLabel = (m) => MODEL_DISPLAY[m] ?? m;
 
 const AUDIT_CLASS = { bias: 'alert', justified: 'accent', mixed: 'dim' };
 const AUDIT_LABEL = { bias: 'BIAS', justified: 'JUSTIFIED', mixed: 'MIXED' };
@@ -61,7 +48,7 @@ for (const v of allVariants) variantSel.append(el('option', { value: v.id }, v.l
 variantSel.value = variantParam;
 
 const modelSel = el('select');
-for (const m of MODELS) modelSel.append(el('option', { value: m }, modelLabel(m)));
+for (const m of MODELS) modelSel.append(el('option', { value: m, title: modelVersion(m) }, modelLabel(m)));
 modelSel.value = modelParam;
 
 const jdSel = el('select');

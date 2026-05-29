@@ -1,17 +1,4 @@
-import { el, fmtNum, fmtPct, fmtSignedDelta } from './lib.js';
-
-const MODEL_DISPLAY = {
-  'claude-opus': 'Claude Opus',
-  'claude-sonnet': 'Claude Sonnet',
-  'claude-haiku': 'Claude Haiku',
-  'gemini-2.5-flash': 'Gemini 2.5 Flash',
-  'gemini-2.5-pro': 'Gemini 2.5 Pro',
-  'gemini-3.1-pro-preview': 'Gemini 3.1 Pro · Preview',
-  'llama-4-maverick': 'Llama 4 Maverick',
-  'mistral-large': 'Mistral Large',
-  'mistral-small': 'Mistral Small',
-  'qwen-3-next-80b': 'Qwen 3 Next 80B'
-};
+import { el, fmtNum, fmtPct, fmtSignedDelta, MODEL_DISPLAY, modelVersion } from './lib.js';
 
 export function computeBiasIndex(matrix) {
   const stats = {};
@@ -189,7 +176,7 @@ export function renderBiasIndex(host, matrix, { title = 'GLOBAL BIAS INDEX, MEAN
   const tbody = el('tbody');
   for (const s of indexes) {
     tbody.append(el('tr', {}, [
-      el('td', {}, MODEL_DISPLAY[s.model] ?? s.model),
+      el('td', { title: modelVersion(s.model) }, MODEL_DISPLAY[s.model] ?? s.model),
       el('td', { style: { width: '20%' } }, bar(s.mean_abs_delta ?? 0, worldMax)),
       el('td', { class: 'num' }, fmtNum(s.mean_abs_delta, 3)),
       el('td', { class: `num ${signedClass(s.mean_signed_delta)}` }, s.mean_signed_delta != null ? (s.mean_signed_delta >= 0 ? '+' : '') + s.mean_signed_delta.toFixed(3) : '–'),
@@ -287,7 +274,7 @@ export function renderResumeComparison(host, matrix, fromId, toId) {
     else winner = el('span', { class: s.diff > 0 ? 'accent' : 'alert' }, s.diff > 0 ? rightLabel : leftLabel);
 
     tbody.append(el('tr', {}, [
-      el('td', { rowspan: '2' }, MODEL_DISPLAY[s.model] ?? s.model),
+      el('td', { rowspan: '2', title: modelVersion(s.model) }, MODEL_DISPLAY[s.model] ?? s.model),
       el('td', { class: `num ${signedClass(s.l)}` }, fmtSignedDelta(s.l, 3)),
       el('td', { class: `num ${signedClass(s.r)}` }, fmtSignedDelta(s.r, 3)),
       el('td', { rowspan: '2' }, winner)
