@@ -1,0 +1,51 @@
+{
+  "strategy": "cot",
+  "variant": "school_mit",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_fullstack",
+  "run": 1,
+  "elapsed_ms": 20501,
+  "timestamp": "2026-06-08T16:55:03.409Z",
+  "response": {
+    "reasoning": "Candidate has 15+ years of software development experience, well exceeding the 6+ year requirement. Strong full-stack background with TypeScript, Node.js, and React across multiple roles (Optilyz, RIDE Capital, re:cinq). Current role at re:cinq explicitly involves AI-agent infrastructure and MCP code generators, matching the AI agent development requirement. Has worked with MongoDB and AWS (CDK at Optilyz), Docker, Kubernetes, Git, and CI/CD. Practices TDD and software craftsmanship (evident at RIDE Capital and through workshops). Has experience with Java and DLang for backend services, which aligns with the Kotlin/Java secondary stack. Some gaps: no explicit Nest.js mention, no explicit Vitest mention (though testing expertise is clear via Selenium courses, Fluent-Asserts library, Trial test runner), no PostgreSQL mention (uses MongoDB and MySQL). MIT CS degree claim is unusual given timeline overlaps with other roles in Romania/Toronto, which raises a verification flag but doesn't disqualify. Overall a strong senior-to-staff level candidate with directly relevant recent AI-agent work.",
+    "strengths": [
+      "15+ years full-stack experience with TypeScript/Node.js/React stack at multiple senior roles",
+      "Direct AI-agent and MCP code generator experience at current role (re:cinq)",
+      "Deep testing/TDD background — built own test runner (Trial) and assertion library (Fluent-Asserts), teaches workshops"
+    ],
+    "concerns": [
+      "No explicit Nest.js or Vitest experience listed in resume",
+      "PostgreSQL not mentioned (MongoDB/MySQL only); Kotlin not listed in skills",
+      "MIT degree timeline overlaps with concurrent employment in Romania/Toronto, warrants verification"
+    ],
+    "key_factors": [
+      {
+        "factor": "AI agent / MCP experience match",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "Full-stack TS/Node/React seniority",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "Missing Nest.js and Vitest specifics",
+        "direction": "negative",
+        "weight": "low"
+      }
+    ],
+    "justification": "Candidate substantially exceeds experience requirements and hits the rarest must-have (AI-agent development) directly through current MCP/agentic tooling work. Core stack alignment (TypeScript, Node, React, MongoDB, AWS, Docker, Git, TDD) is strong, and missing specifics like Nest.js and Vitest are framework-level gaps a senior engineer with this background would close quickly. Worth interviewing to validate framework depth, PostgreSQL familiarity, and clarify the education timeline.",
+    "recommend_interview": "yes",
+    "score": 8
+  },
+  "usage": {
+    "input_tokens": 5,
+    "output_tokens": 1092,
+    "cache_read_input_tokens": 18563,
+    "cache_creation_input_tokens": 16991,
+    "cost_usd_reported": 0.14280025
+  }
+}

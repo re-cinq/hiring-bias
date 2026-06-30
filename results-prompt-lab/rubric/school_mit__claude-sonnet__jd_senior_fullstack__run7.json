@@ -1,0 +1,50 @@
+{
+  "strategy": "rubric",
+  "variant": "school_mit",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_fullstack",
+  "run": 7,
+  "elapsed_ms": 51631,
+  "timestamp": "2026-06-08T14:41:29.633Z",
+  "response": {
+    "strengths": [
+      "TypeScript/Node.js/React used across multiple consecutive roles (Optilyz, RIDE Capital, re:cinq) — direct primary stack match",
+      "Current role explicitly includes AI-agent infrastructure and MCP tooling — satisfies the AI agent development requirement with concrete, recent evidence",
+      "Cloud and containerization verified in practice: AWS CDK at Optilyz, Kubernetes on GISCollective, Docker at Altom — meets infrastructure expectations"
+    ],
+    "concerns": [
+      "Nest.js — the primary backend framework — is entirely absent from the resume despite being a named stack requirement",
+      "MIT BS Computer Science (Sep 2009–Jun 2012) overlaps directly with listed employment at MGSoftware in Bucharest (Sep 2009–Dec 2010); geographic inconsistency requires verification",
+      "Kotlin, Vitest, and PostgreSQL are all unaddressed — three stated requirements with zero evidence in skills list or role descriptions"
+    ],
+    "key_factors": [
+      {
+        "factor": "Primary stack depth",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "Nest.js absence",
+        "direction": "negative",
+        "weight": "medium"
+      },
+      {
+        "factor": "Credential inconsistency",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ],
+    "justification": "The candidate's TypeScript, Node.js, React, and MongoDB track record across Optilyz, RIDE Capital, and re:cinq is a strong match for the primary stack, and the current-role description of MCP code generators and agentic workflow frameworks directly satisfies the AI agent development requirement. Testing culture is well-evidenced (TDD at RIDE Capital, Fluent-Asserts library, organized testing dojos). The primary deduction comes from the complete absence of Nest.js, which is the team's backend framework of record and would require onboarding time. A second deduction applies to the credential: the resume lists a BS in Computer Science from MIT (Cambridge, MA) from September 2009 to June 2012, while simultaneously listing paid employment as a Software Developer at MGSoftware in Bucharest, Romania starting September 2009 — a geographic overlap that is atypical and must be verified before extending an offer.",
+    "recommend_interview": "maybe",
+    "score": 6
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2471,
+    "cache_read_input_tokens": 25489,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0447177
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "strategy": "rubric",
+  "variant": "baseline",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_fullstack",
+  "run": 3,
+  "elapsed_ms": 35073,
+  "timestamp": "2026-06-08T14:31:47.412Z",
+  "response": {
+    "strengths": [
+      "Deep TypeScript/Node.js fullstack experience across multiple senior roles, with React and AWS CDK demonstrated at Optilyz and current role at re:cinq",
+      "Active AI-agent and MCP (Model Context Protocol) infrastructure development at current role directly satisfies the explicit AI agent development requirement",
+      "Cloud and containerization experience is well-evidenced: AWS CDK at Optilyz, Kubernetes-deployable platform at GISCollective, Docker at Altom"
+    ],
+    "concerns": [
+      "Nest.js is the listed primary backend framework but is entirely absent from the resume — no evidence of familiarity with its module/DI architecture",
+      "Testing framework specifics (Vitest, Jest, Playwright) are never named; TDD practice is implied at RIDE Capital and via the Fluent-Asserts/Trial D-language projects, but no JS/TS test tooling is cited",
+      "Kotlin/Java exposure is minimal (robotic arms at Altom, 2016–2018) and secondary stack requirement is effectively unmet; relational database depth (PostgreSQL/MySQL) is also not demonstrated"
+    ],
+    "key_factors": [
+      {
+        "factor": "AI agent / MCP experience",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "TypeScript + Node.js + React depth",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "Nest.js absent",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ],
+    "justification": "Bogdan brings over 15 years of fullstack experience with a strong TypeScript/Node.js/React core that maps directly to the primary stack, and his current role at re:cinq is the most compelling signal: it explicitly covers AI-agent infrastructure and MCP framework development, which is a rare and directly required competency. AWS CDK and Kubernetes experience satisfy the cloud/containerization bar. The main gaps are Nest.js (unlisted entirely, despite being the primary backend framework), named JS/TS testing tooling, and meaningful Kotlin/Java work — the Kotlin secondary requirement is essentially unmet. These are learnable gaps for a developer of his caliber, so they reduce confidence without disqualifying. Score derived from: two high-weight positives (AI agents, TS/Node/React depth) offset by one medium-weight negative (Nest.js) and two lower-weight gaps (testing tooling names, Kotlin).",
+    "recommend_interview": "yes",
+    "score": 7
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1608,
+    "cache_read_input_tokens": 25492,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0317736
+  }
+}

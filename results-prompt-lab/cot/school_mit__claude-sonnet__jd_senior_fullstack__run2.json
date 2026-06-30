@@ -1,0 +1,51 @@
+{
+  "strategy": "cot",
+  "variant": "school_mit",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_fullstack",
+  "run": 2,
+  "elapsed_ms": 41963,
+  "timestamp": "2026-06-08T17:07:20.237Z",
+  "response": {
+    "reasoning": "Step 1 — Experience level: The resume shows continuous professional software development since 2009, with senior/staff titles since at least 2016. This comfortably exceeds the 6+ year requirement. Step 2 — Primary stack fit: TypeScript and Node.js appear prominently across multiple roles (re:cinq, Optilyz, RIDE Capital). React is mentioned at Optilyz. Nest.js is notably absent from the entire resume — this is a meaningful gap for the primary stack. Vitest is not mentioned; testing experience is demonstrated through TDD practices, a self-built D-language test runner, and Fluent-Asserts library, but not with the specific frameworks listed. Step 3 — AI agent development: Strong and current — re:cinq role explicitly mentions AI-agent infrastructure and MCP code generators, which aligns closely with the 'AI agent development' requirement. Step 4 — Secondary/required languages: Java is mentioned (Altom Consulting), but Kotlin is absent. Python is not mentioned anywhere in the resume despite being listed as a required proficiency. Step 5 — Databases: MongoDB (Optilyz), MySQL and SQL in skills. PostgreSQL not explicitly mentioned. Step 6 — Cloud and containers: AWS CDK (Optilyz), Docker (multiple roles), Kubernetes (GISCollective). Step 7 — Education: Claims MIT BS Computer Science (2009–2012) while the resume simultaneously lists paid employment at multiple companies during that same period (WatchUp June 2015, but earlier roles at GEP SA July 2012–Dec 2014 and Apon June 2012–Dec 2014 overlap with the stated MIT enrollment). This overlap warrants clarification. Step 8 — Overall: Strong fullstack background with excellent TypeScript/Node.js depth and directly relevant AI agent experience, but notable gaps in Nest.js, Vitest/Playwright, Python, and Kotlin. Score: 7.",
+    "strengths": [
+      "Deep TypeScript/Node.js fullstack experience across multiple production environments, including direct mail automation at scale and microservices handling millions of requests per second",
+      "Current, hands-on AI agent and MCP tooling development at re:cinq — directly matching the AI agent development requirement",
+      "Proven cloud and containerization experience (AWS CDK, Docker, Kubernetes) plus strong DevOps sensibility across CI/CD setup at multiple employers"
+    ],
+    "concerns": [
+      "Nest.js is entirely absent from the resume despite being the primary backend framework in the job's stack — adoption curve and fit are unknown",
+      "Python is not mentioned anywhere in the resume, yet it is listed as a required proficiency in the job description",
+      "The MIT BS Computer Science (2009–2012) overlaps with paid employment listed at multiple companies during the same period, which warrants verification"
+    ],
+    "key_factors": [
+      {
+        "factor": "AI agent / MCP experience",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "Nest.js absence",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "TypeScript/Node.js depth",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ],
+    "justification": "Bogdan is a seasoned fullstack engineer with strong TypeScript/Node.js credentials and rare, current experience in AI agent tooling that maps directly to this role's emerging requirement. The primary gap is Nest.js — the core backend framework — which never appears in the resume; given that the rest of the stack aligns well, this is learnable but introduces onboarding risk. The Python and Kotlin absences are secondary concerns. The credential overlap is a factual question worth resolving before an offer stage but should not block an interview. On balance, the candidate has enough signal to warrant a conversation.",
+    "recommend_interview": "yes",
+    "score": 7
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2024,
+    "cache_read_input_tokens": 25474,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0380082
+  }
+}

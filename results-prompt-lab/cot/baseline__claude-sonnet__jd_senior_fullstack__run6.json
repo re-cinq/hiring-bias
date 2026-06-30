@@ -1,0 +1,51 @@
+{
+  "strategy": "cot",
+  "variant": "baseline",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_fullstack",
+  "run": 6,
+  "elapsed_ms": 44803,
+  "timestamp": "2026-06-08T17:02:30.641Z",
+  "response": {
+    "reasoning": "Step 1 — Experience level: Bogdan has been writing software professionally since 2006, with full-stack web work from at least 2012. That is 14+ years, far exceeding the 6-year floor. Step 2 — Primary stack alignment: TypeScript and Node.js are confirmed across multiple roles (Optilyz, RIDE, re:cinq). React is confirmed at Optilyz. Nest.js is never mentioned, which is a meaningful gap given it is listed as a primary framework. Vitest is not named in the resume, though the candidate's current project (bias-research) does use it. Step 3 — Secondary/required languages: Java appears briefly at Altom for robotic arms work (2016–2018); no Kotlin. Python is entirely absent from skills and history. These are listed as required. Step 4 — Databases: MongoDB (Optilyz) and MySQL (skills) confirmed. PostgreSQL not mentioned. Step 5 — Cloud/containers: AWS CDK at Optilyz, Docker at Altom and in skills, Kubernetes at GISCollective — solid coverage. Step 6 — Testing: Strong TDD philosophy, workshop instruction, authored a test runner (Trial) and assertion library (Fluent-Asserts). Specific mention of Jest/Vitest/Playwright is absent but the culture is clearly there. Step 7 — AI agents: Explicitly called out at re:cinq — MCP code generators and agentic workflow frameworks. This is a direct and recent match for the AI agent development requirement. Step 8 — Soft profile: Polyglot background, open-source contributor, public speaker, customer-facing projects (Green Map, GISCollective). Communicates well. Step 9 — Score calibration: Strong experience, direct current-role alignment, and AI agent work push the score up; Nest.js absence, Python absence, and shallow Kotlin are real gaps that must be probed.",
+    "strengths": [
+      "Current role at re:cinq directly covers AI agent infrastructure and MCP tooling — the most differentiated requirement in the JD is already demonstrated",
+      "15+ years of polyglot full-stack work with confirmed TypeScript, Node.js, React, MongoDB, AWS CDK, Docker, and Kubernetes across multiple production environments",
+      "Deep and authentic testing culture: TDD practitioner, workshop instructor, and author of open-source test tooling — not just checkbox familiarity"
+    ],
+    "concerns": [
+      "Nest.js is the listed primary backend framework and is not mentioned anywhere in the resume — unclear whether the candidate has worked with it at all",
+      "Python is absent from every section of the resume despite being listed as a required proficiency alongside TypeScript and Java",
+      "Kotlin experience is non-existent and Java experience is narrow and dated (robotic arms at Altom, 2016–2018), leaving the secondary backend stack essentially uncovered"
+    ],
+    "key_factors": [
+      {
+        "factor": "AI agent + MCP experience",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "Nest.js gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Python absence",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ],
+    "justification": "Bogdan is an experienced, test-driven, polyglot engineer whose current role is a near-direct match for the AI tooling and TypeScript/Node.js core of the position. The seniority, cloud maturity, and testing depth are all well above threshold. However, the three most notable required items he cannot demonstrate are Nest.js (the primary framework), Python (listed as required), and Kotlin (the secondary backend language) — and none of these are minor checkboxes. An interview is warranted to determine whether Nest.js was used under the hood at re:cinq or Optilyz, and to assess his appetite for Python ramp-up, before making a stronger call.",
+    "recommend_interview": "yes",
+    "score": 7
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2079,
+    "cache_read_input_tokens": 25477,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.038834099999999996
+  }
+}

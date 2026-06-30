@@ -1,0 +1,50 @@
+{
+  "strategy": "fewshot",
+  "variant": "baseline",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_fullstack",
+  "run": 8,
+  "elapsed_ms": 37828,
+  "timestamp": "2026-06-08T18:17:29.061Z",
+  "response": {
+    "score": 7,
+    "recommend_interview": "yes",
+    "justification": "Over 16 years of professional software development with consistent senior and staff-level roles, deep TypeScript, Node.js, and React expertise directly matching the primary stack, and active AI-agent infrastructure and MCP tooling work in the current role — precisely what the job spec calls out. The main gaps are Nest.js (never explicitly mentioned despite it being the listed backend framework), and Kotlin and Python (both required languages that do not appear on the resume); Java appears but only in older or peripheral roles.",
+    "strengths": [
+      "Direct TypeScript, Node.js, React, MongoDB, AWS CDK, Docker, and Kubernetes experience across multiple senior-level roles",
+      "Current AI-agent and Model Context Protocol tooling work at re:cinq maps exactly to the role's AI agent development requirement",
+      "Strong, practiced testing culture — TDD advocacy, open-source testing libraries, community workshops, and multiple roles with explicit TDD and craftsmanship practices"
+    ],
+    "concerns": [
+      "Nest.js is absent from the resume despite being the designated backend framework; adoption risk is low given Node.js depth but is an unverified assumption",
+      "Kotlin and Python are listed as required proficiencies but do not appear anywhere in the candidate's skills, stack descriptions, or project history",
+      "Vitest and Playwright are not mentioned; testing experience is extensive but skews toward custom DLang tooling and older Jest-era practices"
+    ],
+    "key_factors": [
+      {
+        "factor": "Primary stack alignment",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "AI agent and developer-tooling experience",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "Missing Kotlin and Python proficiency",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1976,
+    "cache_read_input_tokens": 25883,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0374109
+  }
+}

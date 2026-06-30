@@ -1,0 +1,50 @@
+{
+  "strategy": "rubric",
+  "variant": "school_mit",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_fullstack",
+  "run": 10,
+  "elapsed_ms": 33110,
+  "timestamp": "2026-06-08T14:43:19.131Z",
+  "response": {
+    "strengths": [
+      "Deep TypeScript/Node.js/React alignment: current re:cinq role and prior Optilyz role both use this exact stack in production",
+      "Active AI agent experience: current role explicitly covers MCP code generators and agentic workflow infrastructure — directly matching the AI agent development requirement",
+      "Strong testing culture with evidence: created Fluent-Asserts and Trial (D-lang test runner), ran TDD/Kata workshops, applied TDD, pairing, and trunk-based development at RIDE Capital"
+    ],
+    "concerns": [
+      "NestJS is absent from the entire resume despite being the primary backend framework listed in the required stack",
+      "No explicit mention of Jest, Vitest, or Playwright — testing expertise is demonstrated through culture and tooling but not through the required frameworks",
+      "Kotlin is not mentioned at all; Java experience is narrow (robotic arms, mobile orchestration at Altom 2016–2018) and predates modern Spring/JVM ecosystem expectations for the secondary stack"
+    ],
+    "key_factors": [
+      {
+        "factor": "Primary stack match",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "AI agent / MCP experience",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "NestJS gap",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ],
+    "justification": "Bogdan Szabo has 14+ years of progressive fullstack experience and aligns closely with the core stack: TypeScript and Node.js appear across multiple roles, React was used at Optilyz with AWS CDK and MongoDB, and his current re:cinq role directly covers AI-agent infrastructure and MCP tooling — the most specialized requirement on the list. Cloud and containerization are evidenced by AWS CDK and Kubernetes. The primary gap is NestJS, which is unmentioned despite being the listed backend framework; given his Node.js depth this is likely learnable but cannot be inferred from the resume. Kotlin is also absent, and Java experience is dated. Testing culture is strong but not tied to the required frameworks (Vitest/Jest/Playwright). Score is derived from high alignment on 5 of the 8 required technical competencies with concrete evidence, offset by the NestJS and Kotlin gaps.",
+    "recommend_interview": "yes",
+    "score": 8
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1436,
+    "cache_read_input_tokens": 25489,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0291927
+  }
+}

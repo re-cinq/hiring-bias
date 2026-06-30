@@ -38,6 +38,30 @@ export function stdev(nums) {
   return Math.sqrt(sq / (nums.length - 1));
 }
 
+// Pearson correlation over paired numeric samples. Pairs where either side is
+// non-finite are dropped; fewer than 2 surviving pairs (or zero variance on a
+// side) yields null — there is no meaningful correlation to report.
+export function pearson(a, b) {
+  const xs = [];
+  const ys = [];
+  for (let i = 0; i < Math.min(a.length, b.length); i++) {
+    if (Number.isFinite(a[i]) && Number.isFinite(b[i])) { xs.push(a[i]); ys.push(b[i]); }
+  }
+  if (xs.length < 2) return null;
+  const mx = mean(xs);
+  const my = mean(ys);
+  let sxy = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < xs.length; i++) {
+    const dx = xs[i] - mx;
+    const dy = ys[i] - my;
+    sxy += dx * dy;
+    sxx += dx * dx;
+    syy += dy * dy;
+  }
+  if (sxx === 0 || syy === 0) return null;
+  return sxy / Math.sqrt(sxx * syy);
+}
+
 export function recommendRate(records) {
   if (records.length === 0) return null;
   const yes = records.filter((r) => r.response?.recommend_interview === 'yes').length;

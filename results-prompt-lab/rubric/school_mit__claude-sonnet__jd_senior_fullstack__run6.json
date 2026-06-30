@@ -1,0 +1,50 @@
+{
+  "strategy": "rubric",
+  "variant": "school_mit",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_fullstack",
+  "run": 6,
+  "elapsed_ms": 47518,
+  "timestamp": "2026-06-08T14:40:38.002Z",
+  "response": {
+    "strengths": [
+      "10+ years of genuine fullstack production experience with direct overlap on primary stack: TypeScript, Node.js, React, and MongoDB across Optilyz, RIDE Capital, and re:cinq",
+      "Current role at re:cinq explicitly covers AI agent infrastructure and MCP (Model Context Protocol) framework development, directly matching the AI agent development requirement",
+      "Demonstrated testing culture through TDD advocacy, community workshops, and authoring open-source test tooling (Fluent-Asserts, Trial), indicating engineering discipline beyond just writing code"
+    ],
+    "concerns": [
+      "NestJS is absent from the entire resume despite being listed as a primary framework; no evidence the candidate has worked with it or an equivalent opinionated Node.js framework",
+      "Vitest and Jest are not mentioned in any TypeScript or JavaScript context; all testing framework authorship is in DLang, leaving JS/TS testing toolchain proficiency undemonstrated",
+      "Relational database depth is unclear: PostgreSQL is not mentioned anywhere, SQL appears only in the skills list without supporting project evidence, and primary database experience is MongoDB"
+    ],
+    "key_factors": [
+      {
+        "factor": "TypeScript/Node.js/React alignment",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "AI agent & MCP experience",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "NestJS gap",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ],
+    "justification": "Bogdan's experience maps closely to the core of this role: his current position at re:cinq demonstrates TypeScript fullstack work alongside active AI agent infrastructure (MCP code generators, agentic workflows), which is a rare and direct match for the emerging AI agent requirement. His AWS CDK usage at Optilyz and Kubernetes deployment of GISCollective satisfy the cloud and containerization requirements. The principal risk is NestJS — it is entirely absent from the resume, and for a role where it is a named primary technology, that gap matters. Vitest and Jest also go unmentioned in JavaScript projects, though his broader commitment to TDD and open-source testing tooling suggests these are adoptable gaps. Relational DB experience is thin. Overall, the candidate clears the seniority bar with room to spare; the framework-specific gaps are real but learnable, and the AI agent angle tips the balance toward an interview.",
+    "recommend_interview": "yes",
+    "score": 7
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2068,
+    "cache_read_input_tokens": 25489,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0386727
+  }
+}

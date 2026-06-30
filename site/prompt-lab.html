@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt Lab, Bias Research</title>
+  <meta name="description" content="Compare prompt-engineering variations of the résumé-screening prompt side by side, and see how each model reacts on stability, coherence, bias and decision flips.">
+  <meta property="og:title" content="Prompt Lab, Bias Research">
+  <meta property="og:description" content="Does prompt engineering improve LLM résumé screening? Compare variations side by side.">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="css/site.css">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://analytics.giscollective.com/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '15']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+
+  </head>
+<body>
+  <main class="container">
+    <h1 class="sr-only">Prompt Lab</h1>
+    <div id="header"></div>
+    <div id="page" data-prerender="prompt-lab">
+      <!-- @PRERENDER:prompt-lab:START -->
+<div class="panel">
+  <div class="panel-head"><span>BEST PROMPT PER METRIC (pooled across models)</span></div>
+  <p class="dim">Aggregated over 10 models. Lower is better for stability, bias and flip rates; higher is better for coherence. Use the comparator below to inspect any pair head-to-head and see how each model reacts.</p>
+  <table class="data"><thead><tr><th>Metric</th><th>Best strategy</th><th class="num">Value</th></tr></thead><tbody>
+<tr><td>Stability (within-run score stdev — lower better)</td><td><strong>Few-shot examples</strong></td><td class="num">0.52</td></tr>
+<tr><td>Score–feedback coherence (higher better)</td><td><strong>Few-shot examples</strong></td><td class="num">0.92</td></tr>
+<tr><td>Bias |Δ score| vs baseline résumé (lower better)</td><td><strong>Competency rubric</strong></td><td class="num">0.21</td></tr>
+<tr><td>Decision instability (recommend flips — lower better)</td><td><strong>Few-shot examples</strong></td><td class="num">0.25</td></tr>
+<tr><td>Decision bias flips (lower better)</td><td><strong>Few-shot examples</strong></td><td class="num">0.05</td></tr>
+  </tbody></table>
+</div>
+<!-- @PRERENDER:prompt-lab:END -->
+    </div>
+    <div id="lab"></div>
+  </main>
+  <script type="module" src="js/prompt-lab.js"></script>
+</body>
+</html>

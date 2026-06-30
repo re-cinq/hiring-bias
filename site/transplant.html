@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reasoning Transplant, Bias Research</title>
+  <meta name="description" content="Does an LLM's résumé score follow its written reasoning, or is the number a pre-decided prior the reasoning only decorates? A two-stage transplant experiment.">
+  <meta property="og:title" content="Reasoning Transplant, Bias Research">
+  <meta property="og:description" content="Score the same résumé under a positive vs a negative injected assessment — does the number follow the reasoning?">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="css/site.css">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://analytics.giscollective.com/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '15']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+
+  </head>
+<body>
+  <main class="container">
+    <h1 class="sr-only">Reasoning Transplant</h1>
+    <div id="header"></div>
+    <div id="page" data-prerender="transplant">
+      <!-- @PRERENDER:transplant:START -->
+<div class="panel">
+  <div class="panel-head"><span>DOES THE SCORE FOLLOW TRANSPLANTED REASONING?</span></div>
+  <p class="dim">Same résumé, scored twice: once given the model's most <strong>positive</strong> self-generated assessment, once its most <strong>negative</strong>. If the score follows the assessment, the reasoning is causal; if it barely moves, the score is a pre-decided prior the reasoning only decorates. Overall effect: <strong>0.56 points</strong> across 289 cells; the score moved in the reasoning's direction in <strong>54%</strong> of them.</p>
+  <table class="data"><thead><tr><th>Model</th><th class="num">score · neg</th><th class="num">score · pos</th><th class="num">effect (Δ)</th><th class="num">responsiveness</th><th>verdict</th></tr></thead><tbody>
+<tr><td>claude-haiku</td><td class="num">4.27</td><td class="num">4.73</td><td class="num">0.46</td><td class="num">0.09</td><td>mixed</td></tr>
+<tr><td>claude-opus</td><td class="num">5.07</td><td class="num">5.20</td><td class="num">0.12</td><td class="num">0.06</td><td>score is a prior (reasoning decorative)</td></tr>
+<tr><td>claude-sonnet</td><td class="num">3.98</td><td class="num">4.39</td><td class="num">0.41</td><td class="num">0.17</td><td>mixed</td></tr>
+<tr><td>gemini-2.5-flash</td><td class="num">5.53</td><td class="num">6.32</td><td class="num">0.80</td><td class="num">0.19</td><td>mixed</td></tr>
+<tr><td>gemini-2.5-pro</td><td class="num">3.66</td><td class="num">4.56</td><td class="num">0.91</td><td class="num">0.22</td><td>mixed</td></tr>
+<tr><td>gemini-3.1-pro-preview</td><td class="num">4.16</td><td class="num">4.33</td><td class="num">0.18</td><td class="num">0.08</td><td>score is a prior (reasoning decorative)</td></tr>
+<tr><td>llama-4-maverick</td><td class="num">6.28</td><td class="num">7.05</td><td class="num">0.77</td><td class="num">0.21</td><td>mixed</td></tr>
+<tr><td>mistral-large</td><td class="num">7.50</td><td class="num">8.25</td><td class="num">0.75</td><td class="num">0.21</td><td>mixed</td></tr>
+<tr><td>mistral-small</td><td class="num">5.84</td><td class="num">6.69</td><td class="num">0.84</td><td class="num">0.12</td><td>mixed</td></tr>
+<tr><td>qwen-3-next-80b</td><td class="num">5.86</td><td class="num">6.42</td><td class="num">0.55</td><td class="num">0.15</td><td>mixed</td></tr>
+  </tbody></table>
+</div>
+<!-- @PRERENDER:transplant:END -->
+    </div>
+    <div id="lab"></div>
+  </main>
+  <script type="module" src="js/transplant.js"></script>
+</body>
+</html>

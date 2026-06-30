@@ -6,6 +6,8 @@ const PAGES = [
   { href: 'diff.html', label: 'diff' },
   { href: 'resume-diff.html', label: 'resume-diff' },
   { href: 'jds.html', label: 'jobs' },
+  { href: 'prompt-lab.html', label: 'prompt-lab' },
+  { href: 'transplant.html', label: 'transplant' },
   { href: 'methodology.html', label: 'methodology' },
   { href: 'downloads.html', label: 'downloads' },
   { href: 'about.html', label: 'about' }

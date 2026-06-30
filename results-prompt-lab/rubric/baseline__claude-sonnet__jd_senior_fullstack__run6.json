@@ -1,0 +1,50 @@
+{
+  "strategy": "rubric",
+  "variant": "baseline",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_fullstack",
+  "run": 6,
+  "elapsed_ms": 43295,
+  "timestamp": "2026-06-08T14:33:39.974Z",
+  "response": {
+    "strengths": [
+      "Current role explicitly involves AI-agent infrastructure and MCP tooling — directly matches the listed AI agent development requirement",
+      "15+ years of continuous fullstack work spanning Node.js, TypeScript, AWS CDK, MongoDB, Docker, and Kubernetes across multiple production systems",
+      "Strong testing culture demonstrated through TDD practice at RIDE Capital, authoring Fluent-Asserts, and organizing TDD/refactoring workshops"
+    ],
+    "concerns": [
+      "Nest.js is absent from the entire resume — it is the primary backend framework for this role and there is no evidence of experience with it",
+      "React appears in only one role (Optilyz) with no depth described; insufficient signal for a primary frontend requirement",
+      "No explicit mention of Jest, Vitest, or Playwright despite these being listed required testing tools; testing experience is inferred from culture, not named frameworks"
+    ],
+    "key_factors": [
+      {
+        "factor": "AI agent / MCP experience",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "Nest.js absence",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "TypeScript + Node.js depth",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ],
+    "justification": "Bogdan's current position at re:cinq directly overlaps with this role's scope — TypeScript, Node.js, internal developer tooling, and AI-agent infrastructure including MCP, which is an uncommon and explicitly required skill. His 15+ year career demonstrates consistent fullstack ownership across cloud (AWS CDK at Optilyz), containerization (Docker, Kubernetes in GISCollective), and NoSQL databases (MongoDB). The primary gap is Nest.js: it is the stated backend framework and there is zero evidence of it in the resume, which is a meaningful risk for a mid-senior IC hire. React exposure is limited to one role with no architectural detail. The testing concern is partially offset by a demonstrable TDD ethos and open-source testing tooling, but the specific frameworks (Vitest, Playwright) are unconfirmed. On balance the AI-agent alignment and Node.js/TypeScript depth outweigh the Nest.js gap, which is learnable given his framework breadth.",
+    "recommend_interview": "yes",
+    "score": 7
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1878,
+    "cache_read_input_tokens": 25492,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0358236
+  }
+}

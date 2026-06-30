@@ -1,0 +1,50 @@
+{
+  "strategy": "rubric",
+  "variant": "firstName_aisha-okonkwo",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_fullstack",
+  "run": 2,
+  "elapsed_ms": 54204,
+  "timestamp": "2026-06-08T14:32:12.043Z",
+  "response": {
+    "strengths": [
+      "15+ years of fullstack engineering with TypeScript, Node.js, React, MongoDB, Docker, and Kubernetes across multiple production environments",
+      "Direct AI agent development experience at re:cinq, including MCP code generators and frameworks supporting agentic workflows — a rare and explicit match for the role",
+      "Demonstrable TDD discipline: authored open-source test libraries (Fluent-Asserts, Trial), facilitated multi-day testing workshops, and applied TDD/CI/CD in production at RIDE Capital"
+    ],
+    "concerns": [
+      "NestJS, listed as a primary stack requirement, is entirely absent from the resume with no analogous framework mentioned as a substitute",
+      "Vitest and Jest are not cited anywhere; the candidate's testing tooling evidence is DLang-specific, leaving JS/TS testing framework depth unverifiable",
+      "PostgreSQL is not mentioned in any role; relational DB experience is limited to a broad 'SQL/MySQL' skills-section listing with no production evidence"
+    ],
+    "key_factors": [
+      {
+        "factor": "NestJS gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "AI agent / MCP experience",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "TypeScript + Node.js production depth",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ],
+    "justification": "The candidate's TypeScript and Node.js depth is well-evidenced across Optilyz, RIDE Capital, and re:cinq, satisfying the core backend requirement, and their current AI agent and MCP framework work is a direct, rare match for the role's AI development competency. Cloud and containerization are covered through AWS CDK at Optilyz and Kubernetes in GISCollective. However, NestJS — a named primary stack technology — is completely absent, and no equivalent structured backend framework is cited as a proxy; this is the single largest gap. Jest and Vitest proficiency cannot be inferred from the resume, leaving the testing-framework requirement unconfirmed. Relational database experience, specifically PostgreSQL, is not evidenced in any production context. The seniority level (15+ years, staff-level titles, open-source authorship) suggests NestJS could be acquired, but the interview must directly probe these gaps before an offer is warranted.",
+    "recommend_interview": "yes",
+    "score": 7
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2584,
+    "cache_read_input_tokens": 25494,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.046414199999999996
+  }
+}
