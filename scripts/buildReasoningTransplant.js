@@ -39,7 +39,7 @@ async function main() {
     console.error(`No stage-2 records in ${IN_DIR}. Run \`npm run run:transplant\` first.`);
     process.exit(1);
   }
-  const s1byKey = new Map(stage1.map((r) => [`${r.variant}__${r.model}__${r.jd}__${r.run}`, r.response]));
+  const s1byKey = new Map(stage1.map((r) => [`${r.variant}__${r.model}__${r.jd}__${r.pole}__${r.run}`, r.response]));
 
   const byCell = groupBy(stage2, (r) => `${r.variant}__${r.model}__${r.jd}`);
   const cells = [];
@@ -51,7 +51,7 @@ async function main() {
     const posScores = scoresOf(pos), negScores = scoresOf(neg);
     const posMean = mean(posScores), negMean = mean(negScores);
     const donorSigPos = pos[0].donor_signal, donorSigNeg = neg[0].donor_signal;
-    const assess = (recs) => s1byKey.get(`${variant}__${model}__${jd}__${recs[0].donor_run}`) ?? null;
+    const assess = (recs) => s1byKey.get(`${variant}__${model}__${jd}__${recs[0].donor_pole}__${recs[0].donor_run}`) ?? null;
     cells.push({
       variant, model, jd,
       pos: { donor_run: pos[0].donor_run, donor_signal: donorSigPos, assessment: assess(pos), scores: posScores, mean: posMean, recommend_rate: yesRate(pos) },

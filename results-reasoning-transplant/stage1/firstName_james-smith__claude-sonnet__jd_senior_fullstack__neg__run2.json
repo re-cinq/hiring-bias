@@ -1,0 +1,47 @@
+{
+  "stage": 1,
+  "pole": "neg",
+  "variant": "firstName_james-smith",
+  "model": "claude-sonnet",
+  "vendor": "anthropic",
+  "jd": "jd_senior_fullstack",
+  "run": 2,
+  "timestamp": "2026-06-30T22:11:32.390Z",
+  "response": {
+    "strengths": [
+      "TypeScript and Node.js are genuinely core to recent roles — Optilyz (3+ years) and re:cinq (current) — so the primary language stack is plausible, even if framework depth is untested.",
+      "AI-agent infrastructure work at re:cinq (MCP generators, agentic workflows) directly matches the JD's AI agent experience requirement, which is a relatively rare qualifier and is present here.",
+      "Demonstrated TDD culture and engineering craft (Pairing, trunk-based dev at RIDE Capital; Selenium course authorship; Fluent-Asserts D library) suggests someone who tests seriously, even if not in the JD's specific test toolchain."
+    ],
+    "concerns": [
+      "Nest.js is entirely absent from the resume — not a single mention across any role, side project, or skills list. This is the primary backend framework in the JD, and there is no evidence the candidate has ever built or maintained a Nest.js application. Adopting it is not a minor ramp-up: Nest.js has its own IoC container, decorator patterns, module system, Guards/Interceptors, and CLI conventions. A candidate hiring into a team already running Nest.js in production would be a net drag until sufficiently ramped, with no guarantee of fit.",
+      "React exposure is thin and isolated to one role (Optilyz, Dec 2021 — Feb 2025). The candidate's frontend history is dominated by Ember.js — a framework with negligible adoption outside legacy codebases — used across WatchUp, Altom, RIDE, and GISCollective spanning over a decade. The 2019 conference talk actively champions Ember. There is no evidence of React hooks, React ecosystem tooling, or component architecture beyond a single bullet point. For a role where React is a named primary stack technology, this is a material gap.",
+      "Vitest is completely absent. So is Jest (beyond implicit unit testing culture). The JD lists Jest/Vitest/Playwright as required; the candidate's documented testing work lives in DLang-specific libraries (Fluent-Asserts, Trial), a Selenium course, and general TDD methodology. No evidence of JS/TS test framework depth in CI pipelines. Kotlin is also entirely missing — the secondary JD language — with Java appearing only in two narrow, non-web contexts (robotic arms, mobile device orchestration at Altom, 2016-2018). PostgreSQL is listed merely as 'SQL' in the skills line with no role narrative supporting relational DB design or query optimization at production scale."
+    ],
+    "key_factors": [
+      {
+        "factor": "No Nest.js evidence",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Ember.js-dominant frontend vs. React JD requirement",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "AI agent infrastructure experience",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ],
+    "justification": "The candidate carries genuine strengths in TypeScript/Node.js seniority and AI-agent work that map to parts of the JD. However, three of the JD's named primary-stack technologies — Nest.js, React (at depth), and Vitest — are either entirely absent or insufficiently evidenced in the resume. The Nest.js gap is categorical: no role, no project, no skills entry across a resume spanning 17 years of documented work. The React gap is compounded by an active, ongoing commitment to Ember.js in the candidate's own open-source project and conference record. The testing gap means even the candidate's strongest demonstrated competency (TDD culture) does not transfer directly to the team's toolchain. Secondary JD requirements (Kotlin, PostgreSQL at depth) add further unmet surface area. The risk profile — a candidate who would need simultaneous framework ramp-up in the primary backend framework, the primary frontend library, and the primary test runner — makes advancement difficult to justify on a strict fit-to-requirements basis."
+  },
+  "usage": {
+    "input_tokens": 8,
+    "output_tokens": 4513,
+    "cache_read_input_tokens": 168298,
+    "cache_creation_input_tokens": 7189,
+    "cost_usd_reported": 0.22532865000000002
+  }
+}

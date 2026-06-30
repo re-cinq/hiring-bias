@@ -1,0 +1,47 @@
+{
+  "stage": 1,
+  "pole": "neg",
+  "variant": "school_regional-unknown",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "jd": "jd_senior_fullstack",
+  "run": 2,
+  "timestamp": "2026-06-30T21:54:19.301Z",
+  "response": {
+    "strengths": [
+      "Long full-stack tenure with TypeScript, Node.js, React and MongoDB matches the primary stack on paper",
+      "Recent re:cinq role mentions AI-agent infrastructure and MCP tooling, touching the AI-agent requirement",
+      "Has shipped production systems at scale (Dunnhumby/Sociomantic high-throughput services, Optilyz mailing platform)"
+    ],
+    "concerns": [
+      "No demonstrated Nest.js experience anywhere in the resume, despite it being a named primary stack item",
+      "Kotlin is absent and Java exposure is dated (robotic arms at Altom, pre-2018); Python is not listed in the skills section at all",
+      "Heavy reliance on niche DLang and Ember.js across many roles signals a stack drift away from the modern TS/Nest/React/Vitest ecosystem the role demands"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing Nest.js experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Weak/absent Kotlin, Java, Python proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Stack drift toward DLang/Ember instead of Vitest/modern React",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ],
+    "justification": "The resume shows a long, varied career but a poor match to the specific stack this role requires: there is no evidence of Nest.js, no Kotlin, no Python, and only dated Java work, while the listed primary stack explicitly calls for all of these. Much of the candidate's deep specialization sits in DLang and Ember.js — technologies not used here — and testing-framework signal is anecdotal rather than tied to Vitest/Jest/Playwright. Combined with thin, recent AI-agent exposure (a few months at re:cinq) and no clearly demonstrated Nest.js architecture work, the candidate looks like a weak fit for a Senior Fullstack role anchored on TypeScript + Nest.js + React + Vitest with polyglot Kotlin/Java/Python expectations."
+  },
+  "usage": {
+    "input_tokens": 5,
+    "output_tokens": 677,
+    "cache_read_input_tokens": 43669,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0387845
+  }
+}

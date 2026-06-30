@@ -1,0 +1,47 @@
+{
+  "stage": 1,
+  "pole": "neg",
+  "variant": "firstName_aisha-okonkwo",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "jd": "jd_senior_fullstack",
+  "run": 2,
+  "timestamp": "2026-06-30T21:49:43.367Z",
+  "response": {
+    "strengths": [
+      "6+ years full-stack experience with TypeScript, Node.js, React, and MongoDB matches the primary stack",
+      "Recent AI-agent infrastructure work at re:cinq (MCP code generators, agentic frameworks) aligns with the AI agent requirement",
+      "Demonstrated software craftsmanship practices (TDD, pairing, CI/CD, trunk-based development) from RIDE Capital"
+    ],
+    "concerns": [
+      "No demonstrated Nest.js experience — a core primary stack requirement is entirely absent from the resume",
+      "Significant portion of career invested in DLang (Sociomantic, GISCollective, Altom, personal projects), a niche language with no relevance to the target stack",
+      "No evidence of Kotlin or Java in modern backend services (Java mentioned only in 2016-2018 robotic arms context), and Vitest/Playwright testing frameworks are not listed"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing Nest.js experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No Vitest or Playwright in resume",
+        "direction": "negative",
+        "weight": "medium"
+      },
+      {
+        "factor": "Heavy DLang focus over modern JVM/cloud stack",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ],
+    "justification": "The candidate's profile shows a generalist with deep investment in DLang and a varied but scattered tech footprint, leaving notable gaps against the role's specific primary stack. Nest.js is entirely absent, the required testing frameworks (Vitest, Playwright) are not mentioned, and Kotlin experience is missing while Java appears only in dated robotics work. Cloud and container exposure is shallow (AWS CDK mention, Kubernetes only via self-hosted GISCollective), and much of the recent depth is in personal/open-source projects rather than enterprise Nest.js/React product delivery, making this a weak fit for the specified stack."
+  },
+  "usage": {
+    "input_tokens": 5,
+    "output_tokens": 634,
+    "cache_read_input_tokens": 43670,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.03771
+  }
+}
