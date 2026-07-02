@@ -30,7 +30,7 @@ const JDS_DIR = 'data/jds';
 const OUT_DIR = 'results-reasoning-transplant';
 
 const EVALUATED_SLOTS = [
-  'claude-opus', 'claude-sonnet', 'claude-haiku',
+  'claude-opus', 'claude-sonnet', 'claude-haiku', 'claude-fable-5',
   'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-3.1-pro-preview',
   'llama-4-maverick', 'qwen-3-next-80b', 'mistral-large', 'mistral-small'
 ];

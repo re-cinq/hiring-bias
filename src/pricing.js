@@ -2,6 +2,7 @@ export const PRICING_USD_PER_M_TOKENS = {
   'claude-opus':       { in: 0,    out: 0 },
   'claude-opus-t0':    { in: 15,   out: 75 },
   'claude-opus-t1':    { in: 15,   out: 75 },
+  'claude-fable-5':    { in: 0,    out: 0 },
   'gpt-5':             { in: 10,   out: 30 },
   'gpt-4o-mini':       { in: 0.15, out: 0.60 },
   'gpt-4o-mini-t0':    { in: 0.15, out: 0.60 },

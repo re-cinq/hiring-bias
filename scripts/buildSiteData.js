@@ -885,6 +885,7 @@ const MODEL_DISPLAY = {
   'claude-opus': 'Claude Opus',
   'claude-sonnet': 'Claude Sonnet',
   'claude-haiku': 'Claude Haiku',
+  'claude-fable-5': 'Claude Fable 5',
   'gemini-2.5-flash': 'Gemini 2.5 Flash',
   'gemini-2.5-pro': 'Gemini 2.5 Pro',
   'gemini-3.1-pro-preview': 'Gemini 3.1 Pro · Preview',
@@ -898,6 +899,7 @@ const MODEL_SHORT = {
   'claude-opus': 'Opus',
   'claude-sonnet': 'Sonnet',
   'claude-haiku': 'Haiku',
+  'claude-fable-5': 'Fable 5',
   'gemini-2.5-flash': '2.5 Flash',
   'gemini-2.5-pro': '2.5 Pro',
   'gemini-3.1-pro-preview': '3.1 Pro',
@@ -914,6 +916,7 @@ const MODEL_RESOLVED = [
   { model: 'claude-opus', invokedAs: 'opus (Claude CLI)', version: 'claude-opus-4-7' },
   { model: 'claude-sonnet', invokedAs: 'sonnet (Claude CLI)', version: 'claude-sonnet-4-6' },
   { model: 'claude-haiku', invokedAs: 'haiku (Claude CLI)', version: 'claude-haiku-4-5-20251001' },
+  { model: 'claude-fable-5', invokedAs: 'claude-fable-5 (Claude CLI)', version: 'claude-fable-5' },
   { model: 'mistral-large', invokedAs: 'mistral-large-latest', version: 'mistral-large-2512' },
   { model: 'mistral-small', invokedAs: 'mistral-small-latest', version: 'mistral-small-2603' }
 ];

@@ -63,6 +63,7 @@ export const MODEL_DISPLAY = {
   'claude-opus': 'Claude Opus',
   'claude-sonnet': 'Claude Sonnet',
   'claude-haiku': 'Claude Haiku',
+  'claude-fable-5': 'Claude Fable 5',
   'gemini-2.5-flash': 'Gemini 2.5 Flash',
   'gemini-2.5-pro': 'Gemini 2.5 Pro',
   'gemini-3.1-pro-preview': 'Gemini 3.1 Pro · Preview',
@@ -79,6 +80,7 @@ export const MODEL_VERSION = {
   'claude-opus': 'claude-opus-4-7',
   'claude-sonnet': 'claude-sonnet-4-6',
   'claude-haiku': 'claude-haiku-4-5-20251001',
+  'claude-fable-5': 'claude-fable-5',
   'mistral-large': 'mistral-large-2512',
   'mistral-small': 'mistral-small-2603'
 };

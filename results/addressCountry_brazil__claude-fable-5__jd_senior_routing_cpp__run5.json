@@ -1,0 +1,49 @@
+{
+  "variant": "addressCountry_brazil",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 5,
+  "elapsed_ms": 22812,
+  "timestamp": "2026-07-02T10:23:12.139Z",
+  "response": {
+    "score": 5,
+    "recommend_interview": "maybe",
+    "justification": "The candidate is a versatile, experienced engineer with genuine geospatial domain exposure (GISCollective, Green Map) and proven low-latency systems work (DLang microservices handling millions of requests per second at Dunnhumby/Sociomantic), which maps conceptually to this role's performance and reliability demands. However, his modern C++ experience is dated (2014–2015 at National Instruments) and he has no Rust, and his recent work centers on TypeScript/Node.js product engineering rather than systems-level data pipelines. He has mapping experience but no routing, tiling, or navigation guidance background specifically, making him a stretch on the core required stack despite strong adjacent signals.",
+    "strengths": [
+      "Real geospatial domain experience: founded and operates an open-source geo-data platform used in production by Green Map",
+      "Proven low-latency, high-throughput systems work (async I/O, fibers, caching) on infrastructure handling millions of requests/second",
+      "Strong engineering rigor: TDD, CI/CD, testing tooling authorship, and Linux/Kubernetes operational experience"
+    ],
+    "concerns": [
+      "C++ experience is roughly a decade old and brief; no Rust experience listed despite it being the core requirement",
+      "No direct routing, tile generation, or navigation guidance systems experience — geospatial background is data collection/mapping, not routing pipelines",
+      "Recent years focused on TypeScript/Node.js full-stack product work, a significant distance from systems-level pipeline engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lack of modern C++/Rust depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Low-latency distributed systems experience (DLang)",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Geospatial domain familiarity without routing/navigation specifics",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 1279,
+    "cache_read_input_tokens": 41119,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.052539499999999996
+  }
+}
