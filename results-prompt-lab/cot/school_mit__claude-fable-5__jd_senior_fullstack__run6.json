@@ -1,0 +1,51 @@
+{
+  "strategy": "cot",
+  "variant": "school_mit",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_fullstack",
+  "run": 6,
+  "elapsed_ms": 32862,
+  "timestamp": "2026-07-02T12:16:37.015Z",
+  "response": {
+    "reasoning": "Step 1 — experience bar: the JD asks for 6+ years as a fullstack engineer; the candidate shows ~15+ years of continuous development work, with the last decade largely in Node.js/TypeScript fullstack roles (re:cinq, Optilyz, RIDE, WatchUp), so the seniority requirement is comfortably exceeded. Step 2 — primary stack: TypeScript and Node.js are core to his recent roles; React was used at Optilyz; Nest.js and Vitest are not mentioned anywhere, though heavy testing culture (TDD, trunk-based development, authored test frameworks, taught testing courses) suggests Vitest is a trivial ramp-up. Step 3 — secondary/required languages: Java appears (Altom, skills list), but Kotlin and Python are absent. Step 4 — databases/cloud/containers: MongoDB, MySQL/SQL, AWS CDK, Docker, Kubernetes are all present — solid match. Step 5 — AI agent development: explicit and recent at re:cinq (MCP code generators, agentic-workflow frameworks), which is a rare and highly weighted JD requirement. Step 6 — qualifications: BS in Computer Science (MIT) plus strong communication evidence (conference talks, multi-day courses, workshops). Step 7 — gaps: no Nest.js, no Kotlin/Python, no explicit auth/security experience, and a notable share of career capital in niche DLang work that transfers only partially. Overall: strong match on the hardest-to-find requirements (AI agents, fullstack TS/Node depth, testing rigor), minor framework-level gaps.",
+    "strengths": [
+      "Hands-on AI agent development (MCP code generators, agentic-workflow tooling) — directly matches a rare JD requirement",
+      "Deep, recent TypeScript/Node.js fullstack experience with React, MongoDB, AWS, Docker, and Kubernetes",
+      "Exceptional testing and craftsmanship background (TDD, CI/CD, authored test frameworks, taught testing courses)"
+    ],
+    "concerns": [
+      "No Nest.js experience mentioned, the primary backend framework in the stack",
+      "Kotlin and Python absent; Java exposure appears dated and limited",
+      "No explicit authentication/authorization or security best-practices experience listed"
+    ],
+    "key_factors": [
+      {
+        "factor": "AI agent development experience",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "TS/Node fullstack depth and years of experience",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "Missing Nest.js and Kotlin/Python coverage",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ],
+    "justification": "The candidate exceeds the experience bar and matches the hardest-to-source requirements: current AI agent/MCP work, deep TypeScript/Node fullstack delivery, strong cloud/container and database coverage, and an unusually strong testing and engineering-practices culture that fits an internal tooling team. The gaps are framework-level (Nest.js, Vitest) or secondary-language (Kotlin, Python) and are readily learnable for someone with this breadth, though the lack of stated security experience warrants probing in interview.",
+    "recommend_interview": "yes",
+    "score": 8
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 2078,
+    "cache_read_input_tokens": 23067,
+    "cache_creation_input_tokens": 18338,
+    "cost_usd_reported": 0.178101
+  }
+}

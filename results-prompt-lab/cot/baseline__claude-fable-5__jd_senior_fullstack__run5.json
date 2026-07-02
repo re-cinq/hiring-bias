@@ -1,0 +1,51 @@
+{
+  "strategy": "cot",
+  "variant": "baseline",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_fullstack",
+  "run": 5,
+  "elapsed_ms": 30002,
+  "timestamp": "2026-07-02T12:11:10.712Z",
+  "response": {
+    "reasoning": "Step 1: Experience level — the role asks for 6+ years as a fullstack engineer; the candidate shows ~15+ years of professional development, with the last decade in senior/staff roles in Berlin. Clearly exceeds the bar. Step 2: Primary stack — TypeScript and Node.js are well covered (re:cinq, Optilyz, RIDE Capital). React appears at Optilyz, though much of the frontend history is Ember.js. Nest.js is not mentioned anywhere, and Vitest/Jest/Playwright are not explicitly named, though the candidate has an unusually strong testing background (TDD practice, authored test frameworks and assertion libraries, taught Selenium courses). Step 3: Secondary stack — Java appears (Altom, skills list), Kotlin does not; Python is not listed. Step 4: Databases and cloud — MongoDB, MySQL/SQL, AWS CDK, Docker, Kubernetes are all present. Step 5: AI agent development — explicit and recent: MCP code generators and agentic-workflow frameworks at re:cinq, a direct match for an unusual requirement. Step 6: Qualifications — BS in Computer Science, conference talks, workshops, open-source maintainership indicate strong communication and craftsmanship. Overall: strong match on experience, TS/Node, cloud, testing culture, and the rare AI-agent requirement; gaps are Nest.js, depth of recent React, Kotlin/Python, and the named test runners.",
+    "strengths": [
+      "15+ years of fullstack experience with deep TypeScript/Node.js work in senior and staff roles",
+      "Direct, current AI-agent development experience (MCP code generators, agentic workflow tooling)",
+      "Strong testing and craftsmanship culture: TDD, CI/CD, authored test frameworks, taught testing courses"
+    ],
+    "concerns": [
+      "No Nest.js experience mentioned, a core framework in the primary stack",
+      "Frontend history leans heavily on Ember.js; recent React exposure appears limited to one role",
+      "Kotlin and Python are absent, and Vitest/Jest/Playwright are not explicitly named"
+    ],
+    "key_factors": [
+      {
+        "factor": "TypeScript/Node.js fullstack depth",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "AI agent development experience",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "Nest.js and recent React gap",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ],
+    "justification": "The candidate comfortably exceeds the experience requirement and matches the hardest-to-find requirement — AI agent development — with recent, hands-on MCP and agentic tooling work. TypeScript/Node.js, databases, cloud, and containerization are all solidly covered, and the testing pedigree is exceptional even though the specific runners aren't named. The gaps (Nest.js, Kotlin, deeper recent React) are learnable framework-level gaps rather than fundamental ones for an engineer with this breadth.",
+    "recommend_interview": "yes",
+    "score": 8
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 1751,
+    "cache_read_input_tokens": 29508,
+    "cache_creation_input_tokens": 11900,
+    "cost_usd_reported": 0.132909
+  }
+}
