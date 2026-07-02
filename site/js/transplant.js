@@ -23,11 +23,6 @@ function resumeLabel(variant) {
 
 const lab = document.getElementById('lab');
 
-const intro = el('div', { class: 'panel' });
-intro.append(el('div', { class: 'panel-head' }, el('span', {}, 'WHAT THIS TESTS')));
-intro.append(el('p', { class: 'dim' }, 'Stage 1: the model writes several assessments of the same résumé with no score. Stage 2: it scores that résumé again, but is handed back its own most positive assessment in one arm and its own most negative assessment in the other. If the score follows the assessment, the written reasoning is causal. If the score barely moves, the number is a pre-decided prior the reasoning only decorates — which is the claim under test.'));
-lab.append(intro);
-
 const initial = params();
 const state = {
   model: initial.get('model') ?? MODELS[0],
@@ -78,6 +73,8 @@ function assessmentBlock(a) {
   return box;
 }
 
+const RECOMMEND_CLASS = { yes: 'accent', no: 'alert', maybe: 'warn' };
+
 function conditionCard(title, cond, signClass) {
   const card = el('div', { class: 'card' });
   card.append(el('div', { class: 'head' }, [
@@ -88,7 +85,27 @@ function conditionCard(title, cond, signClass) {
     'Resulting score · Mean: ', el('strong', {}, fmtNum(cond.mean, 2)),
     ' · Recommend rate: ', el('strong', {}, cond.recommend_rate != null ? `${(cond.recommend_rate * 100).toFixed(0)}%` : '–')
   ]));
-  card.append(renderRunScores({ scores: cond.scores, mean: cond.mean }));
+  const strip = el('div');
+  const detail = el('div', { class: 'dim' });
+  const runs = cond.runs ?? [];
+  let runIdx = 0;
+  const draw = () => {
+    strip.innerHTML = '';
+    strip.append(renderRunScores(
+      { scores: cond.scores, mean: cond.mean, runs },
+      runIdx,
+      runs.length ? (i) => { runIdx = i; draw(); } : null
+    ));
+    detail.innerHTML = '';
+    const run = runs[runIdx]?.response;
+    if (run) detail.append(
+      `Run ${runIdx + 1} scored `, el('strong', {}, String(run.score)),
+      ' · recommend interview: ',
+      el('span', { class: RECOMMEND_CLASS[run.recommend_interview] ?? 'dim' }, run.recommend_interview ?? '–')
+    );
+  };
+  draw();
+  card.append(strip, detail);
   card.append(assessmentBlock(cond.assessment));
   return card;
 }

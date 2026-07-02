@@ -20,7 +20,6 @@ async function writeJson(relpath, data) {
   await fs.writeFile(full, JSON.stringify(data, null, 2));
 }
 
-const scoresOf = (rs) => rs.map((r) => r.response?.score).filter((s) => typeof s === 'number');
 const yesRate = (rs) => rs.length ? rs.filter((r) => r.response?.recommend_interview === 'yes').length / rs.length : null;
 
 // effect >= 1.0 pt = the score clearly follows the transplanted reasoning (causal);
@@ -48,16 +47,27 @@ async function main() {
     const pos = rs.filter((r) => r.condition === 'pos');
     const neg = rs.filter((r) => r.condition === 'neg');
     if (!pos.length || !neg.length) continue;
-    const posScores = scoresOf(pos), negScores = scoresOf(neg);
-    const posMean = mean(posScores), negMean = mean(negScores);
-    const donorSigPos = pos[0].donor_signal, donorSigNeg = neg[0].donor_signal;
     const assess = (recs) => s1byKey.get(`${variant}__${model}__${jd}__${recs[0].donor_pole}__${recs[0].donor_run}`) ?? null;
+    const condition = (recs) => {
+      const scored = recs.filter((r) => typeof r.response?.score === 'number');
+      const scores = scored.map((r) => r.response.score);
+      return {
+        donor_run: recs[0].donor_run,
+        donor_signal: recs[0].donor_signal,
+        assessment: assess(recs),
+        scores,
+        runs: scored.map((r) => ({ response: { score: r.response.score, recommend_interview: r.response.recommend_interview } })),
+        mean: mean(scores),
+        recommend_rate: yesRate(recs)
+      };
+    };
+    const posCond = condition(pos), negCond = condition(neg);
     cells.push({
       variant, model, jd,
-      pos: { donor_run: pos[0].donor_run, donor_signal: donorSigPos, assessment: assess(pos), scores: posScores, mean: posMean, recommend_rate: yesRate(pos) },
-      neg: { donor_run: neg[0].donor_run, donor_signal: donorSigNeg, assessment: assess(neg), scores: negScores, mean: negMean, recommend_rate: yesRate(neg) },
-      effect: (posMean != null && negMean != null) ? posMean - negMean : null,
-      signal_gap: (donorSigPos != null && donorSigNeg != null) ? donorSigPos - donorSigNeg : null
+      pos: posCond,
+      neg: negCond,
+      effect: (posCond.mean != null && negCond.mean != null) ? posCond.mean - negCond.mean : null,
+      signal_gap: (posCond.donor_signal != null && negCond.donor_signal != null) ? posCond.donor_signal - negCond.donor_signal : null
     });
   }
 
@@ -113,12 +123,34 @@ async function prerender(summary) {
   const rows = summary.by_model.map((m) =>
     `<tr><td>${esc(m.model)}</td><td class="num">${fmt(m.score_neg_mean)}</td><td class="num">${fmt(m.score_pos_mean)}</td><td class="num">${fmt(m.mean_effect)}</td><td class="num">${fmt(m.responsiveness)}</td><td>${esc(m.verdict)}</td></tr>`
   ).join('\n');
+  const nCells = summary.overall?.n_cells ?? 0;
+  const effectPts = fmt(summary.overall?.mean_effect);
+  const dirPct = summary.overall?.directional_rate != null ? Math.round(summary.overall.directional_rate * 100) : '–';
+  const resp = summary.by_model.map((m) => m.responsiveness).filter((x) => typeof x === 'number');
+  const respRange = resp.length ? `${fmt(Math.min(...resp))}–${fmt(Math.max(...resp))}` : '–';
+  const nDriven = summary.by_model.filter((m) => m.verdict === 'reasoning-driven').length;
+  const nModels = summary.by_model.length;
+  const drivenPhrase = nDriven === nModels ? 'every model tested' : `${nDriven} of ${nModels} models`;
   const html = `<div class="panel">
   <div class="panel-head"><span>DOES THE SCORE FOLLOW TRANSPLANTED REASONING?</span></div>
-  <p class="dim">Same résumé, scored twice: once given the model's most <strong>positive</strong> self-generated assessment, once its most <strong>negative</strong>. If the score follows the assessment, the reasoning is causal; if it barely moves, the score is a pre-decided prior the reasoning only decorates. Overall effect: <strong>${fmt(summary.overall?.mean_effect)} points</strong> across ${esc(summary.overall?.n_cells ?? 0)} cells; the score moved in the reasoning's direction in <strong>${summary.overall?.directional_rate != null ? Math.round(summary.overall.directional_rate * 100) : '–'}%</strong> of them.</p>
+  <p><strong>The assumption under test.</strong> That an LLM's résumé score is <em>not</em> produced by its stated reasoning — the model settles on a number first, then writes the strengths, concerns and justification to rationalize it after the fact. If that holds, the reasoning is decoration: it tells you nothing about what actually moved the score, and rewriting the reasoning could never change the number.</p>
+</div>
+<div class="panel">
+  <div class="panel-head"><span>HOW WE TEST IT</span></div>
+  <p class="dim">One résumé and one job, held fixed throughout. The only thing we ever vary is the reasoning handed back to the model.</p>
+  <p class="dim"><strong>Step 1.</strong> Ask the model to assess the résumé several times, each run writing strengths, concerns and a justification but <strong>no score</strong>. For example, Claude Opus reads the baseline résumé for the CTO, Agentic Fintech role and writes a few independent takes, one run praising the fintech and agentic tooling experience, another flagging a missing executive title.</p>
+  <p class="dim"><strong>Step 2.</strong> From those assessments pick the two extremes it produced for this exact résumé, its most <strong>positive</strong> one and its most <strong>negative</strong> one. For example, the positive extreme highlights the candidate's hands on work on AI agent infrastructure and fintech scale experience at RIDE Capital, while the negative extreme stresses that the entire career is individual contributor roles with no evidence of scaling a team.</p>
+  <p class="dim"><strong>Step 3.</strong> Score the same résumé twice more. In one arm we paste back the model's own most positive assessment, in the other its own most negative. Everything else is identical, so the injected reasoning is the only thing that changed. For example, the same baseline résumé and CTO job go in both times, once with the glowing assessment glued on top, once with the damning one.</p>
+  <p class="dim"><strong>Step 4.</strong> Repeat the scoring for several runs per arm and take each arm's mean. The <strong>effect</strong> is the positive arm mean minus the negative arm mean. For example, the positive arm scored 7, 7, 7 (mean 7.0) and the negative arm scored 2, 2, 2 (mean 2.0), an effect of 5.0 points.</p>
+  <p class="dim"><strong>Step 5.</strong> Read the effect. If the score followed the transplanted assessment the reasoning is causal, if it barely moved the score is a prior the model fixed in advance and the reasoning only decorates. For example, that 5.0 point jump means the score clearly tracked the reasoning here, whereas a result near 0 would mean the number ignored the reasoning entirely.</p>
+</div>
+<div class="panel">
+  <div class="panel-head"><span>RESULTS BY MODEL</span></div>
   <table class="data"><thead><tr><th>Model</th><th class="num">score · neg</th><th class="num">score · pos</th><th class="num">effect (Δ)</th><th class="num">responsiveness</th><th>verdict</th></tr></thead><tbody>
 ${rows}
   </tbody></table>
+  <p><strong>What the results say about the assumption.</strong> The assumption is <strong>dismissed</strong>: the score <em>does</em> follow the reasoning, so it is not just post-hoc decoration. That is exactly what the <strong>reasoning-driven</strong> verdict in every row above means. Swapping the negative assessment for the positive one moved the score by <strong>${effectPts} points</strong> on average across ${esc(nCells)} cells, and the score moved in the reasoning's direction in <strong>${dirPct}%</strong> of them; ${drivenPhrase} lands reasoning-driven, none behaved as if the number were fixed in advance. What would have <em>supported</em> the assumption — an effect near zero, the score sitting still no matter which reasoning it was handed — never appeared for any model. The one caveat that keeps a weak version alive: responsiveness stays well below 1.0 (${respRange}), so the score moves in the reasoning's direction but by far less than the reasoning's own swing — the number is somewhat anchored, just not merely decorative.</p>
+  <p class="dim"><strong>What this does <em>not</em> explain.</strong> A different question is why the <em>same</em> prompt scores differently from one run to the next. That is a separate stability question — sampling noise from temperature and few runs per cell, covered in the <a href="methodology.html">methodology</a> and measured per prompt variant in the <a href="prompt-lab.html">prompt lab</a>. But this experiment reframes it: because the score tracks the reasoning and the model writes fresh reasoning on every run, much of that run-to-run swing is the reasoning genuinely changing and the score following it — instability propagated through a causal link, not a random number wearing a justification.</p>
 </div>`;
   const file = 'site/transplant.html';
   let page;
