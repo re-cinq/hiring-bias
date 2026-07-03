@@ -51,6 +51,8 @@ function pooledStdev(cells) {
   return den > 0 ? Math.sqrt(num / den) : null;
 }
 
+const round2 = (x) => Math.round(x * 100) / 100;
+
 // The four metrics for one slice of records (already filtered to a strategy, and
 // optionally to a single model). cellKey groups runs of the same prompt input.
 function metricsFor(records) {
@@ -59,6 +61,11 @@ function metricsFor(records) {
 
   // Stability.
   const stability = pooledStdev(cellScoreSets);
+  const stabilityDist = cellScoreSets
+    .filter((scores) => scores.length >= 2)
+    .map((scores) => stdev(scores))
+    .filter((s) => s != null)
+    .map(round2);
 
   // Coherence: score vs the model's own stated drivers.
   const scoreArr = [], signalArr = [], sentScoreArr = [], sentArr = [];
@@ -97,7 +104,13 @@ function metricsFor(records) {
   const bias_abs_delta = absDeltas.length ? mean(absDeltas) : null;
   const flip_bias = biasFlipDen ? biasFlipNum / biasFlipDen : null;
 
-  return { stability, coherence, coherence_sentiment, bias_abs_delta, flip_instability, flip_bias, n_records: records.length };
+  return {
+    stability, coherence, coherence_sentiment, bias_abs_delta, flip_instability, flip_bias,
+    // The per-cell values behind the two decomposable aggregates, so the site can draw
+    // the distribution dots. Coherence and the flip rates have no meaningful per-cell value.
+    dist: { stability: stabilityDist, bias_abs_delta: absDeltas.map(round2) },
+    n_records: records.length
+  };
 }
 
 function buildSummary(records, models) {

@@ -1,6 +1,7 @@
 import { mountChrome } from './nav.js';
 import { loadJson, el, header, params, setParam, fmtNum, fmtSignedDelta, copyLinkButton, modelLabel, modelVersion } from './lib.js';
 import { renderRunScores } from './verdict-card.js';
+import { dotStrip, collapseValues, SCORE_SCALE } from './dot-strip.js';
 
 await mountChrome();
 document.getElementById('header').append(header('REASONING TRANSPLANT'));
@@ -213,18 +214,39 @@ function renderConclusion(cell) {
   host.append(panel);
 }
 
+// Leaderboard score cell: the pooled mean on top, a 0–10 strip under it with one hollow
+// dot per résumé×job cell mean and the filled green dot at the pooled value.
+function scoreCell(value, dist) {
+  const td = el('td', { class: 'num strip-cell' });
+  td.append(el('div', {}, fmtNum(value, 2)));
+  if (value != null) {
+    td.append(dotStrip({
+      ...SCORE_SCALE,
+      markers: [
+        ...collapseValues(dist ?? []).map(({ value: v, indexes }) => ({
+          value: v,
+          cls: 'iter',
+          title: `${indexes.length} résumé×job cell${indexes.length > 1 ? 's' : ''} at ${fmtNum(v, 2)}`
+        })),
+        { value, filled: true, cls: 'mean', title: `pooled mean ${fmtNum(value, 2)}` }
+      ]
+    }));
+  }
+  return td;
+}
+
 function renderLeaderboard() {
   const panel = el('div', { class: 'panel' });
   panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'LEADERBOARD · how much each model bends to transplanted reasoning')));
-  panel.append(el('p', { class: 'dim' }, 'effect = mean(score given positive assessment − score given negative). Bigger = the score follows the reasoning. responsiveness = points of score per unit of reasoning signal.'));
+  panel.append(el('p', { class: 'dim' }, 'effect = mean(score given positive assessment − score given negative). Bigger = the score follows the reasoning. responsiveness = points of score per unit of reasoning signal. ○ = one résumé×job cell, ● = pooled mean.'));
   const table = el('table', { class: 'data' });
   table.append(el('thead', {}, el('tr', {}, ['Model', 'score · neg', 'score · pos', 'effect (Δ)', 'responsiveness', 'moved right %', 'verdict'].map((h, i) => el('th', i > 0 && i < 6 ? { class: 'num' } : {}, h)))));
   const tbody = el('tbody');
   for (const m of summary.by_model) {
     tbody.append(el('tr', m.model === state.model ? { class: 'row-hi' } : {}, [
       el('td', { title: modelVersion(m.model) }, modelLabel(m.model)),
-      el('td', { class: 'num' }, fmtNum(m.score_neg_mean, 2)),
-      el('td', { class: 'num' }, fmtNum(m.score_pos_mean, 2)),
+      scoreCell(m.score_neg_mean, m.score_neg_dist),
+      scoreCell(m.score_pos_mean, m.score_pos_dist),
       el('td', { class: `num ${m.mean_effect > 0.3 ? 'accent' : 'alert'}` }, fmtSignedDelta(m.mean_effect, 2)),
       el('td', { class: 'num' }, fmtNum(m.responsiveness, 2)),
       el('td', { class: 'num' }, m.directional_rate != null ? `${Math.round(m.directional_rate * 100)}%` : '–'),

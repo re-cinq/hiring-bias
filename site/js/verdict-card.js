@@ -1,5 +1,6 @@
-import { el, pill, badges, fmtNum } from './lib.js';
+import { el, pill, fmtNum } from './lib.js';
 import { wordDiff } from './linediff.js';
+import { dotStrip, collapseValues, SCORE_SCALE } from './dot-strip.js';
 
 // Shared verdict-card rendering used by the counterfactual diff page and the prompt
 // lab comparator. A "card" shows one evaluation: score, recommend pill, the per-run
@@ -84,40 +85,40 @@ export function bestMatch(item, candidates) {
   return best;
 }
 
-// One badge-bar per run, stacked vertically, shows the spread of scores so the reader
-// can eyeball run-to-run noise instead of just the mean. Falls back to the mean-bar when
-// per-run scores aren't present. When onSelectRun is given, each run row becomes a click
-// target and the active row is highlighted.
+// The 0–10 distribution strip for one evaluation: a hollow dot per distinct run score
+// (colored by that run's recommendation) and a filled green dot at the mean. Runs with
+// the same score collapse into one dot; clicking it cycles through them. When onSelectRun
+// is given the dots are click targets and the active run's dot is highlighted.
 export function renderRunScores(data, runIdx = 0, onSelectRun = null) {
   const wrap = el('div', { class: 'runscores' });
-  const scores = Array.isArray(data?.scores) ? data.scores : null;
-  if (!scores || !scores.length) {
-    wrap.append(badges(Math.round((data?.mean ?? 0)), 10));
-    return wrap;
-  }
-  for (let i = 0; i < scores.length; i++) {
-    const s = scores[i];
-    const rec = data.runs?.[i]?.response?.recommend_interview;
-    const recClass = ['yes', 'no', 'maybe'].includes(rec) ? rec : '';
-    const isSelected = i === runIdx;
-    const classes = ['runrow'];
-    if (onSelectRun) classes.push('clickable');
-    if (isSelected) classes.push('selected');
-    const attrs = { class: classes.join(' ') };
+  const scores = Array.isArray(data?.scores) ? data.scores : [];
+
+  const markers = collapseValues(scores).map(({ value, indexes }) => {
+    const recs = indexes.map((i) => data.runs?.[i]?.response?.recommend_interview);
+    const uniform = recs.every((r) => r === recs[0]) && ['yes', 'no', 'maybe'].includes(recs[0]);
+    const marker = {
+      value,
+      cls: uniform ? `iter ${recs[0]}` : 'iter',
+      selected: indexes.includes(runIdx),
+      title: `${indexes.map((i, k) => `run ${i + 1} (${recs[k] ?? '–'})`).join(', ')} · score ${value}`
+    };
     if (onSelectRun) {
-      attrs.onclick = () => onSelectRun(i);
-      attrs.title = `show run ${i + 1} (${rec || 'no recommendation'})`;
+      // Clicking a collapsed dot cycles through the runs sharing that score.
+      marker.onClick = () => {
+        const at = indexes.indexOf(runIdx);
+        onSelectRun(at === -1 ? indexes[0] : indexes[(at + 1) % indexes.length]);
+      };
     }
-    wrap.append(el('div', attrs, [
-      el('span', { class: 'rl' }, `r${i + 1}`),
-      badges(s, 10),
-      el('span', { class: `rn ${recClass}` }, String(s))
-    ]));
+    return marker;
+  });
+  if (data?.mean != null) {
+    markers.push({ value: data.mean, filled: true, cls: 'mean', title: `mean ${fmtNum(data.mean, 2)}` });
   }
-  wrap.append(el('div', { class: 'runrow mean' }, [
-    el('span', { class: 'rl' }, 'mean'),
-    badges(Math.round(data.mean ?? 0), 10),
-    el('span', { class: 'rn' }, fmtNum(data.mean, 2))
-  ]));
+  if (!markers.length) return wrap;
+
+  wrap.append(dotStrip({ ...SCORE_SCALE, markers }));
+  if (onSelectRun && scores.length) {
+    wrap.append(el('div', { class: 'strip-caption' }, '○ runs · ● mean · click a run dot to view that run'));
+  }
   return wrap;
 }

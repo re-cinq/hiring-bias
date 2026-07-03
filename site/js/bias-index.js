@@ -1,4 +1,5 @@
 import { el, fmtNum, fmtPct, fmtSignedDelta, MODEL_DISPLAY, modelVersion } from './lib.js';
+import { dotStrip, DELTA_SCALE } from './dot-strip.js';
 
 export function computeBiasIndex(matrix) {
   const stats = {};
@@ -211,21 +212,11 @@ function variantDelta(matrix, id, model) {
 
 function deltaBar(l, r) {
   if (l == null && r == null) return el('span', { class: 'dim' }, '–');
-  const pos = (v) => `${Math.max(0, Math.min(100, (v + 3) / 6 * 100)).toFixed(1)}%`;
   const cls = (v) => v == null ? '' : (Math.abs(v) < 0.005 ? 'zero' : v > 0 ? 'pos' : 'neg');
-  const bar = el('div', { class: 'delta-bar' });
-  const ticks = [[16.67, '−2'], [33.33, '−1'], [66.67, '+1'], [83.33, '+2']];
-  for (const [x, label] of ticks) {
-    bar.append(el('div', { class: 'tick', style: { left: `${x}%` }, title: label }));
-  }
-  bar.append(el('div', { class: 'tick center', style: { left: '50%' }, title: '0 (baseline)' }));
-  if (l != null) bar.append(el('div', { class: `marker filled ${cls(l)}`, style: { left: pos(l) }, title: `Left: ${fmtSignedDelta(l, 3)}` }));
-  if (r != null) bar.append(el('div', { class: `marker hollow ${cls(r)}`, style: { left: pos(r) }, title: `Right: ${fmtSignedDelta(r, 3)}` }));
-  const scale = el('div', { class: 'delta-bar-scale' },
-    ['-3', '-2', '-1', '0', '+1', '+2', '+3'].map((s) => el('span', {}, s)));
-  const wrap = document.createElement('div');
-  wrap.append(bar, scale);
-  return wrap;
+  const markers = [];
+  if (l != null) markers.push({ value: l, filled: true, cls: cls(l), title: `Left: ${fmtSignedDelta(l, 3)}` });
+  if (r != null) markers.push({ value: r, cls: cls(r), title: `Right: ${fmtSignedDelta(r, 3)}` });
+  return dotStrip({ ...DELTA_SCALE, markers });
 }
 
 export function renderResumeComparison(host, matrix, fromId, toId) {

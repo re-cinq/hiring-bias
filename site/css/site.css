@@ -316,48 +316,10 @@ table.data tbody tr.row-sel td:first-child {
 table.data td.num,
 table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
 
-/* score badges (2D voxel grid) */
-.badges {
-  display: inline-grid;
-  grid-template-columns: repeat(10, var(--px));
-  gap: var(--gap);
-  align-items: center;
-  vertical-align: middle;
-}
-.badges .cell {
-  width: var(--px);
-  height: var(--px);
-  background: var(--border);
-}
-.badges .cell.on { background: var(--accent); }
-.badges .cell.warn { background: var(--warn); }
-.badges .cell.alert { background: var(--alert); }
-
-/* per-run score strip in the verdict cards, one row per run + a mean row at the bottom.
-   Run rows are clickable: clicking a row selects that run as the displayed sample. */
-.runscores { display: flex; flex-direction: column; gap: 2px; margin: 6px 0 2px; }
-.runscores .runrow {
-  display: grid;
-  grid-template-columns: 36px auto 32px;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  color: var(--dim);
-  padding: 2px 6px;
-  border-radius: var(--radius);
-  border: 1px solid transparent;
-}
-.runscores .runrow .rl { text-align: right; letter-spacing: 0.05em; }
-.runscores .runrow .rn { color: var(--text); font-variant-numeric: tabular-nums; font-weight: 700; }
-.runscores .runrow .rn.yes { color: var(--accent); }
-.runscores .runrow .rn.no { color: var(--alert); }
-.runscores .runrow .rn.maybe { color: var(--warn); }
-.runscores .runrow.clickable { cursor: pointer; }
-.runscores .runrow.clickable:hover { background: var(--border); color: var(--text); }
-.runscores .runrow.selected { background: var(--bg); border-color: var(--accent); color: var(--text); }
-.runscores .runrow.selected .rl { color: var(--accent); }
-.runscores .runrow.mean { color: var(--accent); border-top: 1px solid var(--border); padding-top: 3px; margin-top: 2px; cursor: default; }
-.runscores .runrow.mean .rl { color: var(--accent); }
+/* per-run score strip in the verdict cards: hollow dot per distinct run score, filled
+   dot = mean. Dots are clickable: clicking one selects that run as the displayed sample. */
+.runscores { margin: 6px 0 2px; }
+.runscores .strip-caption { font-size: 11px; font-family: var(--mono); color: var(--dim); margin-top: 3px; }
 
 /* auditor-stability confusion matrix (methodology page) */
 .cm-wrap { margin: 8px 0 4px; }
@@ -518,7 +480,9 @@ svg.volcano { width: 100%; display: block; background: var(--bg); border: 1px so
 .vol-howto li { margin-bottom: 6px; }
 .vol-howto strong { color: var(--text); }
 
-/* Diverging Δ bar shared by the resume-diff table. Fixed scale −3..+3, centre line = baseline. */
+/* Distribution strip shared by every table (dot-strip.js): thin track, filled headline
+   dot, hollow dots for the underlying data points. The resume-diff/heatmap Δ bars are the
+   −3..+3 instance of it. */
 .delta-bar-cell { padding: 4px 8px 8px !important; }
 .delta-bar { position: relative; height: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); }
 .delta-bar .tick { position: absolute; top: 0; height: 100%; width: 1px; background: var(--dim); opacity: 0.5; }
@@ -529,6 +493,17 @@ svg.volcano { width: 100%; display: block; background: var(--bg); border: 1px so
 .delta-bar .marker.pos { color: var(--accent); }
 .delta-bar .marker.neg { color: var(--alert); }
 .delta-bar .marker.zero { color: var(--dim); }
+.delta-bar .marker.mean { color: var(--accent); }
+.delta-bar .marker.iter { color: var(--dim); }
+.delta-bar .marker.iter.yes { color: var(--accent); }
+.delta-bar .marker.iter.no { color: var(--alert); }
+.delta-bar .marker.iter.maybe { color: var(--warn); }
+.delta-bar .marker.clickable { cursor: pointer; }
+.delta-bar .marker.clickable:hover { transform: translate(-50%, -50%) scale(1.3); }
+.delta-bar .marker.selected { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--text); }
+/* Metric-table cells that carry a strip under the number (prompt-lab, transplant). */
+td.strip-cell { min-width: 130px; }
+td.strip-cell .delta-bar { margin-top: 3px; }
 .delta-bar-scale { display: flex; justify-content: space-between; font-size: 10px; font-family: var(--mono); color: var(--dim); margin-top: 2px; padding: 0 1px; }
 .delta-bar-scale > span { flex: 0 0 auto; width: 16px; text-align: center; }
 .delta-bar-scale > span:first-child { text-align: left; padding-left: 0; }

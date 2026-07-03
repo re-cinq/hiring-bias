@@ -88,14 +88,6 @@ export const MODEL_VERSION = {
 export const modelLabel = (m) => MODEL_DISPLAY[m] ?? m;
 export const modelVersion = (m) => MODEL_VERSION[m] ?? null;
 
-export function badges(filled, total = 10, klass = 'on') {
-  const node = el('span', { class: 'badges' });
-  for (let i = 0; i < total; i++) {
-    node.append(el('span', { class: `cell ${i < filled ? klass : ''}` }));
-  }
-  return node;
-}
-
 export function pill(recommend) {
   const r = (recommend ?? '').toLowerCase();
   const cls = ['yes', 'no', 'maybe'].includes(r) ? r : '';

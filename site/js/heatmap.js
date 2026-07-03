@@ -1,6 +1,7 @@
 import { mountChrome } from './nav.js';
 import { loadJson, el, header, fmtNum, fmtSignedDelta, deltaClass, setParam, params, modelLabel, modelVersion } from './lib.js';
 import { wallView } from './charts.js';
+import { dotStrip, DELTA_SCALE } from './dot-strip.js';
 
 await mountChrome();
 document.getElementById('header').append(header('BIAS MATRIX                 '));
@@ -141,34 +142,24 @@ async function rebuildWall() {
 function deltaWithCiBar(delta, ciLo, ciHi, baseline, significant) {
   if (delta == null) return el('span', { class: 'dim' }, '–');
   const sign = Math.abs(delta) < 0.005 ? 'zero' : delta > 0 ? 'pos' : 'neg';
-  const pos = (v) => Math.max(0, Math.min(100, (v + 3) / 6 * 100));
-  const bar = el('div', { class: 'delta-bar' });
-  const ticks = [[16.67, '−2'], [33.33, '−1'], [66.67, '+1'], [83.33, '+2']];
-  for (const [x, label] of ticks) {
-    bar.append(el('div', { class: 'tick', style: { left: `${x}%` }, title: label }));
-  }
-  bar.append(el('div', { class: 'tick center', style: { left: '50%' }, title: '0 (baseline)' }));
-  if (baseline != null && ciLo != null && ciHi != null) {
-    const lo = ciLo - baseline;
-    const hi = ciHi - baseline;
-    const left = pos(lo);
-    const width = Math.max(0.5, pos(hi) - left);
-    bar.append(el('div', {
-      class: `ci ${sign}`,
-      style: { left: `${left.toFixed(1)}%`, width: `${width.toFixed(1)}%` },
-      title: `95% CI: Δ ${fmtSignedDelta(lo, 2)} to ${fmtSignedDelta(hi, 2)}`
-    }));
-  }
-  bar.append(el('div', {
-    class: `marker ${significant ? 'filled' : 'hollow'} ${sign}`,
-    style: { left: `${pos(delta).toFixed(1)}%` },
-    title: `Δ ${fmtSignedDelta(delta, 3)} · CI [${fmtNum(ciLo, 2)} … ${fmtNum(ciHi, 2)}] · baseline ${fmtNum(baseline, 2)}`
-  }));
-  const scale = el('div', { class: 'delta-bar-scale' },
-    ['-3', '-2', '-1', '0', '+1', '+2', '+3'].map((s) => el('span', {}, s)));
-  const wrap = document.createElement('div');
-  wrap.append(bar, scale);
-  return wrap;
+  const ci = (baseline != null && ciLo != null && ciHi != null)
+    ? {
+        lo: ciLo - baseline,
+        hi: ciHi - baseline,
+        cls: sign,
+        title: `95% CI: Δ ${fmtSignedDelta(ciLo - baseline, 2)} to ${fmtSignedDelta(ciHi - baseline, 2)}`
+      }
+    : null;
+  return dotStrip({
+    ...DELTA_SCALE,
+    ci,
+    markers: [{
+      value: delta,
+      filled: !!significant,
+      cls: sign,
+      title: `Δ ${fmtSignedDelta(delta, 3)} · CI [${fmtNum(ciLo, 2)} … ${fmtNum(ciHi, 2)}] · baseline ${fmtNum(baseline, 2)}`
+    }]
+  });
 }
 
 function renderDetail({ model, axis, cells, levels, jds }) {

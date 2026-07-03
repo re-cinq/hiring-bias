@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_us",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 4,
+  "elapsed_ms": 23183,
+  "timestamp": "2026-07-03T13:29:03.701Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "no",
+    "justification": "The candidate is a strong, versatile senior engineer with ~15 years of experience, but their profile is heavily weighted toward web and full-stack development (TypeScript, Node.js, DLang) rather than the deep, current C++ expertise this role requires. Their only professional C++ experience was a short stint at National Instruments in 2014–2015. They show relevant systems fundamentals — low-latency asynchronous services, event-driven architecture, multi-threading concepts via DLang — but lack the required C++/STL depth, MQTT/IoT protocol work, and any exposure to SDL or IEC 62443 industrial-cybersecurity standards central to this position.",
+    "strengths": [
+      "Deep systems experience with low-latency, high-throughput services (millions of requests/sec) using async I/O and caching",
+      "Strong software craftsmanship: TDD, CI/CD, mentoring, workshops, and open-source contributions",
+      "Event-driven platform architecture experience (GISCollective) with Kubernetes deployment"
+    ],
+    "concerns": [
+      "Professional C++ experience is minimal and dated (~7 months in 2014–2015)",
+      "No industrial automation, IoT protocol (MQTT, OPC UA, Modbus), or IEC 62443 / SDL security background",
+      "Career trajectory centers on web/full-stack and D language, not the C++/STL and message-broker stack required"
+    ],
+    "key_factors": [
+      {
+        "factor": "Insufficient C++ depth for a senior C++ role",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No industrial cybersecurity (IEC 62443/SDL) exposure",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Strong general systems and concurrency fundamentals",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 1301,
+    "cache_read_input_tokens": 42790,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.053925
+  }
+}

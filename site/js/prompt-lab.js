@@ -1,6 +1,7 @@
 import { mountChrome } from './nav.js';
 import { loadJson, el, header, params, setParam, fmtNum, fmtSignedDelta, copyLinkButton, modelLabel, modelVersion } from './lib.js';
 import { verdictCard } from './verdict-card.js';
+import { dotStrip, collapseValues } from './dot-strip.js';
 
 await mountChrome();
 document.getElementById('header').append(header('PROMPT LAB'));
@@ -27,13 +28,28 @@ function resumeLabel(variant) {
   return `${AXIS_LABELS[axis] ?? axis} · ${LEVEL_LABELS[axis]?.[level] ?? level}`;
 }
 
-// Metric definitions. lowerBetter drives the green/red coloring of deltas.
+// Largest value of an open-ended metric anywhere in the summary (values and their
+// distributions), rounded up to 0.5, so its strip domain covers all data.
+function dataMax(key) {
+  let max = 0;
+  for (const s of summary.by_strategy) {
+    for (const bucket of [s.pooled, ...Object.values(s.by_model ?? {})]) {
+      if (typeof bucket?.[key] === 'number' && bucket[key] > max) max = bucket[key];
+      for (const v of bucket?.dist?.[key] ?? []) if (v > max) max = v;
+    }
+  }
+  return Math.max(0.5, Math.ceil(max * 2) / 2);
+}
+
+// Metric definitions. lowerBetter drives the green/red coloring of deltas; domain is the
+// metric's own scale for the distribution strips (rates 0–1, correlation −1..1, the
+// open-ended ones sized to the data).
 const METRICS = [
-  { key: 'stability', label: 'Stability (score stdev)', lowerBetter: true },
-  { key: 'coherence', label: 'Coherence (score vs reasoning, r)', lowerBetter: false },
-  { key: 'bias_abs_delta', label: 'Bias (|Δ score| vs baseline résumé)', lowerBetter: true },
-  { key: 'flip_instability', label: 'Decision flips (run-to-run)', lowerBetter: true },
-  { key: 'flip_bias', label: 'Decision flips (identity swap)', lowerBetter: true }
+  { key: 'stability', label: 'Stability (score stdev)', lowerBetter: true, domain: [0, dataMax('stability')] },
+  { key: 'coherence', label: 'Coherence (score vs reasoning, r)', lowerBetter: false, domain: [-1, 1] },
+  { key: 'bias_abs_delta', label: 'Bias (|Δ score| vs baseline résumé)', lowerBetter: true, domain: [0, dataMax('bias_abs_delta')] },
+  { key: 'flip_instability', label: 'Decision flips (run-to-run)', lowerBetter: true, domain: [0, 1] },
+  { key: 'flip_bias', label: 'Decision flips (identity swap)', lowerBetter: true, domain: [0, 1] }
 ];
 
 const byStrategy = Object.fromEntries(summary.by_strategy.map((s) => [s.strategy, s]));
@@ -43,6 +59,37 @@ function metricVal(strategyId, model, key) {
   if (!s) return null;
   const bucket = model === '__pooled__' ? s.pooled : s.by_model?.[model];
   return bucket?.[key] ?? null;
+}
+
+// Per-cell (résumé × job) values behind an aggregate metric, as hollow-dot markers.
+// Identical values collapse into one dot whose tooltip carries the count.
+function metricDistPoints(strategyId, model, key) {
+  const s = byStrategy[strategyId];
+  const bucket = model === '__pooled__' ? s?.pooled : s?.by_model?.[model];
+  return collapseValues(bucket?.dist?.[key] ?? []).map(({ value, indexes }) => ({
+    value,
+    title: `${indexes.length} résumé×job cell${indexes.length > 1 ? 's' : ''} at ${fmtNum(value, 2)}`
+  }));
+}
+
+// One metric cell: the number on top, the distribution strip under it. points are the
+// hollow dots ({ value, title }); the filled green dot is the cell's own value.
+function metricCell(m, value, points, { text = null, cls = '' } = {}) {
+  const td = el('td', { class: `num strip-cell ${cls}`.trim() });
+  td.append(el('div', {}, text ?? fmtNum(value, 2)));
+  if (value != null) {
+    const [min, max] = m.domain;
+    td.append(dotStrip({
+      min, max,
+      ticks: min < 0 ? [{ at: 0, center: true, label: '0' }] : [],
+      scaleLabels: [String(min), String(max)],
+      markers: [
+        ...points.map((p) => ({ value: p.value, cls: 'iter', title: p.title })),
+        { value, filled: true, cls: 'mean', title: `${m.label}: ${fmtNum(value, 2)}` }
+      ]
+    }));
+  }
+  return td;
 }
 
 // Green when the change is an improvement for this metric's direction, red when worse.
@@ -187,8 +234,8 @@ function metricPairTable(a, b, model) {
     const d = (va != null && vb != null) ? vb - va : null;
     tbody.append(el('tr', {}, [
       el('td', {}, m.label),
-      el('td', { class: 'num' }, fmtNum(va, 2)),
-      el('td', { class: 'num' }, fmtNum(vb, 2)),
+      metricCell(m, va, metricDistPoints(a, model, m.key)),
+      metricCell(m, vb, metricDistPoints(b, model, m.key)),
       el('td', { class: `num ${goodBadClass(d, m.lowerBetter)}` }, d == null ? '–' : fmtSignedDelta(d, 2))
     ]));
   }
@@ -239,7 +286,12 @@ function leaderboardPanel() {
       const base = metricVal('baseline', '__pooled__', m.key);
       const d = (!isBase && v != null && base != null) ? v - base : null;
       const txt = fmtNum(v, 2) + (d != null ? ` (${fmtSignedDelta(d, 2)})` : '');
-      return el('td', { class: `num ${d != null ? goodBadClass(d, m.lowerBetter) : ''}` }, txt);
+      // Hollow dots: the per-model values behind this pooled number.
+      const points = MODELS
+        .map((mm) => ({ mm, value: metricVal(sid, mm, m.key) }))
+        .filter((p) => p.value != null)
+        .map((p) => ({ value: p.value, title: `${modelLabel(p.mm)}: ${fmtNum(p.value, 2)}` }));
+      return metricCell(m, v, points, { text: txt, cls: d != null ? goodBadClass(d, m.lowerBetter) : '' });
     });
     tbody.append(el('tr', { class: isBase ? 'row-hi' : '' }, [el('td', {}, isBase ? `${STRAT_LABEL[sid]} ★` : STRAT_LABEL[sid]), ...cells]));
   }

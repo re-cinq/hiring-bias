@@ -74,6 +74,8 @@ async function main() {
   for (const c of cells) await writeJson(path.join('cells', `${c.variant}__${c.model}__${c.jd}.json`), c);
 
   const models = [...new Set(cells.map((c) => c.model))].sort();
+  const round2 = (x) => Math.round(x * 100) / 100;
+  const cellMeans = (cs, pole) => cs.map((c) => c[pole].mean).filter((v) => v != null).map(round2);
   const byModel = models.map((m) => {
     const cs = cells.filter((c) => c.model === m && c.effect != null);
     const effects = cs.map((c) => c.effect);
@@ -85,6 +87,9 @@ async function main() {
       n_cells: cs.length,
       score_pos_mean: mean(cs.map((c) => c.pos.mean)),
       score_neg_mean: mean(cs.map((c) => c.neg.mean)),
+      // Per-cell (résumé × job) means behind the two pooled scores, for the distribution dots.
+      score_pos_dist: cellMeans(cs, 'pos'),
+      score_neg_dist: cellMeans(cs, 'neg'),
       mean_effect: meanEffect,
       mean_signal_gap: meanGap,
       responsiveness: (meanEffect != null && meanGap) ? meanEffect / meanGap : null,

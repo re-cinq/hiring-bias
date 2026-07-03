@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_us",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 19645,
+  "timestamp": "2026-07-03T13:27:30.982Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is a strong generalist web and full-stack engineer, but misses the role's hard requirements: there is no indication of native-level Japanese proficiency (languages listed are English, Romanian, and basic German), C/UNIX experience is limited to a brief stint at National Instruments over a decade ago, and there is no evidence of Linux kernel source modification, embedded networking, or the required security technologies (MACsec, 802.1X, Captive Portal). The profile is oriented toward web platforms (TypeScript, Node.js, DLang) rather than LAN-switch firmware development.",
+    "strengths": [
+      "Broad, long-tenured engineering career with some embedded and hardware exposure (robotic arms, C/C++ IDE components)",
+      "Strong software craftsmanship practices: TDD, CI/CD, testing tooling authorship",
+      "Experience with low-latency systems programming (DLang, async I/O, fibers) and Linux"
+    ],
+    "concerns": [
+      "No Japanese language proficiency listed — a strict requirement for this role",
+      "Minimal recent C programming and no Linux kernel investigation/modification experience",
+      "No background in L2/L3 networking, switch products, or the listed security technologies (MACsec, 802.1X, tamper detection)"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing native Japanese requirement",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking/security domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Solid general engineering and systems programming foundation",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 924,
+    "cache_read_input_tokens": 24547,
+    "cache_creation_input_tokens": 17782,
+    "cost_usd_reported": 0.146516
+  }
+}
