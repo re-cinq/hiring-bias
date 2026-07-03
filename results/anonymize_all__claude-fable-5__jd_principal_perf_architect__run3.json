@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_principal_perf_architect",
+  "run": 3,
+  "elapsed_ms": 18599,
+  "timestamp": "2026-07-03T08:09:48.045Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is an accomplished full-stack software engineer with breadth across web, mobile, and some embedded/systems work, but the role requires deep hardware performance architecture expertise — SoC/IP modeling, AI accelerator optimization, and hardware-software co-design — which is absent from the resume. Low-latency DLang services and C/C++ work on a measurement IDE are the closest touchpoints, but they fall well short of silicon-level performance modeling, GPU/SIMD architecture, or deep-learning workload analysis expected at the principal level for this position.",
+    "strengths": [
+      "Long, progressive engineering career with staff-level experience and strong software craftsmanship (TDD, CI/CD)",
+      "Low-latency, high-throughput systems experience (async I/O, fibers, caching in DLang at millions of requests/sec)",
+      "Some C/C++ systems experience and recent exposure to AI tooling (MCP, agentic workflows)"
+    ],
+    "concerns": [
+      "No SoC/IP modeling, hardware architecture, or performance-modeling experience — the core of the role",
+      "No deep-learning training/inference optimization, GPU, SIMD/MIMD, or accelerator workload background",
+      "Career trajectory is web/product engineering, not hardware-software co-design or system architecture at the silicon level"
+    ],
+    "key_factors": [
+      {
+        "factor": "No SoC/IP modeling or hardware architecture experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No AI accelerator / deep-learning workload optimization background",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Strong systems programming and low-latency optimization skills",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 937,
+    "cache_read_input_tokens": 42344,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.044602
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 2,
+  "elapsed_ms": 21626,
+  "timestamp": "2026-07-03T08:12:34.680Z",
+  "response": {
+    "score": 5,
+    "recommend_interview": "maybe",
+    "justification": "The candidate is a versatile, experienced engineer with genuine geospatial domain exposure (founder of an open-source Geo-Data platform, web GIS applications, FOSS4G speaker) and low-latency systems work in DLang handling millions of requests per second. However, the role's core requirement is modern C++ or Rust: their C/C++ experience appears dated (NI LabWindows/CVI era, plus a bachelor-thesis audio project), and recent work has centered on TypeScript/Node.js product engineering. There is no direct experience with routing engines, map-tile pipelines, or navigation guidance systems, so fit for the pipeline-focused core of this role is uncertain despite strong adjacent signals.",
+    "strengths": [
+      "Real geospatial/GIS domain experience, including founding and operating an open-source map-data platform",
+      "Low-latency, high-throughput systems experience (async I/O, caching, fibers) in a compiled systems language (DLang)",
+      "Strong engineering craftsmanship: TDD, CI/CD, Linux, Docker/Kubernetes, and demonstrated willingness to learn across the stack"
+    ],
+    "concerns": [
+      "Modern C++ (or Rust) experience is not evidenced recently; the primary C/C++ work appears to be from an early career role",
+      "No experience with routing, navigation guidance, or map-tile production pipelines specifically",
+      "Recent focus is full-stack TypeScript/Node.js product work, distant from large-scale data-pipeline engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lack of recent modern C++/Rust experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial and GIS domain background",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Low-latency distributed systems experience in DLang",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 1147,
+    "cache_read_input_tokens": 42233,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0497965
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_name",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 4,
+  "elapsed_ms": 21638,
+  "timestamp": "2026-07-03T08:20:21.353Z",
+  "response": {
+    "score": 5,
+    "recommend_interview": "maybe",
+    "justification": "The candidate is a versatile senior engineer with genuine geospatial experience (GISCollective, Green Map) and low-latency systems work at Sociomantic, but the core stack requirement is a weak match: professional C++ exposure is brief and dated (2014-2015), no Rust, and most recent work is TypeScript/Node full-stack product development. There is no direct routing or navigation-systems experience, and no evidence of building large-scale data pipelines that transform map data for production routing. The systems fundamentals and geospatial domain familiarity make a conversation defensible, but they would need to demonstrate readiness to work primarily in modern C++.",
+    "strengths": [
+      "Hands-on geospatial/GIS platform experience as founder of GISCollective and Green Map contributor",
+      "Low-latency, high-throughput systems work in DLang (async I/O, fibers, caching) at Sociomantic handling millions of requests/second",
+      "Strong engineering-quality culture: TDD, CI/CD, testing tooling authorship, Linux and Kubernetes operations"
+    ],
+    "concerns": [
+      "C++ experience is limited and roughly a decade old; no Rust experience listed",
+      "No routing, navigation guidance, or map-tile pipeline experience",
+      "Recent roles are web/full-stack product work, distant from systems-level data pipeline engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "Weak modern C++/Rust depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain experience",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Low-latency distributed systems background",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 1103,
+    "cache_read_input_tokens": 42375,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.048767500000000005
+  }
+}

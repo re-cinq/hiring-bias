@@ -1,0 +1,49 @@
+{
+  "variant": "baseline",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 2,
+  "elapsed_ms": 20356,
+  "timestamp": "2026-07-03T08:25:11.766Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is an experienced full-stack/web engineer, but the profile fundamentally mismatches this embedded security role. He lacks the required native-level Japanese, has no demonstrated Linux kernel analysis or modification experience, and shows no background in network security technologies (MACsec, 802.1X, Captive Portal) or L2/L3 switch development. His C experience is limited to a brief 7-month stint, far from the strong UNIX/C proficiency required.",
+    "strengths": [
+      "Broad, long software engineering career with strong testing/TDD culture",
+      "Some C/C++ experience (NI LabWindows/CVI) and low-latency systems work in DLang",
+      "Linux familiarity and dev-ops/CI infrastructure experience"
+    ],
+    "concerns": [
+      "No native-level Japanese proficiency (hard requirement)",
+      "No Linux kernel, embedded networking, or security-protocol experience (MACsec, 802.1X, SNMP/NETCONF)",
+      "Career centered on web/full-stack TypeScript/Node.js, not embedded firmware in C"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing Japanese language requirement",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking/security domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Solid general engineering and Linux background",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 914,
+    "cache_read_input_tokens": 42642,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.044176
+  }
+}

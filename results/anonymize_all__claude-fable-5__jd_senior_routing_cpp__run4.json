@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 4,
+  "elapsed_ms": 22765,
+  "timestamp": "2026-07-03T08:13:18.622Z",
+  "response": {
+    "score": 6,
+    "recommend_interview": "maybe",
+    "justification": "The candidate brings genuine geospatial passion (founded an open-source Geo-Data platform used by Green Map, built web GIS apps) and real low-latency systems experience (DLang services handling millions of requests per second with async I/O, fibers, and caching). However, their modern C++ exposure is dated — limited to an early-career role on LabWindows/CVI and a bachelor thesis — and their recent work centers on TypeScript/Node full-stack and AI tooling rather than routing pipelines or navigation systems. DLang expertise is a reasonable proxy for C++/Rust systems thinking, but the gap in production C++/Rust and routing-tile-specific work makes this a stretch fit worth a screening conversation rather than a clear yes.",
+    "strengths": [
+      "Hands-on geospatial/GIS domain experience, including founding and operating an open-source mapping platform",
+      "Proven low-latency, high-throughput systems work (millions of HTTP requests/sec, async I/O, caching, fibers)",
+      "Strong engineering craftsmanship: TDD, CI/CD, testing tooling authorship, Linux and DevOps fluency"
+    ],
+    "concerns": [
+      "No recent commercial C++ or any Rust experience; systems work is primarily in DLang",
+      "No direct routing, navigation guidance, or map-tile pipeline experience — GIS background is web-mapping oriented",
+      "Recent roles skew toward full-stack web and AI tooling, away from the data-pipeline/infrastructure focus of this role"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lack of modern C++/Rust production experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Low-latency distributed systems background (DLang)",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Geospatial domain familiarity via GIS projects",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 1237,
+    "cache_read_input_tokens": 42233,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0520465
+  }
+}

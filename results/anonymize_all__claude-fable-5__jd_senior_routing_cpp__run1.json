@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 1,
+  "elapsed_ms": 21206,
+  "timestamp": "2026-07-03T08:12:13.053Z",
+  "response": {
+    "score": 5,
+    "recommend_interview": "maybe",
+    "justification": "The candidate brings genuine geospatial domain experience (founder of an open-source geo-data platform, web GIS applications) and has built low-latency, high-throughput systems in DLang using async I/O, fibers, and caching — skills that conceptually transfer to routing pipeline work. However, their modern C++ exposure is dated (an early-career role on NI LabWindows/CVI), they list no Rust, and their recent decade has been predominantly TypeScript/Node full-stack and web product work. They have no direct experience with routing engines, map tiling, or navigation guidance systems, which are core to this role.",
+    "strengths": [
+      "Founded and maintains an open-source geospatial data platform used in production",
+      "Low-latency systems experience (millions of HTTP requests/sec, async I/O, caching) in DLang",
+      "Strong Linux, Docker, CI/CD, and testing/craftsmanship background"
+    ],
+    "concerns": [
+      "C++ experience is old and limited; no Rust listed despite it being the core requirement",
+      "No routing, map tiling, or navigation guidance system experience",
+      "Recent roles are web/full-stack product work, distant from data pipeline engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lack of modern C++/Rust depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain experience",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "No navigation/routing pipeline background",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 1217,
+    "cache_read_input_tokens": 31051,
+    "cache_creation_input_tokens": 11182,
+    "cost_usd_reported": 0.115843
+  }
+}

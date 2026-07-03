@@ -1,0 +1,49 @@
+{
+  "variant": "anonymize_all",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 5,
+  "elapsed_ms": 18217,
+  "timestamp": "2026-07-03T08:13:36.839Z",
+  "response": {
+    "score": 5,
+    "recommend_interview": "maybe",
+    "justification": "The candidate brings genuine geospatial experience (founder of an open-source Geo-Data/GIS platform used by Green Map) and has built low-latency, high-throughput systems handling millions of requests per second using DLang with async I/O and caching, which maps conceptually to the pipeline performance work in this role. However, their professional C++ experience is dated (LabWindows/CVI components early in their career), they have no Rust experience, and their recent work is predominantly TypeScript/Node.js full-stack product development. They also lack direct routing/navigation-systems experience, which is an explicit requirement.",
+    "strengths": [
+      "Hands-on geospatial data experience via a self-built open-source GIS/map platform in production use",
+      "Proven low-latency distributed systems work (async I/O, caching, fibers) at millions of requests/sec",
+      "Strong engineering craftsmanship: TDD, CI/CD, Linux, Docker, Kubernetes, and testing tooling authorship"
+    ],
+    "concerns": [
+      "Modern C++ (or Rust) is the primary requirement, but their C/C++ work is old and limited; recent stack is TypeScript/Node.js",
+      "No experience building navigation or routing guidance systems specifically",
+      "Career trajectory skews toward full-stack/web product work rather than large-scale data pipeline engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lack of modern C++/Rust depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial/GIS domain experience",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Low-latency distributed systems background",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 956,
+    "cache_read_input_tokens": 42233,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.045021500000000006
+  }
+}
