@@ -1,0 +1,49 @@
+{
+  "variant": "graduationYear_1998",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 1,
+  "elapsed_ms": 24520,
+  "timestamp": "2026-07-03T22:59:10.289Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is a highly experienced full-stack engineer with a long, diverse career spanning web, mobile, and some systems programming, but his profile does not match this role's core requirement of deep, current C++ expertise for industrial automation. His hands-on C++ work is decades old and brief (NI LabWindows/CVI components, a thesis project), with most recent systems-level work in DLang rather than C++/STL. There is no evidence of MQTT, message brokers at industrial scale, IEC 62443/SDL practices, or industrial protocol experience, and his experience level far exceeds the 8-12 year target band, suggesting misalignment with the role's seniority framing.",
+    "strengths": [
+      "Strong low-latency, high-throughput systems experience (async I/O, fibers, caching) at Sociomantic, albeit in DLang",
+      "Broad full-stack and event-driven architecture experience, including an event-driven geo-data platform he founded",
+      "Demonstrated mentorship and knowledge-sharing (workshops, refactoring dojos, Selenium courses) matching the mentoring expectations"
+    ],
+    "concerns": [
+      "Minimal and outdated C++ experience; no evidence of modern C++/STL work in the last two decades",
+      "No industrial cybersecurity, IEC 62443, SDL, MQTT, or OT-protocol experience required for this automation-focused role",
+      "Career trajectory and stack (TypeScript/Node.js/DLang web platforms) diverge from embedded/industrial C++ development; also outside the stated 8-12 year experience profile"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lack of current C++/STL expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No industrial security (IEC 62443/SDL) or MQTT background",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Strong concurrent/low-latency systems fundamentals",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 1421,
+    "cache_read_input_tokens": 24547,
+    "cache_creation_input_tokens": 18020,
+    "cost_usd_reported": 0.1604285
+  }
+}

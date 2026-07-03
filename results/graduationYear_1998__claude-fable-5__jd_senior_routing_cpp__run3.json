@@ -1,0 +1,49 @@
+{
+  "variant": "graduationYear_1998",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 3,
+  "elapsed_ms": 18921,
+  "timestamp": "2026-07-03T23:00:06.329Z",
+  "response": {
+    "score": 5,
+    "recommend_interview": "maybe",
+    "justification": "The candidate brings genuinely relevant geospatial experience (founder of GISCollective, Green Map GIS applications) and has worked on low-latency, high-throughput systems handling millions of requests per second using DLang with async I/O and caching. However, the role's primary requirement — modern C++ (or Rust) in commercial environments — is weakly supported: his C/C++ work at National Instruments dates back over two decades, and his recent stack is TypeScript/Node.js. There is no direct routing or navigation-systems experience, and no evidence of building routing tiles or map-data pipelines at production scale.",
+    "strengths": [
+      "Long-standing geospatial domain experience via GISCollective and Green Map projects",
+      "Proven low-latency systems work (millions of HTTP requests/sec, async I/O, caching) at Sociomantic",
+      "Strong engineering craftsmanship: TDD, CI/CD, testing tooling authorship, Linux proficiency"
+    ],
+    "concerns": [
+      "Modern C++/Rust experience is absent; C++ work is dated (early 2000s) and brief",
+      "No routing, navigation guidance, or map-tile pipeline experience",
+      "Recent work is web/full-stack TypeScript, distant from systems-level pipeline engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lack of modern C++/Rust",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain background",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Low-latency distributed systems experience",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 1109,
+    "cache_read_input_tokens": 42343,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0489015
+  }
+}
