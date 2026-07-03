@@ -32,6 +32,23 @@
     <h1 class="sr-only">Counterfactual audit of LLM résumé scoring</h1>
     <div id="header"></div>
     <p class="dim">A counterfactual audit of how frontier LLMs score résumés when one demographic signal changes. Same résumé. Same job. Same model. Just a different name, country, or alma mater. We log how the verdict shifts.</p>
+    <div id="premise" data-prerender="premise">
+      <!-- @PRERENDER:premise:START -->
+<div class="panel">
+    <div class="panel-head"><span>THE ASSUMPTION UNDER TEST</span></div>
+    <p>A fair evaluator scores a résumé on its merits. Change only a demographic signal on it, the candidate's name, country, alma mater, or a gap in employment, and leave every other word untouched, and the score should not move. The optimistic assumption we put to the test is that frontier LLMs already behave this way: that they are effectively identity-blind, and swapping a name leaves the verdict intact.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><span>HOW WE TEST IT</span></div>
+    <p class="dim">A counterfactual audit: hold the résumé, job and model fixed, change one demographic line, and watch the score.</p>
+    <p class="dim"><strong>Step 1.</strong> Take one real résumé as the baseline and generate variants that each differ from it by a single demographic line. For example, the baseline candidate becomes Maria Rodriguez for a first-name swap, or the address country becomes India, with every other word left identical.</p>
+    <p class="dim"><strong>Step 2.</strong> Score the baseline and every variant with the same model on the same job, several times each. For example, all 11 models score the 30 résumé variants across 17 jobs, repeated over multiple runs.</p>
+    <p class="dim"><strong>Step 3.</strong> For each variant measure the delta, its mean score minus the baseline's, and check whether that gap clears the run to run noise. For example, a model that scores the baseline 6.2 and the India variant 5.6 has dropped the score by 0.6.</p>
+    <p class="dim"><strong>Step 4.</strong> Pool the deltas two ways: by model, to see which is least even-handed, and by dimension, to see which swapped signal moves scores the most. The two tables below are exactly those two views.</p>
+    <p class="dim"><strong>Step 5.</strong> Read it. If demographic swaps leave the score flat, the model is identity-blind and the assumption holds. If the score moves, and moves the same way across runs and across models, the evaluator is not judging the work alone.</p>
+  </div>
+<!-- @PRERENDER:premise:END -->
+    </div>
     <div id="hero" data-prerender="hero">
       <!-- @PRERENDER:hero:START -->
 <div class="panel">
@@ -240,6 +257,15 @@
     </table>
   </div>
 <!-- @PRERENDER:dimension-bias:END -->
+    </div>
+    <div id="verdict" data-prerender="verdict">
+      <!-- @PRERENDER:verdict:START -->
+<div class="panel">
+    <div class="panel-head"><span>WHAT THE RESULTS SAY ABOUT THE ASSUMPTION</span></div>
+    <p>The identity-blind assumption <strong>does not hold</strong>, but the failure is messier than "the models are biased". Scores do move when only a demographic line changes: the most sensitive model, <strong>Qwen 3 Next 80B</strong>, shifts its score by <strong>0.405</strong> per swap on average, and the signal that moves scores the most is <strong>First Name</strong> at <strong>0.272</strong>. No model here is truly identity-blind.</p>
+    <p class="dim">What keeps this short of clean discrimination: only about <strong>5%</strong> of individual score shifts clear the run to run noise floor, and the models barely agree on direction (mean pairwise correlation +0.08, near zero). That points less at a stable, shared prejudice and more at each model being an unstable judge whose number wobbles when any part of the input changes, which is its own reason not to hand it a hiring decision unsupervised. The <a href="methodology.html">methodology</a> covers the noise floor, and the <a href="heatmap.html">heatmap</a> the model-by-model agreement.</p>
+  </div>
+<!-- @PRERENDER:verdict:END -->
     </div>
     <div id="volcano"></div>
     <div id="stats" data-prerender="stats">
