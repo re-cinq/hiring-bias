@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_unknown-regional",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 19783,
+  "timestamp": "2026-07-03T22:06:56.997Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is an experienced full-stack and systems developer, but misses several hard requirements for this role: no Japanese language proficiency (native-level required), only brief professional C experience (~6 months at National Instruments versus the required strong C for UNIX), and no evidence of Linux kernel analysis or modification, embedded networking, L2/L3 switch development, or security technologies like MACsec or 802.1X. His strengths lie in web, cloud, and application development, which do not transfer to embedded LAN-switch firmware security work.",
+    "strengths": [
+      "Long, varied engineering career including some low-level work (C/C++ at National Instruments, low-latency DLang services)",
+      "Strong software craftsmanship practices: TDD, CI/CD, testing tools authorship",
+      "Solid Linux and infrastructure familiarity (Docker, Kubernetes, CI servers)"
+    ],
+    "concerns": [
+      "No Japanese language ability listed — a hard requirement for the role",
+      "No embedded networking, switch, or security-protocol experience (MACsec, 802.1X, SNMP/NETCONF)",
+      "Minimal recent C experience and no Linux kernel source-modification background"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing native Japanese proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking/security domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "General seniority and low-level systems exposure",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 959,
+    "cache_read_input_tokens": 24547,
+    "cache_creation_input_tokens": 17586,
+    "cost_usd_reported": 0.14616600000000002
+  }
+}
