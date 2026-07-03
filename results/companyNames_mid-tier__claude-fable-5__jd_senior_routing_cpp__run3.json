@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_mid-tier",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 3,
+  "elapsed_ms": 27112,
+  "timestamp": "2026-07-03T15:12:05.020Z",
+  "response": {
+    "score": 5,
+    "recommend_interview": "maybe",
+    "justification": "The candidate brings genuinely relevant geospatial experience (founder of an open-source GIS/geo-data platform, web GIS work for Green Map, FOSS4G speaker) and has real low-latency systems experience from Sociomantic, where he built high-throughput asynchronous services in DLang. However, the role's core requirement is modern C++ or Rust, and his only C/C++ industry experience is a brief stint at National Instruments a decade ago; his recent work (Stripe, Shopify, RIDE) is TypeScript/Node full-stack product engineering. He also has no direct routing, map-tiling, or navigation guidance pipeline experience, making him a lateral rather than direct fit.",
+    "strengths": [
+      "Extensive geospatial/GIS background, including founding and operating an open-source geo-data mapping platform",
+      "Low-latency, high-throughput systems experience (millions of requests/sec, async I/O, caching, fibers) at Sociomantic",
+      "Strong engineering craftsmanship: TDD, CI/CD, open-source test tooling, and Linux/Kubernetes operational experience"
+    ],
+    "concerns": [
+      "Modern C++ experience is minimal and dated (~6 months in 2014-2015); no Rust experience listed",
+      "No direct experience with routing engines, map tiling, or navigation guidance systems",
+      "Recent roles (2020-present) are TypeScript/Node full-stack product work, far from systems-level data pipeline engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lack of recent C++/Rust systems work",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial/GIS domain experience",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "Low-latency distributed systems background (DLang)",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 4414,
+    "output_tokens": 1474,
+    "cache_read_input_tokens": 35940,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.15378
+  }
+}

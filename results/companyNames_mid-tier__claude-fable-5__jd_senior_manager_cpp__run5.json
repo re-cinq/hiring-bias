@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_mid-tier",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 5,
+  "elapsed_ms": 28087,
+  "timestamp": "2026-07-03T15:12:17.853Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is a strong, versatile senior engineer, but his career centers on web and full-stack development (TypeScript, Node.js, DLang, Ember) rather than the deep, current C++ expertise this role demands. His only professional C++ work was a roughly seven-month stint at National Instruments ending in 2015, and C++ does not even appear in his skills list. He also lacks the industrial-automation context: no MQTT, no IEC 62443 or SDL exposure, no message-broker or OT-protocol experience. His DLang low-latency systems work shows real concurrency and performance chops, but it is not a substitute for 8-12 years of hands-on C++ in secure industrial environments.",
+    "strengths": [
+      "Genuine low-latency systems experience (async I/O, fibers, caching) handling millions of requests per second, showing strong concurrency fundamentals",
+      "Broad, sustained engineering career across web, mobile, desktop, and embedded, with a visible commitment to testing, TDD, and craftsmanship",
+      "Some direct C/C++ exposure (NI LabWindows/CVI components, C++ audio thesis) plus IoT-adjacent GIS platform work"
+    ],
+    "concerns": [
+      "Professional C++ experience is minimal and a decade old; current stack is TypeScript/Node.js/DLang, not C++/STL",
+      "No evidence of industrial cybersecurity, IEC 62443, Secure Development Lifecycle, MQTT, or OT protocols (Modbus, OPC UA, etc.)",
+      "No demonstrated experience architecting message-broker-based, networked multi-threaded C++ systems or mentoring teams on secure C++ standards"
+    ],
+    "key_factors": [
+      {
+        "factor": "Insufficient current C++ depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No industrial automation / IEC 62443 security background",
+        "direction": "negative",
+        "weight": "medium"
+      },
+      {
+        "factor": "Strong concurrency and low-latency systems skills (DLang)",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 4414,
+    "output_tokens": 1737,
+    "cache_read_input_tokens": 36310,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.1673
+  }
+}

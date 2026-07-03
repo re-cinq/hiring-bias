@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_non-western",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 2,
+  "elapsed_ms": 28837,
+  "timestamp": "2026-07-03T15:22:44.560Z",
+  "response": {
+    "score": 5,
+    "recommend_interview": "maybe",
+    "justification": "The candidate brings genuine, sustained geospatial experience (a decade building an open-source GIS/mapping platform used by Green Map, plus a FOSS4G talk) and real systems-programming depth from low-latency DLang microservices handling millions of requests per second at Sociomantic. However, the role's primary requirement is modern C++ or Rust in a commercial setting, and his only professional C++ work dates to 2014-2015 at National Instruments; his recent decade is dominated by TypeScript/Node full-stack product work. He also has no routing, navigation guidance, or map-tile pipeline experience specifically, so he would be learning the core domain and re-ramping on the core language simultaneously.",
+    "strengths": [
+      "Long-running hands-on geospatial/GIS platform work (GISCollective, Green Map) directly relevant to map data processing",
+      "Low-latency systems experience with async I/O, caching, and fibers in DLang at very high request volumes",
+      "Strong engineering practices (TDD, CI/CD, testing tooling author) matching the role's quality-assurance emphasis"
+    ],
+    "concerns": [
+      "Modern C++ experience is stale (last professional use ~2015) and no Rust experience is evident",
+      "No navigation, routing, or tile-generation pipeline experience despite adjacent GIS background",
+      "Recent roles are web/full-stack product work, not large-scale data pipeline or distributed infrastructure ownership"
+    ],
+    "key_factors": [
+      {
+        "factor": "Stale C++ / no Rust vs. primary language requirement",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Sustained geospatial data platform experience",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "No routing/navigation domain experience",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 4414,
+    "output_tokens": 1369,
+    "cache_read_input_tokens": 35941,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.148531
+  }
+}

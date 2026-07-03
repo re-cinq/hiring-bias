@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_mid-tier",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 2,
+  "elapsed_ms": 29205,
+  "timestamp": "2026-07-03T15:11:37.899Z",
+  "response": {
+    "score": 5,
+    "recommend_interview": "maybe",
+    "justification": "The candidate is a clearly capable senior engineer with genuine geospatial interest (GISCollective, Green Map, FOSS4G talk) and real low-latency systems experience (DLang microservices handling millions of requests per second with async I/O and fibers), which maps loosely onto the pipeline performance aspects of this role. However, the core requirement of modern C++ or Rust is weakly met: his C++ experience is roughly a decade old and brief, his recent decade is dominated by TypeScript/Node.js product work, and he has no routing, navigation guidance, or map-data tiling experience. He could plausibly grow into the role given his systems background and demonstrated ability to switch stacks, but he is not a direct fit for the stated requirements.",
+    "strengths": [
+      "Hands-on geospatial/GIS platform experience (GISCollective, Green Map, FOSS4G speaker)",
+      "Low-latency, high-throughput systems work in DLang (async I/O, fibers, caching at millions of req/s)",
+      "Strong engineering craft: TDD, CI/CD, testing tools authorship, Linux/Docker/Kubernetes comfort"
+    ],
+    "concerns": [
+      "Modern C++/Rust requirement unmet — C++ exposure is brief and ~10 years old",
+      "No routing, navigation guidance, or map-tile pipeline experience",
+      "Recent roles are web/full-stack product work, distant from data-pipeline systems engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lack of modern C++/Rust experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Low-latency distributed systems background (DLang)",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Geospatial/GIS domain familiarity",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 4414,
+    "output_tokens": 1497,
+    "cache_read_input_tokens": 35940,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.15493
+  }
+}

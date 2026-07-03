@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_faang",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 4,
+  "elapsed_ms": 33346,
+  "timestamp": "2026-07-03T15:00:44.290Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "no",
+    "justification": "The candidate is a strong, versatile senior engineer with impressive systems-performance experience (low-latency asynchronous services, high-throughput data integration) and staff-level roles, but his profile is fundamentally misaligned with this role's core requirement of current, hands-on C++ development for industrial automation. His C++ work dates to 2014–2015 and a bachelor thesis; his recent decade centers on TypeScript/Node.js, DLang, and web/full-stack product work. He shows no exposure to MQTT, message brokers in an industrial context, IEC 62443, SDL practices, or OT/industrial protocols, and C++ is absent from his own skills list.",
+    "strengths": [
+      "Proven high-performance systems work: low-latency services handling millions of requests/second using async I/O, fibers, and caching",
+      "Broad, senior engineering background across web, mobile, desktop, and embedded, with strong testing/TDD craftsmanship and mentoring experience",
+      "Some relevant adjacent experience: C/C++ components for NI LabWindows/CVI and event-driven, geo-data platform architecture"
+    ],
+    "concerns": [
+      "C++/STL experience is minimal and roughly a decade old; recent work is TypeScript/Node.js and DLang, and C++ is not listed in his skills",
+      "No industrial automation, IoT/MQTT, IEC 62443, SDL, or industrial-protocol (Modbus, OPC UA, DNP3) experience",
+      "Career trajectory points toward full-stack/web and developer tooling, raising doubts about fit and retention in an on-prem industrial C++ role"
+    ],
+    "key_factors": [
+      {
+        "factor": "Outdated and limited C++ expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No industrial cybersecurity or IEC 62443/SDL background",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Strong concurrent, low-latency systems engineering skills",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 4414,
+    "output_tokens": 1710,
+    "cache_read_input_tokens": 36304,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.165944
+  }
+}

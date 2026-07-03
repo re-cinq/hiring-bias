@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_mid-tier",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 4,
+  "elapsed_ms": 31565,
+  "timestamp": "2026-07-03T15:11:49.760Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is a seasoned generalist with 15+ years across web, mobile, and systems work, but his career is centered on TypeScript/Node.js, DLang, and full-stack product development. His only professional C++ experience is a roughly seven-month stint at National Instruments in 2014-2015, and he shows no exposure to industrial automation, MQTT/IoT protocols, message-broker architectures at the required depth, or IEC 62443 / Secure Development Lifecycle practices. His low-latency DLang work demonstrates transferable concurrency skills, but the gap on the role's core C++ and industrial-security requirements is too large for a senior, mentoring-oriented C++ position.",
+    "strengths": [
+      "15+ years of broad software engineering experience across web, embedded, and desktop systems",
+      "Hands-on low-latency, high-throughput systems work (async I/O, fibers, caching) handling millions of requests per second",
+      "Strong engineering culture: TDD, CI/CD, open-source authorship, and experience teaching/mentoring through workshops"
+    ],
+    "concerns": [
+      "Minimal professional C++ experience (~7 months, ending in 2015); recent decade is TypeScript/Node.js and DLang",
+      "No industrial automation, IoT protocol (MQTT, OPC UA, Modbus), or IEC 62443 / SDL security background",
+      "Recent roles are web/full-stack product engineering, not the networked multi-threaded C++ architecture this role demands"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/STL professional depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial cybersecurity and SDL (IEC 62443) experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Concurrent, low-latency systems experience (DLang)",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 4927,
+    "output_tokens": 1727,
+    "cache_read_input_tokens": 36310,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.17193
+  }
+}

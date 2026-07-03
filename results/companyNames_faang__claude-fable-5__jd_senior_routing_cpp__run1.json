@@ -1,0 +1,49 @@
+{
+  "variant": "companyNames_faang",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 1,
+  "elapsed_ms": 34062,
+  "timestamp": "2026-07-03T14:59:52.205Z",
+  "response": {
+    "score": 6,
+    "recommend_interview": "maybe",
+    "justification": "The candidate brings genuinely relevant systems experience — low-latency, high-throughput services handling millions of requests per second with asynchronous I/O and caching — plus a long-running geospatial/GIS background through GISCollective and Green Map, which maps well onto map-data processing. However, the role's primary requirement is modern C++ (or Rust), and his C++ work dates to roughly 2015; his systems-language depth is in DLang, which is adjacent but not what was asked. Recent roles are predominantly TypeScript/Node full-stack product work, and he has no direct routing, navigation guidance, or tiling pipeline experience, so the fit is promising but unproven on the core requirements.",
+    "strengths": [
+      "Low-latency distributed systems experience: async I/O, fibers, caching at millions of HTTP requests/second",
+      "Deep geospatial/GIS domain background (GISCollective, Green Map, FOSS4G speaker)",
+      "Strong engineering rigor: TDD, CI/CD, trunk-based development, authored testing frameworks"
+    ],
+    "concerns": [
+      "Modern C++ or Rust is the core requirement, but his C++ experience is dated (~2015); systems work since is in DLang",
+      "No direct navigation, routing, or tile-generation pipeline experience — GIS work was data collection/mapping apps",
+      "Recent roles (2020-present) are primarily TypeScript/Node full-stack product work, away from systems-level engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "Stale C++ / no Rust experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Low-latency distributed systems background",
+        "direction": "positive",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain experience without routing/navigation specifics",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 4927,
+    "output_tokens": 1999,
+    "cache_read_input_tokens": 15291,
+    "cache_creation_input_tokens": 20505,
+    "cost_usd_reported": 0.574611
+  }
+}
