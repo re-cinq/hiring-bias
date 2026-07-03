@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_latam",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 5,
+  "elapsed_ms": 31991,
+  "timestamp": "2026-07-03T11:20:32.321Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is a seasoned generalist with 15+ years of experience, but his background is overwhelmingly web and full-stack (TypeScript, Node.js, DLang) rather than embedded networking. He fails a hard requirement outright: the role demands native-level Japanese, and he lists only English, Romanian, and basic German. His C experience is brief and dated (a ~7-month stint at National Instruments in 2014-2015), and there is no evidence of Linux kernel source modification, L2/L3 switch development, or any of the security technologies central to this role (MACsec, 802.1X, tamper detection).",
+    "strengths": [
+      "15+ years of broad software engineering experience across web, mobile, desktop, and some embedded work",
+      "Low-latency systems experience (async I/O, fibers, high-throughput microservices) at Dunnhumby/Sociomantic",
+      "Strong engineering practices: TDD, CI/CD, testing tools authorship, and knowledge sharing"
+    ],
+    "concerns": [
+      "No Japanese language proficiency, which is a non-negotiable requirement for the role",
+      "No embedded networking or security domain experience (MACsec, 802.1X, switch configuration, kernel hardening)",
+      "C for UNIX experience is minimal and roughly a decade old, with no Linux kernel modification track record"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing native-level Japanese (hard requirement)",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking/security or Linux kernel experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Long, versatile senior engineering track record",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 4927,
+    "output_tokens": 1557,
+    "cache_read_input_tokens": 36280,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.16340000000000002
+  }
+}

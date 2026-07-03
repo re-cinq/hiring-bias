@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_latam",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 4,
+  "elapsed_ms": 33700,
+  "timestamp": "2026-07-03T11:21:21.150Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is a strong, versatile senior engineer with genuine systems-programming depth, but his profile does not match this role's core requirement: hands-on modern C++ expertise. His only professional C++ experience was a ~7-month stint at National Instruments ending in 2015, C++ is absent from his current skills list, and his recent decade centers on TypeScript/Node.js web platforms. He also lacks the industrial-automation domain: no MQTT, no IEC 62443/SDL exposure, no OT protocols, and his cloud experience is AWS rather than Azure. The low-latency DLang work shows transferable concurrency and networking aptitude, but for a role demanding immediate C++/STL architecture leadership and industrial-cybersecurity mentoring, the gap is too wide.",
+    "strengths": [
+      "Real low-latency systems experience (async I/O, fibers, caching) handling millions of requests/second at Dunnhumby/Sociomantic",
+      "Long-running ownership of an open-source, event-driven geo-data platform, showing architectural and product maturity",
+      "Strong engineering-culture credentials: TDD, CI/CD, mentoring, workshops, and community teaching"
+    ],
+    "concerns": [
+      "Professional C++ experience is minimal (~7 months) and roughly a decade old; C++ is not listed among current skills",
+      "No industrial automation, IoT/MQTT, or IEC 62443 / Secure Development Lifecycle background required by the role",
+      "Recent experience is web/full-stack (TypeScript, Node.js, AWS) rather than networked multi-threaded C++ systems; unexplained ~8-month gap in 2020"
+    ],
+    "key_factors": [
+      {
+        "factor": "Insufficient current C++/STL expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No industrial cybersecurity (IEC 62443/SDL) or MQTT/OT-protocol experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Transferable low-latency, concurrent systems background (DLang)",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 4414,
+    "output_tokens": 1926,
+    "cache_read_input_tokens": 36415,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.176855
+  }
+}

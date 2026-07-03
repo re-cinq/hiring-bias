@@ -1,0 +1,49 @@
+{
+  "variant": "companyLocations_africa",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 1,
+  "elapsed_ms": 33039,
+  "timestamp": "2026-07-03T10:47:59.095Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is an experienced, versatile senior engineer, but his background is overwhelmingly web and full-stack development (TypeScript, Node.js, DLang) rather than embedded firmware. He does not meet several hard requirements: no Japanese language proficiency (native-level required; he lists English, Romanian, and basic German), no demonstrated Linux kernel investigation or source-modification experience, and only brief, dated C/C++ work (a seven-month stint at National Instruments). He also shows no exposure to the core security and networking domain — MACsec, 802.1X, L2/L3 switching, SNMP/NETCONF — that this LAN-switch role centers on.",
+    "strengths": [
+      "18+ years of broad software development experience across web, mobile, desktop, and some low-level systems",
+      "Strong engineering craftsmanship: TDD, CI/CD, testing tools authorship, and open-source contributions",
+      "Some systems-level exposure: C/C++ components at National Instruments, low-latency DLang services, Linux familiarity"
+    ],
+    "concerns": [
+      "No Japanese language proficiency, which is a stated hard requirement (native-level)",
+      "No embedded networking, switch firmware, or security-protocol experience (MACsec, 802.1X, L2/L3, SNMP/NETCONF)",
+      "C-for-UNIX and Linux kernel modification skills are not evidenced; C experience is minimal and from 2014-2015"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing native Japanese (hard requirement)",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking/security domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Broad senior-level engineering experience",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 4414,
+    "output_tokens": 1638,
+    "cache_read_input_tokens": 19660,
+    "cache_creation_input_tokens": 16620,
+    "cost_usd_reported": 0.47809999999999997
+  }
+}
