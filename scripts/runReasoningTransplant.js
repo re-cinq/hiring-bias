@@ -23,7 +23,7 @@ const POLES = [
   { pole: 'neg', build: buildNegativeCasePrompt }
 ];
 const POLE_RUNS = Number(process.env.BIAS_TRANSPLANT_POLE_RUNS ?? 2);
-const STAGE2_RUNS = Number(process.env.BIAS_TRANSPLANT_STAGE2_RUNS ?? 3);
+const STAGE2_RUNS = Number(process.env.BIAS_TRANSPLANT_STAGE2_RUNS ?? 5);
 const CONCURRENCY = Number(process.env.BIAS_CONCURRENCY ?? 4);
 const VARIANTS_DIR = 'data/variants';
 const JDS_DIR = 'data/jds';

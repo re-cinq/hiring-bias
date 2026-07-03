@@ -501,6 +501,8 @@ svg.volcano { width: 100%; display: block; background: var(--bg); border: 1px so
 .delta-bar .marker.clickable { cursor: pointer; }
 .delta-bar .marker.clickable:hover { transform: translate(-50%, -50%) scale(1.3); }
 .delta-bar .marker.selected { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--text); }
+/* Taller bar for run strips where same-score dots stack vertically. */
+.delta-bar.runs { height: 40px; }
 /* Metric-table cells that carry a strip under the number (prompt-lab, transplant). */
 td.strip-cell { min-width: 130px; }
 td.strip-cell .delta-bar { margin-top: 3px; }
@@ -530,14 +532,16 @@ td.strip-cell .delta-bar { margin-top: 3px; }
 .delta-bar .ci.pos { background: var(--accent); }
 .delta-bar .ci.neg { background: var(--alert); }
 .delta-bar .ci.zero { background: var(--dim); }
-.delta-bar-caption { font-size: 11px; font-family: var(--mono); color: var(--dim); margin-top: 3px; display: flex; gap: 10px; align-items: center; }
+.delta-bar-caption { font-size: 11px; font-family: var(--mono); color: var(--dim); margin-top: 3px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
 .delta-bar-caption .delta { font-weight: 600; }
 
 /* Heatmap detail table: let the bar column take all spare horizontal space. */
-.hm-detail th:nth-child(1), .hm-detail th:nth-child(2),
-.hm-detail td:nth-child(1), .hm-detail td:nth-child(2),
+.hm-detail th:nth-child(1), .hm-detail td:nth-child(1),
 .hm-detail th:last-child, .hm-detail td:last-child { width: 1%; white-space: nowrap; }
-.hm-detail .hm-detail-bar { width: auto; min-width: 320px; }
+/* The job-description column wraps: its labels are the longest text in the row, and
+   nowrap here forces the table wider than the panel, overflowing the bar column. */
+.hm-detail th:nth-child(2), .hm-detail td:nth-child(2) { width: 22%; }
+.hm-detail .hm-detail-bar { width: auto; min-width: 240px; }
 /* Additive blending: overlapping model dots brighten toward white (dark) / darken (light). */
 .vol-points { mix-blend-mode: screen; }
 [data-theme="light"] .vol-points { mix-blend-mode: multiply; }

@@ -6,13 +6,15 @@ import { el } from './lib.js';
 // prompt-lab metric tables, the transplant leaderboard and both delta-bar pages, so
 // every table on the site draws its dots the same way.
 //
-// markers: [{ value, filled, cls, title, selected, onClick }] — rendered in order, so
-// append the marker that should paint on top last.
-export function dotStrip({ min, max, markers = [], ticks = [], scaleLabels = null, ci = null }) {
+// markers: [{ value, filled, cls, title, selected, onClick, dy }] — rendered in order, so
+// append the marker that should paint on top last. dy shifts a marker vertically (px) so
+// markers sharing a value can stack instead of hiding each other; pair it with a taller
+// bar via cls (e.g. 'runs').
+export function dotStrip({ min, max, markers = [], ticks = [], scaleLabels = null, ci = null, cls = '' }) {
   const span = max - min;
   const pos = (v) => Math.max(0, Math.min(100, ((v - min) / span) * 100));
 
-  const bar = el('div', { class: 'delta-bar' });
+  const bar = el('div', { class: `delta-bar${cls ? ` ${cls}` : ''}` });
   for (const t of ticks) {
     bar.append(el('div', {
       class: `tick${t.center ? ' center' : ''}`,
@@ -36,6 +38,7 @@ export function dotStrip({ min, max, markers = [], ticks = [], scaleLabels = nul
     if (m.selected) classes.push('selected');
     if (m.onClick) classes.push('clickable');
     const attrs = { class: classes.join(' '), style: { left: `${pos(m.value).toFixed(1)}%` } };
+    if (m.dy) attrs.style.top = `calc(50% + ${m.dy}px)`;
     if (m.title) attrs.title = m.title;
     if (m.onClick) attrs.onclick = m.onClick;
     bar.append(el('div', attrs));

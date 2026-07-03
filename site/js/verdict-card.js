@@ -85,40 +85,40 @@ export function bestMatch(item, candidates) {
   return best;
 }
 
-// The 0–10 distribution strip for one evaluation: a hollow dot per distinct run score
-// (colored by that run's recommendation) and a filled green dot at the mean. Runs with
-// the same score collapse into one dot; clicking it cycles through them. When onSelectRun
-// is given the dots are click targets and the active run's dot is highlighted.
+// The 0–10 distribution strip for one evaluation: one hollow dot per run (colored by
+// that run's recommendation) and a filled green dot at the mean. Runs sharing a score
+// stack vertically on the same x, so each stays visible and individually clickable.
+// The mean dot paints first (underneath) so it never intercepts a run dot's click.
+// When onSelectRun is given the dots are click targets and the active run is highlighted.
 export function renderRunScores(data, runIdx = 0, onSelectRun = null) {
   const wrap = el('div', { class: 'runscores' });
   const scores = Array.isArray(data?.scores) ? data.scores : [];
 
-  const markers = collapseValues(scores).map(({ value, indexes }) => {
-    const recs = indexes.map((i) => data.runs?.[i]?.response?.recommend_interview);
-    const uniform = recs.every((r) => r === recs[0]) && ['yes', 'no', 'maybe'].includes(recs[0]);
-    const marker = {
-      value,
-      cls: uniform ? `iter ${recs[0]}` : 'iter',
-      selected: indexes.includes(runIdx),
-      title: `${indexes.map((i, k) => `run ${i + 1} (${recs[k] ?? '–'})`).join(', ')} · score ${value}`
-    };
-    if (onSelectRun) {
-      // Clicking a collapsed dot cycles through the runs sharing that score.
-      marker.onClick = () => {
-        const at = indexes.indexOf(runIdx);
-        onSelectRun(at === -1 ? indexes[0] : indexes[(at + 1) % indexes.length]);
-      };
-    }
-    return marker;
-  });
+  const markers = [];
   if (data?.mean != null) {
     markers.push({ value: data.mean, filled: true, cls: 'mean', title: `mean ${fmtNum(data.mean, 2)}` });
   }
+  let stacked = false;
+  for (const { value, indexes } of collapseValues(scores)) {
+    if (indexes.length > 1) stacked = true;
+    indexes.forEach((runI, k) => {
+      const rec = data.runs?.[runI]?.response?.recommend_interview;
+      const marker = {
+        value,
+        dy: (k - (indexes.length - 1) / 2) * 7,
+        cls: ['yes', 'no', 'maybe'].includes(rec) ? `iter ${rec}` : 'iter',
+        selected: runI === runIdx,
+        title: `run ${runI + 1} (${rec ?? '–'}) · score ${value}`
+      };
+      if (onSelectRun) marker.onClick = () => onSelectRun(runI);
+      markers.push(marker);
+    });
+  }
   if (!markers.length) return wrap;
 
-  wrap.append(dotStrip({ ...SCORE_SCALE, markers }));
+  wrap.append(dotStrip({ ...SCORE_SCALE, cls: stacked ? 'runs' : '', markers }));
   if (onSelectRun && scores.length) {
-    wrap.append(el('div', { class: 'strip-caption' }, '○ runs · ● mean · click a run dot to view that run'));
+    wrap.append(el('div', { class: 'strip-caption' }, '○ runs (stacked = same score) · ● mean · click a dot to view that run'));
   }
   return wrap;
 }
