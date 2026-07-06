@@ -105,8 +105,8 @@ function scatterSvg(rows) {
   <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="${axis}"/>
   <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="${axis}"/>
   ${xticks}${yticks}
-  <text x="${(padL + (W - padR)) / 2}" y="${H - 8}" fill="${text}" font-size="12" text-anchor="middle">bias — mean |Δ| on a demographic swap →</text>
-  <text x="16" y="${(padT + (H - padB)) / 2}" fill="${text}" font-size="12" text-anchor="middle" transform="rotate(-90 16 ${(padT + (H - padB)) / 2})">responsiveness — score follows reasoning →</text>
+  <text x="${(padL + (W - padR)) / 2}" y="${H - 8}" fill="${text}" font-size="12" text-anchor="middle">bias (mean |Δ| on a demographic swap)</text>
+  <text x="16" y="${(padT + (H - padB)) / 2}" fill="${text}" font-size="12" text-anchor="middle" transform="rotate(-90 16 ${(padT + (H - padB)) / 2})">responsiveness (score follows reasoning)</text>
   ${dots}
 </svg>`;
 }
@@ -130,38 +130,38 @@ function render(rows, matrix, transplant, status, corr) {
 
   return `<div class="panel">
     <div class="panel-head"><span>THE BOTTOM LINE</span></div>
-    <p>Frontier LLMs are already being handed résumés to score. Across ${esc(models)} models${records ? `, ${records.toLocaleString()} screenings,` : ','} and three experiments, one picture holds up: LLM résumé bias is <strong>real and reasoned, but small, unstable, idiosyncratic, and not fixable by prompting</strong>. Changing a single demographic line does move scores, and the score genuinely follows the model's written reasoning rather than decorating a number picked in advance. But most of that movement stays inside run-to-run noise, the models rarely agree on whom to penalise, and the one model with a stable, statistically clear bias is Qwen. Reordering the prompt or adding worked examples barely moves the needle. The three experiments below each pin down one clause of that sentence.</p>
+    <p>Frontier LLMs are already being handed résumés to score. Across ${esc(models)} models${records ? `, ${records.toLocaleString()} screenings,` : ','} and three experiments, one picture holds up. LLM résumé bias is real and reasoned, but small, unstable, idiosyncratic, and not fixable by prompting. Changing a single demographic line does move scores, and the score follows the model's written reasoning instead of decorating a number picked in advance. Most of that movement stays inside run-to-run noise, the models rarely agree on whom to penalise, and the one model with a stable, statistically clear bias is Qwen. Reordering the prompt or adding worked examples barely moves the needle. The three experiments below each pin down one part of that.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>EVERY MODEL, THREE WAYS</span></div>
-    <p class="dim">One row per model, joining all three experiments. <em>Bias</em> is how far the score moves on a demographic swap; <em>% sig</em> how much of that clears run-to-run noise; <em>instability</em> the score's own wobble on identical inputs; <em>coherence</em> how tightly the score tracks the model's own stated key factors; <em>responsiveness</em> how far the score follows reasoning transplanted into it. Eleven models is a small sample — read this as a fingerprint, not a law.</p>
+    <p class="dim">One row per model, joining all three experiments. <em>Bias</em> is how far the score moves on a demographic swap. <em>% sig</em> is how much of that clears run-to-run noise. <em>Instability</em> is the score's own wobble on identical inputs. <em>Coherence</em> is how tightly the score tracks the model's own stated key factors. <em>Responsiveness</em> is how far the score follows reasoning transplanted into it. Eleven models is a small sample, so read this as a fingerprint and not a law.</p>
     <table class="data"><thead><tr><th>Model</th><th class="num">bias</th><th class="num">% sig</th><th class="num">instability</th><th class="num">coherence</th><th class="num">responsiveness</th></tr></thead><tbody>
 ${tableRows}
     </tbody></table>
-    <p class="dim">Claude Fable 5 appears in the audit only; it is excluded from the transplant and prompt-lab experiments, so its follow-up cells read “–”.</p>
+    <p class="dim">Claude Fable 5 appears in the audit only. It is excluded from the transplant and prompt-lab experiments, so its follow-up columns are blank.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>THREE EXPERIMENTS, ONE STORY</span></div>
     <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px">
       <a class="card" href="#premise" style="text-align:left;text-decoration:none">
         <strong>1 · The counterfactual audit</strong><br>
-        <span class="dim">Change one demographic line, hold the rest. Scores move, but only about ${sigPct != null ? sigPct + '%' : '–'} clear the noise floor and models barely agree. → below</span>
+        <span class="dim">Change one demographic line, hold the rest. Scores move, but only about ${sigPct != null ? sigPct + '%' : '–'} clear the noise floor and models barely agree. Read it below.</span>
       </a>
       <a class="card" href="transplant.html" style="text-align:left;text-decoration:none">
         <strong>2 · The reasoning transplant</strong><br>
-        <span class="dim">Feed the model its own most-positive vs most-negative assessment. The score follows the reasoning (+${tpEffect} pts, ${tpDir} directional) — bias is reasoned, not post-hoc. →</span>
+        <span class="dim">Feed the model its own most-positive and most-negative assessment. The score follows the reasoning (+${tpEffect} pts, ${tpDir} directional), so the bias is reasoned rather than made up after the fact.</span>
       </a>
       <a class="card" href="prompt-lab.html" style="text-align:left;text-decoration:none">
         <strong>3 · The prompt lab</strong><br>
-        <span class="dim">Six prompt strategies vs the naive one. Score-last backfired, few-shot only nudged — the instability is intrinsic. →</span>
+        <span class="dim">Six prompt strategies against the naive one. Score-last backfired and few-shot only nudged the numbers. The instability is intrinsic.</span>
       </a>
     </div>
   </div>
   <div class="panel">
     <div class="panel-head"><span>DOES THE BIAS FOLLOW THE REASONING?</span></div>
-    <p class="dim">Each dot is a model: horizontal is how biased it is (audit), vertical is how far its score follows transplanted reasoning. The upward tilt is the throughline — the models that let reasoning drive the score most are also the most biased${qwen ? `, with Qwen furthest out on both` : ''}.</p>
+    <p class="dim">Each dot is a model. Horizontal is how biased it is (from the audit), vertical is how far its score follows transplanted reasoning. The upward tilt is the throughline. The models that let reasoning drive the score most are also the most biased${qwen ? `, with Qwen furthest out on both` : ''}.</p>
     ${scatterSvg(rows)}
-    <p class="dim">Pearson r ≈ ${rBiasResp} across ${corr?.n ?? '–'} models. Suggestive of the identity → reasoning → score chain, not statistically significant at this sample size.</p>
+    <p class="dim">Pearson r is about ${rBiasResp} across ${corr?.n ?? '–'} models. That fits the chain from identity to reasoning to score, though it is not statistically significant at this sample size.</p>
   </div>`;
 }
 

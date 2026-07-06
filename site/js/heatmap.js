@@ -191,7 +191,7 @@ function renderDetail({ model, axis, cells, levels, jds }) {
   const panel = el('div', { class: 'panel' });
   panel.append(el('div', { class: 'panel-head' }, el('span', { title: modelVersion(model) }, `SUMMARY · ${AXIS_LABELS[axis] ?? axis} × ${modelLabel(model)}`)));
 
-  panel.append(el('p', { class: 'dim' }, 'Each row is one (variant, job) experiment. The bar plots every run\'s score change vs the unmodified baseline as a hollow dot (○), and the mean shift as a filled dot (●), on a fixed −3 to +3 scale. Runs with the same score stack. Same scale as the resume-diff page; open a diff to read the runs in full.'));
+  panel.append(el('p', { class: 'dim' }, 'Each row is one (variant, job) experiment. The bar plots every run\'s score change vs the unmodified baseline as a hollow dot (○), and the mean shift as a filled dot (●), on a fixed −3 to +3 scale. Runs with the same score stack. Same scale as the resume-diff page. Open a diff to read the runs in full.'));
 
   const legend = el('div', { class: 'bar-legend' }, [
     el('span', {}, [el('span', { class: 'swatch filled', style: { color: 'var(--accent)' } }), ' mean Δ above baseline']),

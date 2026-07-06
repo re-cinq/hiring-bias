@@ -205,12 +205,12 @@ function plainSummary(delta, ciOverlap, variant) {
   const points = `${abs.toFixed(2)} ${abs >= 1.005 ? 'points' : 'point'} out of 10`;
 
   if (abs < 0.1) {
-    return `Changing only “${what}” (nothing about the candidate's actual experience) left the score essentially unchanged (${points}). The model treated both résumés the same here.`;
+    return `Changing only "${what}" (nothing about the candidate's actual experience) left the score essentially unchanged (${points}). The model treated both résumés the same here.`;
   }
 
   const size = abs < 0.5 ? 'a little' : abs < 1.5 ? 'noticeably' : 'sharply';
   const dir = delta > 0 ? 'higher (it helped the candidate)' : 'lower (it hurt the candidate)';
-  const lead = `Changing only “${what}” (nothing about the candidate's actual experience) made the model score this résumé ${size} ${dir}, by ${points} on average.`;
+  const lead = `Changing only "${what}" (nothing about the candidate's actual experience) made the model score this résumé ${size} ${dir}, by ${points} on average.`;
   const tail = ciOverlap
     ? ' But that gap is within the normal run-to-run wobble, so it might just be chance.'
     : ' This gap held up consistently across repeated runs, so it looks like a real effect, not luck.';
@@ -229,7 +229,7 @@ function renderAudit(audit) {
   if (audit.rationale) box.append(el('p', { class: 'dim' }, audit.rationale));
   if (audit.bias_signals?.length) {
     const ul = el('ul');
-    for (const s of audit.bias_signals) ul.append(el('li', { class: klass }, `“${s}”`));
+    for (const s of audit.bias_signals) ul.append(el('li', { class: klass }, `"${s}"`));
     box.append(ul);
   }
   return box;

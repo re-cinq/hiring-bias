@@ -402,7 +402,7 @@ function modelAgreementHtml(cells, axes, models) {
     <div class="panel-head"><span>DO THE MODELS SHARE THE SAME BIASES?</span></div>
     <p class="dim">Correlation of each model pair's signed Δ across every résumé variant × job. <span class="accent">+1</span> = the two models move scores in lockstep, a shared bias. <span class="dim">0</span> = unrelated. <span class="alert">−1</span> = opposite reactions. This is the number behind the colour-mixing waves on the jobs page.</p>
     <table class="data agreement"><thead>${head}</thead><tbody>${rows}</tbody></table>
-    <p class="dim"><strong>What this says about the assumption.</strong> The biases are mostly <strong>not</strong> shared. The average correlation between two different models is ${agree != null ? fmtSigned(agree, 2) : '–'}, close to zero, so knowing how one model reacts to a demographic swap tells you little about how another will. A few pairs move together, but there is no single bias the field holds in common; each model is idiosyncratic. A common, model-independent bias would have shown up as broad agreement across this matrix, and it did not.</p>
+    <p class="dim"><strong>What this says about the assumption.</strong> The biases are mostly <strong>not</strong> shared. The average correlation between two different models is ${agree != null ? fmtSigned(agree, 2) : '–'}, close to zero, so knowing how one model reacts to a demographic swap tells you little about how another will. A few pairs move together, but there is no single bias the field holds in common. Each model is idiosyncratic. A common, model-independent bias would have shown up as broad agreement across this matrix, and it did not.</p>
   </div>`;
 }
 
@@ -1102,7 +1102,7 @@ function premiseHtml(matrix) {
   const jdCount = Object.keys(matrix.jd_labels ?? {}).length;
   return `<div class="panel">
     <div class="panel-head"><span>EXPERIMENT 1 · THE COUNTERFACTUAL AUDIT</span></div>
-    <p class="dim">The first of the three experiments, in full — the demographic bias audit the fingerprint above is built from.</p>
+    <p class="dim">The first of the three experiments, in full. This is the demographic bias audit the fingerprint above is built from.</p>
     <p>A fair evaluator scores a résumé on its merits. Change only a demographic signal on it, the candidate's name, country, alma mater, or a gap in employment, and leave every other word untouched, and the score should not move. The optimistic assumption we put to the test is that frontier LLMs already behave this way: that they are effectively identity-blind, and swapping a name leaves the verdict intact.</p>
   </div>
   <div class="panel">
@@ -1128,15 +1128,15 @@ function verdictHtml(matrix, cells, axes, models) {
   if (!topModel || !topDim) return '';
   return `<div class="panel">
     <div class="panel-head"><span>WHAT THE RESULTS SAY ABOUT THE ASSUMPTION</span></div>
-    <p>The identity-blind assumption <strong>does not hold</strong>, but the failure is messier than "the models are biased". Scores do move when only a demographic line changes: the most sensitive model, <strong>${esc(modelDisplay(topModel.model))}</strong>, shifts its score by <strong>${topModel.mean_abs.toFixed(3)}</strong> per swap on average, and the signal that moves scores the most is <strong>${esc(topDim.label)}</strong> at <strong>${topDim.mean_abs.toFixed(3)}</strong>. No model here is truly identity-blind.</p>
-    <p class="dim">What keeps this short of clean discrimination: only about <strong>${sigPct != null ? sigPct + '%' : '–'}</strong> of individual score shifts clear the run to run noise floor, and the models barely agree on direction (mean pairwise correlation ${agree != null ? fmtSigned(agree, 2) : '–'}, near zero). That points less at a stable, shared prejudice and more at each model being an unstable judge whose number wobbles when any part of the input changes, which is its own reason not to hand it a hiring decision unsupervised. The <a href="methodology.html">methodology</a> covers the noise floor, and the <a href="heatmap.html">heatmap</a> the model-by-model agreement.</p>
+    <p>The identity-blind assumption <strong>does not hold</strong>, but the failure is messier than "the models are biased". Scores do move when only a demographic line changes. The most sensitive model, <strong>${esc(modelDisplay(topModel.model))}</strong>, shifts its score by <strong>${topModel.mean_abs.toFixed(3)}</strong> per swap on average, and the signal that moves scores the most is <strong>${esc(topDim.label)}</strong> at <strong>${topDim.mean_abs.toFixed(3)}</strong>. No model here is truly identity-blind.</p>
+    <p class="dim">What keeps this short of clean discrimination is that only about <strong>${sigPct != null ? sigPct + '%' : '–'}</strong> of individual score shifts clear the run to run noise floor, and the models barely agree on direction (mean pairwise correlation ${agree != null ? fmtSigned(agree, 2) : '–'}, near zero). That reads as instability more than stable prejudice. Each model is an unstable judge whose number wobbles when any part of the input changes, which is its own reason not to hand it a hiring decision unsupervised. The <a href="methodology.html">methodology</a> covers the noise floor, and the <a href="heatmap.html">heatmap</a> the model-by-model agreement.</p>
   </div>`;
 }
 
 function heatmapPremiseHtml() {
   return `<div class="panel">
     <div class="panel-head"><span>THE ASSUMPTION UNDER TEST</span></div>
-    <p>If a bias were a real, stable property of "AI", the models would share it: swap the same résumé line and different models would move the same way. A shared bias shows up as agreement. The assumption under test on this page is that these biases are common across models rather than quirks of any single one. The wall shows where each model's bias lives; the correlation matrix at the bottom shows whether they actually agree.</p>
+    <p>If a bias were a real, stable property of "AI", the models would share it. Swap the same résumé line and different models would move the same way. A shared bias shows up as agreement. The assumption under test on this page is that these biases are common across models instead of quirks of any single one. The wall shows where each model's bias lives, and the correlation matrix at the bottom shows whether they actually agree.</p>
   </div>`;
 }
 
@@ -1171,7 +1171,7 @@ function topCounterfactualsHtml(topDiffs, matrix) {
 
 function heatmapSummaryHtml(matrix) {
   const stats = computeBiasIndexSnapshot(matrix);
-  const lines = stats.slice(0, 3).map((s) => `<li><strong>${esc(modelDisplay(s.model))}</strong>: mean |Δ| ${s.mean_abs != null ? s.mean_abs.toFixed(3) : '–'}. Most penalised ${variantWithDeltaHtml(matrix, s.worst, 'alert')}, most rewarded ${variantWithDeltaHtml(matrix, s.best, 'accent')}.</li>`).join('\n');
+  const lines = stats.slice(0, 3).map((s) => `<li><strong>${esc(modelDisplay(s.model))}</strong>, mean |Δ| ${s.mean_abs != null ? s.mean_abs.toFixed(3) : '–'}. Most penalised ${variantWithDeltaHtml(matrix, s.worst, 'alert')}, most rewarded ${variantWithDeltaHtml(matrix, s.best, 'accent')}.</li>`).join('\n');
   return `<div class="panel">
     <div class="panel-head"><span>WHAT THE WALL SHOWS · TOP MODELS BY BIAS INDEX</span></div>
     <p class="dim">The interactive 3D wall above lets you inspect every (variant, JD) cell for any (model, dimension) pair. Below is a static summary of the three most demographically-sensitive models. Pick another pair in the controls to update the wall.</p>

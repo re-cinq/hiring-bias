@@ -195,10 +195,10 @@ function prerenderSummary(summary) {
     return best;
   };
   const METRICS = [
-    ['Stability (within-run score stdev — lower better)', 'stability', true],
-    ['Score–feedback coherence (higher better)', 'coherence', false],
+    ['Stability (within-run score stdev, lower better)', 'stability', true],
+    ['Score-feedback coherence (higher better)', 'coherence', false],
     ['Bias |Δ score| vs baseline résumé (lower better)', 'bias_abs_delta', true],
-    ['Decision instability (recommend flips — lower better)', 'flip_instability', true],
+    ['Decision instability (recommend flips, lower better)', 'flip_instability', true],
     ['Decision bias flips (lower better)', 'flip_bias', true]
   ];
   const lines = METRICS.map(([title, key, low]) => {
@@ -217,24 +217,24 @@ function prerenderSummary(summary) {
 
   return `<div class="panel">
   <div class="panel-head"><span>DOES PROMPT ENGINEERING FIX IT?</span></div>
-  <p><strong>The assumption under test.</strong> That the instability and bias in LLM résumé screening are mostly a prompt problem, fixable with better prompt engineering. The sharpest version, argued widely, is that the naive prompt asks for the <em>score first</em> and writes everything after it to justify a number already chosen; make the model reason first and decide the score <em>last</em>, and the results should turn markedly more stable, coherent and fair.</p>
+  <p><strong>The assumption under test.</strong> That the instability and bias in LLM résumé screening are mostly a prompt problem, fixable with better prompt engineering. The sharpest version, argued widely, is that the naive prompt asks for the <em>score first</em> and writes everything after it to justify a number already chosen. Make the model reason first and decide the score <em>last</em>, and the results should turn markedly more stable, coherent and fair.</p>
 </div>
 <div class="panel">
   <div class="panel-head"><span>HOW WE TEST IT</span></div>
   <p class="dim">Six prompt strategies, all emitting the identical output schema. Only the technique changes, and every strategy is scored on the same résumés, jobs and models.</p>
-  <p class="dim"><strong>Step 1.</strong> Start from the naive production prompt, which asks for the score first and the justification after, and write variations that keep the exact same output fields but change only the technique. For example, <strong>Score last</strong> reorders the fields so the model writes strengths, concerns and justification first and commits to the number last; <strong>Few-shot examples</strong> prepends two worked evaluations to anchor the scale; <strong>Competency rubric</strong> forces one piece of résumé evidence per required competency before scoring.</p>
+  <p class="dim"><strong>Step 1.</strong> Start from the naive production prompt, which asks for the score first and the justification after, and write variations that keep the exact same output fields but change only the technique. For example, <strong>Score last</strong> reorders the fields so the model writes strengths, concerns and justification first and commits to the number last. <strong>Few-shot examples</strong> prepends two worked evaluations to anchor the scale. <strong>Competency rubric</strong> forces one piece of résumé evidence per required competency before scoring.</p>
   <p class="dim"><strong>Step 2.</strong> Run every strategy over the identical set of résumés, jobs and models, several times each, so the only thing that differs between two runs of one cell is the prompt technique and ordinary sampling noise. For example, the baseline résumé for the CTO role is scored five times by each of the ${esc(summary.models.length)} models under every strategy.</p>
-  <p class="dim"><strong>Step 3.</strong> From those runs compute the same set of metrics for every strategy: stability (how far the score wobbles across repeat runs of an identical input), coherence (whether the score lines up with the model's own stated key factors), bias (how far the score moves when only a demographic detail on the résumé changes), and decision flips (how often the yes or no call is not unanimous). For example, a cell scoring 7, 4, 6, 5, 8 across five identical runs feeds a high, meaning bad, stability number.</p>
+  <p class="dim"><strong>Step 3.</strong> From those runs compute the same set of metrics for every strategy. Stability is how far the score wobbles across repeat runs of an identical input, coherence is whether the score lines up with the model's own stated key factors, bias is how far the score moves when only a demographic detail on the résumé changes, and decision flips is how often the yes or no call is not unanimous. For example, a cell scoring 7, 4, 6, 5, 8 across five identical runs feeds a high, meaning bad, stability number.</p>
   <p class="dim"><strong>Step 4.</strong> Compare each strategy against the baseline prompt on every metric. For example, Few-shot examples lands a pooled score stdev of ${fsStab} against the baseline's ${baseStab}, while Score last pushes run to run decision flips from ${baseFlip} up to ${slFlip}.</p>
-  <p class="dim"><strong>Step 5.</strong> A strategy only counts as a fix if it clearly beats baseline on a metric without hurting the others. A wash, or a win on one metric paid for by a regression on another, means the technique is not buying real reliability. For example, Few-shot examples improves stability and both flip metrics at once, whereas Score last and Chain-of-thought make the score wobble more, not less.</p>
+  <p class="dim"><strong>Step 5.</strong> A strategy only counts as a fix if it clearly beats baseline on a metric without hurting the others. A wash, or a win on one metric paid for by a regression on another, means the technique is not buying real reliability. For example, Few-shot examples improves stability and both flip metrics at once, whereas Score last and Chain-of-thought make the score wobble more.</p>
 </div>
 <div class="panel">
   <div class="panel-head"><span>BEST PROMPT PER METRIC (pooled across models)</span></div>
-  <p class="dim">Aggregated over ${esc(summary.models.length)} models. Lower is better for stability, bias and flip rates; higher is better for coherence. Use the comparator below to inspect any pair head-to-head and see how each model reacts.</p>
+  <p class="dim">Aggregated over ${esc(summary.models.length)} models. Lower is better for stability, bias and flip rates. Higher is better for coherence. Use the comparator below to inspect any pair head-to-head and see how each model reacts.</p>
   <table class="data"><thead><tr><th>Metric</th><th>Best strategy</th><th class="num">Value</th></tr></thead><tbody>
 ${lines}
   </tbody></table>
-  <p><strong>What the results say about the assumption.</strong> It is largely <strong>dismissed</strong>. Prompt wording moves the numbers only a little, and the most-hyped fix backfires: reordering so the model decides the score last (the <strong>Score last</strong> strategy) made repeat-run scoring <em>less</em> stable, not more (score stdev ${slStab} against the baseline's ${baseStab}), and pushed run to run decision flips from ${baseFlip} up to ${slFlip}. The one technique that helps across the board is <strong>Few-shot examples</strong>, and even it only trims score stdev to ${fsStab} and decision flips to ${fsFlip} — a nudge, not a cure. What would have <em>supported</em> the assumption, a strategy that sharply cut both the score wobble and the flips at once, never appeared: the instability this study measures is largely intrinsic to the models, not an artifact the prompt can engineer away.</p>
+  <p><strong>What the results say about the assumption.</strong> It is largely <strong>dismissed</strong>. Prompt wording moves the numbers only a little, and the most-hyped fix backfires. Reordering so the model decides the score last (the <strong>Score last</strong> strategy) made repeat-run scoring <em>less</em> stable (score stdev ${slStab} against the baseline's ${baseStab}), and pushed run to run decision flips from ${baseFlip} up to ${slFlip}. The one technique that helps across the board is <strong>Few-shot examples</strong>, and even it only trims score stdev to ${fsStab} and decision flips to ${fsFlip}, a small nudge. What would have <em>supported</em> the assumption, a strategy that sharply cut both the score wobble and the flips at once, never appeared. The instability this study measures is largely intrinsic to the models, and is not something the prompt can engineer away.</p>
 </div>`;
 }
 

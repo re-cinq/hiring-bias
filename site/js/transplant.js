@@ -135,11 +135,11 @@ async function render() {
   const cls = classifyCell(cell);
   summaryPanel.append(el('p', { class: 'dim' }, effect == null ? ''
     : cls.inconclusive ? (cls.narrowContrast
-        ? `Inconclusive here — the two injected assessments were nearly identical (signal gap ${fmtNum(Math.abs(cell.signal_gap), 0)}), so no real contrast was tested.`
-        : `Inconclusive here — the score is pinned at the ${cls.rail}, leaving no room to move regardless of the reasoning.`)
-    : effect >= 1.0 ? 'The score clearly followed the transplanted reasoning here — the reasoning is doing causal work.'
-    : effect < 0.3 ? 'The score barely moved when handed the opposite assessment — here the number behaves like a pre-decided prior the reasoning only decorates.'
-    : 'The score moved partway with the transplanted reasoning — a mixed result.'));
+        ? `Inconclusive here. The two injected assessments were nearly identical (signal gap ${fmtNum(Math.abs(cell.signal_gap), 0)}), so no real contrast was tested.`
+        : `Inconclusive here. The score is pinned at the ${cls.rail}, leaving no room to move regardless of the reasoning.`)
+    : effect >= 1.0 ? 'The score clearly followed the transplanted reasoning here. The reasoning is doing causal work.'
+    : effect < 0.3 ? 'The score barely moved when handed the opposite assessment. Here the number behaves like a pre-decided prior the reasoning only decorates.'
+    : 'The score moved partway with the transplanted reasoning, a mixed result.'));
   host.append(summaryPanel);
 
   const panel = el('div', { class: 'panel' });
@@ -178,26 +178,26 @@ function renderConclusion(cell) {
   panel.append(el('p', {}, [
     el('strong', { title: modelVersion(model) }, modelLabel(model)), ' scoring the ',
     el('strong', {}, resumeLabel(resume)), ' résumé for ', el('strong', {}, JD_LABEL[jd] ?? jd),
-    ': handed its own most-negative assessment it scored ',
+    '. Handed its own most-negative assessment it scored ',
     el('span', { class: 'alert' }, fmtNum(cell.neg.mean, 2)), ', and its own most-positive assessment ',
-    el('span', { class: 'accent' }, fmtNum(cell.pos.mean, 2)), ' — an effect of ',
+    el('span', { class: 'accent' }, fmtNum(cell.pos.mean, 2)), ', an effect of ',
     el('span', { class: eff == null ? 'dim' : (eff > 0.3 ? 'accent' : 'alert') }, fmtSignedDelta(eff, 2)),
     ' points across a reasoning-signal swing of ', el('strong', {}, fmtSignedDelta(cell.signal_gap, 0)), '.'
   ]));
 
   panel.append(el('p', {}, eff == null ? 'No effect could be computed for this selection.'
-    : cls.inconclusive && cls.narrowContrast ? `Inconclusive: the model’s most-positive and most-negative self-assessments were only ${fmtNum(Math.abs(cell.signal_gap), 0)} signal units apart, so it was never actually handed opposing reasoning. A flat score here means the two inputs were nearly identical — it says nothing about whether the score is a prior.`
-    : cls.inconclusive && cls.saturated ? `Inconclusive: the score is pinned at the ${cls.rail} (≈${fmtNum(cls.mid, 1)}/10), where an obvious résumé–role mismatch leaves no headroom to move. A flat score under saturation can’t separate a fixed prior from a verdict that is simply overdetermined.`
-    : eff >= 1.0 ? 'The score clearly followed the transplanted reasoning here — with a genuine contrast and room to move, the written reasoning is doing causal work, not decorating a number already chosen.'
-    : eff < 0.3 ? 'The score barely moved even though the model was handed a genuinely opposed assessment and had room to move — for this case the number behaves like a pre-decided prior the reasoning only decorates.'
-    : 'The score moved only partway with the transplanted reasoning — a mixed result for this case, part prior and part causal pull.'));
+    : cls.inconclusive && cls.narrowContrast ? `Inconclusive. The model's most-positive and most-negative self-assessments were only ${fmtNum(Math.abs(cell.signal_gap), 0)} signal units apart, so it was never actually handed opposing reasoning. A flat score here means the two inputs were nearly identical, so it says nothing about whether the score is a prior.`
+    : cls.inconclusive && cls.saturated ? `Inconclusive. The score is pinned at the ${cls.rail} (≈${fmtNum(cls.mid, 1)}/10), where an obvious résumé-role mismatch leaves no headroom to move. A flat score under saturation cannot separate a fixed prior from a verdict that is simply overdetermined.`
+    : eff >= 1.0 ? 'The score clearly followed the transplanted reasoning here. With a genuine contrast and room to move, the written reasoning is doing causal work, and the number was not chosen in advance.'
+    : eff < 0.3 ? 'The score barely moved even though the model was handed a genuinely opposed assessment and had room to move. For this case the number behaves like a pre-decided prior the reasoning only decorates.'
+    : 'The score moved only partway with the transplanted reasoning, a mixed result for this case, part prior and part causal pull.'));
 
   const nr = cell.neg.recommend_rate, pr = cell.pos.recommend_rate;
   if (nr != null && pr != null) {
     const pct = (x) => `${Math.round(x * 100)}%`;
-    panel.append(el('p', { class: 'dim' }, pr - nr >= 0.5 ? `The interview call followed too — "yes" rate went ${pct(nr)} → ${pct(pr)}.`
-      : pr === nr ? `The interview call didn’t budge — "yes" rate stayed at ${pct(nr)} under both assessments.`
-      : `The interview call shifted only slightly — "yes" rate ${pct(nr)} → ${pct(pr)}.`));
+    panel.append(el('p', { class: 'dim' }, pr - nr >= 0.5 ? `The interview call followed too. The "yes" rate went ${pct(nr)} to ${pct(pr)}.`
+      : pr === nr ? `The interview call did not budge. The "yes" rate stayed at ${pct(nr)} under both assessments.`
+      : `The interview call shifted only slightly. The "yes" rate went ${pct(nr)} to ${pct(pr)}.`));
   }
 
   if (!cls.inconclusive) {
@@ -205,7 +205,7 @@ function renderConclusion(cell) {
     if (cur && cur.mean_effect != null && eff != null) {
       const rel = eff > cur.mean_effect + 0.25 ? 'more responsive than' : eff < cur.mean_effect - 0.25 ? 'less responsive than' : 'about as responsive as';
       panel.append(el('p', { class: 'dim' }, [
-        'This case is ', el('strong', {}, rel), ' ', modelLabel(model), '’s overall average effect of ',
+        'This case is ', el('strong', {}, rel), ' ', modelLabel(model), "'s overall average effect of ",
         el('strong', {}, fmtSignedDelta(cur.mean_effect, 2)), ' across ', String(cur.n_cells), ' cells.'
       ]));
     }
