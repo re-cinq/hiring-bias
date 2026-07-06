@@ -1,7 +1,7 @@
 import { mountChrome } from './nav.js';
 import { loadJson, el, header, fmtNum, fmtSignedDelta, deltaClass, setParam, params, modelLabel, modelVersion } from './lib.js';
 import { wallView } from './charts.js';
-import { dotStrip, DELTA_SCALE } from './dot-strip.js';
+import { dotStrip, collapseValues, DELTA_SCALE } from './dot-strip.js';
 
 await mountChrome();
 document.getElementById('header').append(header('BIAS MATRIX                 '));
@@ -144,7 +144,12 @@ async function rebuildWall() {
   renderDetail({ model, axis, cells, levels, jds });
 }
 
-function deltaWithCiBar(delta, ciLo, ciHi, baseline, significant) {
+// Same visual language as the resume-diff bar: a filled dot for the mean shift and one
+// hollow dot per run, but plotted in Δ-vs-baseline space (run score − baseline mean) so
+// the fixed −3..+3 scale still reads as "how far from baseline". Runs sharing a score
+// stack vertically so all of them stay visible.
+function deltaWithCiBar(r) {
+  const { delta, ci_lo: ciLo, ci_hi: ciHi, baseline_mean: baseline, scores, recommend } = r;
   if (delta == null) return el('span', { class: 'dim' }, '–');
   const sign = Math.abs(delta) < 0.005 ? 'zero' : delta > 0 ? 'pos' : 'neg';
   const ci = (baseline != null && ciLo != null && ciHi != null)
@@ -155,16 +160,30 @@ function deltaWithCiBar(delta, ciLo, ciHi, baseline, significant) {
         title: `95% CI: Δ ${fmtSignedDelta(ciLo - baseline, 2)} to ${fmtSignedDelta(ciHi - baseline, 2)}`
       }
     : null;
-  return dotStrip({
-    ...DELTA_SCALE,
-    ci,
-    markers: [{
-      value: delta,
-      filled: !!significant,
-      cls: sign,
-      title: `Δ ${fmtSignedDelta(delta, 3)} · CI [${fmtNum(ciLo, 2)} … ${fmtNum(ciHi, 2)}] · baseline ${fmtNum(baseline, 2)}`
-    }]
-  });
+
+  // Mean marker paints first so per-run dots sit on top and stay hoverable.
+  const markers = [{
+    value: delta,
+    filled: true,
+    cls: sign,
+    title: `mean Δ ${fmtSignedDelta(delta, 3)} · baseline ${fmtNum(baseline, 2)}`
+  }];
+  let stacked = false;
+  if (Array.isArray(scores) && baseline != null) {
+    for (const { value, indexes } of collapseValues(scores)) {
+      if (indexes.length > 1) stacked = true;
+      indexes.forEach((runI, k) => {
+        const rec = Array.isArray(recommend) ? recommend[runI] : null;
+        markers.push({
+          value: value - baseline,
+          dy: (k - (indexes.length - 1) / 2) * 7,
+          cls: ['yes', 'no', 'maybe'].includes(rec) ? `iter ${rec}` : 'iter',
+          title: `run ${runI + 1}${rec ? ` (${rec})` : ''} · score ${value} · Δ ${fmtSignedDelta(value - baseline, 0)}`
+        });
+      });
+    }
+  }
+  return dotStrip({ ...DELTA_SCALE, ci, markers, cls: stacked ? 'runs' : '' });
 }
 
 function renderDetail({ model, axis, cells, levels, jds }) {
@@ -172,13 +191,12 @@ function renderDetail({ model, axis, cells, levels, jds }) {
   const panel = el('div', { class: 'panel' });
   panel.append(el('div', { class: 'panel-head' }, el('span', { title: modelVersion(model) }, `SUMMARY · ${AXIS_LABELS[axis] ?? axis} × ${modelLabel(model)}`)));
 
-  panel.append(el('p', { class: 'dim' }, 'Each row is one (variant, job) experiment. The bar plots the variant\'s score change vs the unmodified baseline on a fixed −3 to +3 scale. Bar scale is the same as the resume-diff page.'));
+  panel.append(el('p', { class: 'dim' }, 'Each row is one (variant, job) experiment. The bar plots every run\'s score change vs the unmodified baseline as a hollow dot (○), and the mean shift as a filled dot (●), on a fixed −3 to +3 scale. Runs with the same score stack. Same scale as the resume-diff page; open a diff to read the runs in full.'));
 
   const legend = el('div', { class: 'bar-legend' }, [
-    el('span', { class: 'accent' }, [el('span', { class: 'swatch filled', style: { color: 'var(--accent)' } }), ' above baseline']),
-    el('span', { class: 'alert' }, [el('span', { class: 'swatch filled', style: { color: 'var(--alert)' } }), ' below baseline']),
-    el('span', {}, [el('span', { class: 'swatch filled' }), ' significant (CI excludes baseline)']),
-    el('span', {}, [el('span', { class: 'swatch hollow' }), ' not significant (CI overlaps baseline)']),
+    el('span', {}, [el('span', { class: 'swatch filled', style: { color: 'var(--accent)' } }), ' mean Δ above baseline']),
+    el('span', {}, [el('span', { class: 'swatch filled', style: { color: 'var(--alert)' } }), ' mean Δ below baseline']),
+    el('span', {}, [el('span', { class: 'swatch hollow' }), ' individual run (stacked = same score)']),
     el('span', {}, [el('span', { class: 'swatch errbar pos' }), ' 95% CI']),
     el('span', {}, [el('span', { class: 'swatch tick' }), ' baseline (Δ = 0)'])
   ]);
@@ -203,7 +221,7 @@ function renderDetail({ model, axis, cells, levels, jds }) {
       r.significant ? el('span', { class: 'accent' }, '✓ significant') : el('span', { class: 'dim' }, 'within noise')
     ]);
     const cell = document.createElement('div');
-    cell.append(deltaWithCiBar(r.delta, r.ci_lo, r.ci_hi, r.baseline_mean, r.significant), caption);
+    cell.append(deltaWithCiBar(r), caption);
 
     tbody.append(el('tr', { id: rowDomId(r.level, r.jd) }, [
       el('td', {}, levelMap[r.level] ?? r.level),
