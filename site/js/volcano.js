@@ -46,7 +46,7 @@ export function renderVolcano(host, data, matrix, modelLabel) {
       el('li', {}, [el('strong', {}, 'Many colours stacking on the same spot.'), ' Blending toward white is broad agreement across models. That is the strongest sign the effect is a real-world bias, not one model\'s quirk.']),
       el('li', {}, [el('strong', {}, 'A single dot, high up and far from zero.'), ' Large effect, repeatable across reruns. Click it to open the side by side and read the model\'s own rationale for the gap.']),
       el('li', {}, [el('strong', {}, 'Dots spread evenly around zero.'), ' The model is not favouring either side on average, it is just being inconsistent. Noise, not bias.']),
-      el('li', {}, [el('strong', {}, 'Cross-check elsewhere.'), ' This view mixes all eight demographic axes together. The heatmap shows which axis × model cells are off; the waves on the jobs page show the direction and shape per axis.'])
+      el('li', {}, [el('strong', {}, 'Cross-check elsewhere.'), ' This view mixes all eight demographic axes together. The heatmap shows which axis × model cells are off. The waves on the jobs page show the direction and shape per axis.'])
     ])
   ]);
   panel.append(howto);

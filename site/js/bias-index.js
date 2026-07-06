@@ -154,7 +154,7 @@ export function renderDimensionBias(host, matrix, { title = 'WHICH DIMENSION TRI
   host.append(panel);
 }
 
-export function renderBiasIndex(host, matrix, { title = 'GLOBAL BIAS INDEX, MEAN |Δ| ACROSS ALL CELLS', description = 'For each model, the average absolute score change when a demographic signal is altered, taken over every (axis, variant, JD) cell with data. Higher = the model is more sensitive to demographic signals; lower = more even-handed.' } = {}) {
+export function renderBiasIndex(host, matrix, { title = 'GLOBAL BIAS INDEX, MEAN |Δ| ACROSS ALL CELLS', description = 'For each model, the average absolute score change when a demographic signal is altered, taken over every (axis, variant, JD) cell with data. Higher means the model is more sensitive to demographic signals. Lower means more even-handed.' } = {}) {
   host.innerHTML = '';
   const panel = el('div', { class: 'panel' });
   panel.append(el('div', { class: 'panel-head' }, el('span', {}, title)));

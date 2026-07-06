@@ -196,7 +196,7 @@ async function renderComparator() {
   panel.append(el('div', {}, [
     'Δ mean score (B − A): ',
     el('span', { class: goodBadClass(dScore, false) === 'dim' ? 'dim' : (dScore > 0 ? 'accent' : 'alert') }, fmtSignedDelta(dScore, 2)),
-    el('span', { class: 'dim' }, '  (just this résumé × job; the table above pools across all of them)')
+    el('span', { class: 'dim' }, '  (just this résumé × job, the table above pools across all of them)')
   ]));
 
   const cardsHost = el('div');
@@ -250,7 +250,7 @@ function renderReaction() {
   const { a, b } = state;
   const panel = el('div', { class: 'panel' });
   panel.append(el('div', { class: 'panel-head' }, el('span', {}, `HOW EACH MODEL REACTS · switching ${STRAT_LABEL[a]} → ${STRAT_LABEL[b]}`)));
-  panel.append(el('p', { class: 'dim' }, 'Δ for each metric (B − A), per model. Green = the switch improved that metric for that model; red = it made it worse.'));
+  panel.append(el('p', { class: 'dim' }, 'Δ for each metric (B − A), per model. Green marks a switch that improved that metric for that model, red marks one that made it worse.'));
 
   const table = el('table', { class: 'data' });
   table.append(el('thead', {}, el('tr', {}, [el('th', {}, 'Model'), ...METRICS.map((m) => el('th', { class: 'num' }, m.label))])));
