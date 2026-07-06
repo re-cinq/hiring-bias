@@ -4,6 +4,7 @@ import { mean, groupBy } from '../src/aggregate.js';
 
 const IN_DIR = 'results-reasoning-transplant';
 const OUT_DIR = 'site/data/transplant';
+const EXCLUDED_MODELS = new Set(['claude-fable-5']);
 
 async function readDir(sub) {
   const dir = path.join(IN_DIR, sub);
@@ -11,7 +12,7 @@ async function readDir(sub) {
   try { files = await fs.readdir(dir); } catch { return []; }
   const out = [];
   for (const f of files) if (f.endsWith('.json')) out.push(JSON.parse(await fs.readFile(path.join(dir, f), 'utf8')));
-  return out;
+  return out.filter((r) => !EXCLUDED_MODELS.has(r.model));
 }
 
 async function writeJson(relpath, data) {

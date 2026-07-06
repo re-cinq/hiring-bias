@@ -7,6 +7,7 @@ import { keyFactorSignal, justificationSentiment, modalRecommend, recommendUnani
 const IN_DIR = 'results-prompt-lab';
 const OUT_DIR = 'site/data/prompt-lab';
 const BASELINE_RESUME = 'baseline';
+const EXCLUDED_MODELS = new Set(['claude-fable-5']);
 
 async function loadAll() {
   const records = [];
@@ -18,7 +19,8 @@ async function loadAll() {
     try { files = await fs.readdir(dir); } catch { continue; }
     for (const file of files) {
       if (!file.endsWith('.json')) continue;
-      records.push(JSON.parse(await fs.readFile(path.join(dir, file), 'utf8')));
+      const record = JSON.parse(await fs.readFile(path.join(dir, file), 'utf8'));
+      if (!EXCLUDED_MODELS.has(record.model)) records.push(record);
     }
   }
   return records;
