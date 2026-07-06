@@ -1,0 +1,49 @@
+{
+  "variant": "school_regional-unknown",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 5,
+  "elapsed_ms": 32928,
+  "timestamp": "2026-07-06T09:44:02.218Z",
+  "response": {
+    "score": 5,
+    "recommend_interview": "maybe",
+    "justification": "The candidate brings a genuinely relevant geospatial background (founder of an open-source GIS platform, FOSS4G speaker) and real systems-level experience writing low-latency DLang services handling millions of requests per second, which demonstrates the performance and Linux server mindset the role needs. However, his modern C++ exposure is thin and dated (roughly seven months at National Instruments in 2014-2015 plus a thesis project), he has no Rust, no routing or navigation-guidance experience, and his last five years have been TypeScript/Node full-stack product work rather than data-pipeline or systems engineering. He is an adaptable, craftsmanship-oriented engineer who could grow into the domain, but he does not meet the core C++/navigation requirements today.",
+    "strengths": [
+      "Strong geospatial domain interest: founded and maintains an open-source Geo-Data platform (GISCollective) used by Green Map, and presented at FOSS4G",
+      "Proven low-latency systems experience at Sociomantic/Dunnhumby (DLang, async I/O, fibers, caching, millions of HTTP requests per second)",
+      "Software craftsmanship depth: TDD, CI/CD, testing frameworks authored, Linux/Docker/Kubernetes operational experience"
+    ],
+    "concerns": [
+      "Modern C++ experience is minimal and a decade old; no Rust experience to substitute",
+      "No routing, map-tiling, or navigation guidance systems experience; GIS work is web-mapping oriented rather than routing data pipelines",
+      "Recent career trajectory (2020-present) is TypeScript/Node full-stack product work, away from systems and pipeline engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "Weak modern C++/Rust depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain experience",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Low-latency systems background (DLang)",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 5121,
+    "output_tokens": 1861,
+    "cache_read_input_tokens": 35931,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.180191
+  }
+}

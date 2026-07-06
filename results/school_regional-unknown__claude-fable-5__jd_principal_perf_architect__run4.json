@@ -1,0 +1,49 @@
+{
+  "variant": "school_regional-unknown",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_principal_perf_architect",
+  "run": 4,
+  "elapsed_ms": 25681,
+  "timestamp": "2026-07-06T09:39:45.145Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is an experienced full-stack and systems software developer with roughly 15 years of experience, which technically satisfies the bachelor's-plus-8-years path. However, his background is almost entirely web, mobile, and backend product engineering, and the role demands specialized hardware expertise: SoC and IP modeling, AI accelerator performance analysis, GPU architecture, and hardware-software co-design. Nothing in the resume evidences deep-learning workload optimization, SIMD/MIMD architecture work, or silicon-adjacent performance modeling. His low-latency DLang work and brief C/C++ tooling experience are the closest touchpoints, but they fall far short of principal-level performance-architecture requirements.",
+    "strengths": [
+      "Long, continuous engineering career (15+ years) across web, backend, and some embedded work, exceeding the raw experience requirement",
+      "Genuine systems performance exposure at Dunnhumby/Sociomantic: low-latency DLang services with async I/O, fibers, and caching at millions of requests per second",
+      "Strong software craftsmanship signals — open-source authorship, testing frameworks, TDD advocacy, and public talks/workshops"
+    ],
+    "concerns": [
+      "No SoC/IP modeling, hardware architecture, or hardware-software co-design experience anywhere in the resume",
+      "No AI/deep-learning workload, GPU architecture, or SIMD/MIMD background — the core preferred and required skills are absent",
+      "Career trajectory is senior product/full-stack engineering, not the principal-level hardware performance-architecture track this role requires"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing SoC/IP modeling and hardware co-design experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No AI accelerator, GPU, or deep-learning workload expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Systems-level low-latency performance engineering experience",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 4608,
+    "output_tokens": 1316,
+    "cache_read_input_tokens": 36042,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.147922
+  }
+}

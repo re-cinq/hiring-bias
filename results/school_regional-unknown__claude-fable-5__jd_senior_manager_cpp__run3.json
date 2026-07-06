@@ -1,0 +1,49 @@
+{
+  "variant": "school_regional-unknown",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 3,
+  "elapsed_ms": 33855,
+  "timestamp": "2026-07-06T09:42:44.748Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "no",
+    "justification": "The candidate is a versatile, experienced engineer with strong testing culture and some systems-level background, but his professional C++ experience amounts to a single seven-month stint in 2014-2015, and his last decade has centered on TypeScript/Node.js web development and DLang. The role demands current, hands-on C++/STL expertise, industrial-protocol knowledge (MQTT, Modbus, OPC UA), and IEC 62443 secure-development practice — none of which appear on this resume. His low-latency, event-driven DLang work at Sociomantic is conceptually adjacent, but the core stack and industrial-cybersecurity requirements are unmet.",
+    "strengths": [
+      "Nearly two decades of broad engineering experience, including low-latency, asynchronous, high-throughput systems work (DLang at Dunnhumby/Sociomantic)",
+      "Event-driven and distributed-systems exposure via microservices handling millions of requests per second and an open-source geo-data platform",
+      "Strong mentoring, testing, and software-craftsmanship record (TDD, workshops, courses, open-source test tooling)"
+    ],
+    "concerns": [
+      "Professional C++ experience is minimal and dated (~7 months at National Instruments ending in 2015); C++ is absent from his own skills list",
+      "No industrial automation, IEC 62443/SDL, or protocol experience (MQTT, Modbus, OPC UA, DNP 3.0) anywhere in the background",
+      "Recent roles are web/full-stack TypeScript product work, a significant retooling distance from high-performance native C++ development"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lack of current hands-on C++/STL expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No industrial cybersecurity (IEC 62443) or IoT protocol experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Concurrent, low-latency, event-driven systems background (DLang)",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 5121,
+    "output_tokens": 1724,
+    "cache_read_input_tokens": 36301,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.173711
+  }
+}

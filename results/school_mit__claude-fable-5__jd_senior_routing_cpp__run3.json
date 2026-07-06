@@ -1,0 +1,49 @@
+{
+  "variant": "school_mit",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 3,
+  "elapsed_ms": 27504,
+  "timestamp": "2026-07-06T09:32:15.162Z",
+  "response": {
+    "score": 5,
+    "recommend_interview": "maybe",
+    "justification": "The candidate brings genuine geospatial domain experience (founder of GISCollective, an open-source geo-data platform used by Green Map) and has built low-latency, high-throughput systems in DLang handling millions of requests per second, which demonstrates the systems mindset the role needs. However, his modern C++ exposure is thin and dated (a seven-month stint at National Instruments in 2014-2015 plus a thesis project), his recent work is predominantly TypeScript/Node.js product engineering, and he has no routing, tiling, or navigation-guidance pipeline experience, which are core to this role.",
+    "strengths": [
+      "Real geospatial experience: founded and maintains an open-source GIS/geo-data platform used in production by Green Map",
+      "Low-latency distributed systems work at Dunnhumby/Sociomantic (async I/O, fibers, caching, millions of requests/sec)",
+      "Broad full-stack range with strong testing culture (TDD, CI/CD, authored D testing libraries)"
+    ],
+    "concerns": [
+      "Minimal and outdated modern C++ experience; primary systems language is DLang, and no Rust",
+      "No experience with routing engines, map-tile generation, or navigation guidance systems",
+      "Recent roles (2020-present) are web/product-focused TypeScript work, distant from data-pipeline and systems engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/Rust depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain experience",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Navigation/routing pipeline experience",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 5121,
+    "output_tokens": 1276,
+    "cache_read_input_tokens": 19528,
+    "cache_creation_input_tokens": 16410,
+    "cost_usd_reported": 0.46273800000000004
+  }
+}

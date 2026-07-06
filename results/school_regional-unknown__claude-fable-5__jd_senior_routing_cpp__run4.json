@@ -1,0 +1,49 @@
+{
+  "variant": "school_regional-unknown",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 4,
+  "elapsed_ms": 29960,
+  "timestamp": "2026-07-06T09:43:29.288Z",
+  "response": {
+    "score": 6,
+    "recommend_interview": "maybe",
+    "justification": "The candidate brings genuine geospatial domain experience (founder of GISCollective, GIS work for Green Map, FOSS4G speaker) and proven low-latency systems engineering at Sociomantic, where he built DLang services handling millions of requests per second with async I/O and caching on Linux. However, his hands-on C++ is brief and dated (a ~7-month stint at National Instruments in 2014-2015 plus a thesis project), he has no Rust, and no direct routing, navigation-guidance, or map-tile pipeline experience. His recent years are TypeScript/Node product work, so he would need to re-ramp on modern C++ despite transferable systems and geodata fundamentals.",
+    "strengths": [
+      "Real geospatial domain experience: founded and maintains an open-source geo-data platform used by Green Map",
+      "Low-latency distributed systems work in DLang (async I/O, fibers, caching) at millions of HTTP requests/second",
+      "Strong engineering rigor: TDD, CI/CD, testing tooling author, Linux and infrastructure fluency"
+    ],
+    "concerns": [
+      "Modern C++ experience is minimal and roughly a decade old; no Rust experience listed",
+      "No direct routing, navigation systems, or tile-generation pipeline background",
+      "Recent focus (2020-present) is TypeScript/Node full-stack product work, away from systems programming"
+    ],
+    "key_factors": [
+      {
+        "factor": "Dated/limited C++ and no Rust",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial/GIS domain experience",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Low-latency distributed systems (DLang)",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 5121,
+    "output_tokens": 1668,
+    "cache_read_input_tokens": 35931,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.170541
+  }
+}
