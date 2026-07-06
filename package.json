@@ -16,7 +16,8 @@
     "build:transplant": "node scripts/buildReasoningTransplant.js",
     "report": "node src/report.js",
     "build:matrix": "node scripts/buildSiteData.js",
-    "build:site": "npm run build:matrix && npm run build:transplant && npm run build:prompt-lab",
+    "build:synthesis": "node scripts/buildSynthesis.js",
+    "build:site": "npm run build:matrix && npm run build:transplant && npm run build:prompt-lab && npm run build:synthesis",
     "serve": "npx --yes serve site -l 8080",
     "audit": "node scripts/auditDiffs.js",
     "audit:cli": "bash scripts/audit-diffs.sh"

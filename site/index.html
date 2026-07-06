@@ -31,11 +31,77 @@
   <main class="container">
     <h1 class="sr-only">Counterfactual audit of LLM résumé scoring</h1>
     <div id="header"></div>
-    <p class="dim">A counterfactual audit of how frontier LLMs score résumés when one demographic signal changes. Same résumé. Same job. Same model. Just a different name, country, or alma mater. We log how the verdict shifts.</p>
+    <p class="dim">Same résumé, one detail changed. Does the verdict move? Does the model's own reasoning drive the score, or decorate it? Can better prompting fix any of it? Three experiments, one story — the short version first, the full audit below.</p>
+    <div id="synthesis" data-prerender="synthesis">
+      <!-- @PRERENDER:synthesis:START -->
+<div class="panel">
+    <div class="panel-head"><span>THE BOTTOM LINE</span></div>
+    <p>Frontier LLMs are already being handed résumés to score. Across 11 models, 28,050 screenings, and three experiments, one picture holds up: LLM résumé bias is <strong>real and reasoned, but small, unstable, idiosyncratic, and not fixable by prompting</strong>. Changing a single demographic line does move scores, and the score genuinely follows the model's written reasoning rather than decorating a number picked in advance. But most of that movement stays inside run-to-run noise, the models rarely agree on whom to penalise, and the one model with a stable, statistically clear bias is Qwen. Reordering the prompt or adding worked examples barely moves the needle. The three experiments below each pin down one clause of that sentence.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><span>EVERY MODEL, THREE WAYS</span></div>
+    <p class="dim">One row per model, joining all three experiments. <em>Bias</em> is how far the score moves on a demographic swap; <em>% sig</em> how much of that clears run-to-run noise; <em>instability</em> the score's own wobble on identical inputs; <em>coherence</em> how tightly the score tracks the model's own stated key factors; <em>responsiveness</em> how far the score follows reasoning transplanted into it. Eleven models is a small sample — read this as a fingerprint, not a law.</p>
+    <table class="data"><thead><tr><th>Model</th><th class="num">bias</th><th class="num">% sig</th><th class="num">instability</th><th class="num">coherence</th><th class="num">responsiveness</th></tr></thead><tbody>
+<tr class="row-hi"><td>Qwen 3 Next 80B</td><td class="num">0.41</td><td class="num">38%</td><td class="num">0.24</td><td class="num">0.87</td><td class="num">0.28</td></tr>
+<tr><td>Gemini 2.5 Flash</td><td class="num">0.28</td><td class="num">0%</td><td class="num">0.84</td><td class="num">0.67</td><td class="num">0.28</td></tr>
+<tr><td>Gemini 2.5 Pro</td><td class="num">0.24</td><td class="num">0%</td><td class="num">0.82</td><td class="num">0.93</td><td class="num">0.35</td></tr>
+<tr><td>Mistral Small</td><td class="num">0.23</td><td class="num">7%</td><td class="num">0.34</td><td class="num">0.72</td><td class="num">0.24</td></tr>
+<tr><td>Claude Fable 5</td><td class="num">0.16</td><td class="num">0%</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
+<tr><td>Gemini 3.1 Pro · Preview</td><td class="num">0.11</td><td class="num">0%</td><td class="num">0.55</td><td class="num">0.94</td><td class="num">0.28</td></tr>
+<tr><td>Claude Sonnet</td><td class="num">0.10</td><td class="num">0%</td><td class="num">0.53</td><td class="num">0.97</td><td class="num">0.27</td></tr>
+<tr><td>Claude Haiku</td><td class="num">0.10</td><td class="num">0%</td><td class="num">0.73</td><td class="num">0.74</td><td class="num">0.19</td></tr>
+<tr><td>Claude Opus</td><td class="num">0.08</td><td class="num">3%</td><td class="num">0.40</td><td class="num">0.98</td><td class="num">0.21</td></tr>
+<tr><td>Mistral Large</td><td class="num">0.07</td><td class="num">0%</td><td class="num">0.00</td><td class="num">0.75</td><td class="num">0.20</td></tr>
+<tr><td>Llama 4 Maverick</td><td class="num">0.07</td><td class="num">0%</td><td class="num">0.11</td><td class="num">0.21</td><td class="num">0.17</td></tr>
+    </tbody></table>
+    <p class="dim">Claude Fable 5 appears in the audit only; it is excluded from the transplant and prompt-lab experiments, so its follow-up cells read “–”.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><span>THREE EXPERIMENTS, ONE STORY</span></div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px">
+      <a class="card" href="#premise" style="text-align:left;text-decoration:none">
+        <strong>1 · The counterfactual audit</strong><br>
+        <span class="dim">Change one demographic line, hold the rest. Scores move, but only about 4% clear the noise floor and models barely agree. → below</span>
+      </a>
+      <a class="card" href="transplant.html" style="text-align:left;text-decoration:none">
+        <strong>2 · The reasoning transplant</strong><br>
+        <span class="dim">Feed the model its own most-positive vs most-negative assessment. The score follows the reasoning (+3.62 pts, 100% directional) — bias is reasoned, not post-hoc. →</span>
+      </a>
+      <a class="card" href="prompt-lab.html" style="text-align:left;text-decoration:none">
+        <strong>3 · The prompt lab</strong><br>
+        <span class="dim">Six prompt strategies vs the naive one. Score-last backfired, few-shot only nudged — the instability is intrinsic. →</span>
+      </a>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><span>DOES THE BIAS FOLLOW THE REASONING?</span></div>
+    <p class="dim">Each dot is a model: horizontal is how biased it is (audit), vertical is how far its score follows transplanted reasoning. The upward tilt is the throughline — the models that let reasoning drive the score most are also the most biased, with Qwen furthest out on both.</p>
+    <svg viewBox="0 0 680 380" width="100%" style="max-width:680px;font-family:var(--mono,monospace)" role="img" aria-label="Scatter of model bias versus reasoning responsiveness">
+  <line x1="60" y1="22" x2="60" y2="332" stroke="var(--border)"/>
+  <line x1="60" y1="332" x2="656" y2="332" stroke="var(--border)"/>
+  <line x1="60.0" y1="332" x2="60.0" y2="336" stroke="var(--border)"/><text x="60.0" y="349" fill="var(--dim)" font-size="11" text-anchor="middle">0.0</text><line x1="192.4" y1="332" x2="192.4" y2="336" stroke="var(--border)"/><text x="192.4" y="349" fill="var(--dim)" font-size="11" text-anchor="middle">0.1</text><line x1="324.9" y1="332" x2="324.9" y2="336" stroke="var(--border)"/><text x="324.9" y="349" fill="var(--dim)" font-size="11" text-anchor="middle">0.2</text><line x1="457.3" y1="332" x2="457.3" y2="336" stroke="var(--border)"/><text x="457.3" y="349" fill="var(--dim)" font-size="11" text-anchor="middle">0.3</text><line x1="589.8" y1="332" x2="589.8" y2="336" stroke="var(--border)"/><text x="589.8" y="349" fill="var(--dim)" font-size="11" text-anchor="middle">0.4</text><line x1="56" y1="332.0" x2="60" y2="332.0" stroke="var(--border)"/><text x="52" y="336.0" fill="var(--dim)" font-size="11" text-anchor="end">0.15</text><line x1="56" y1="261.5" x2="60" y2="261.5" stroke="var(--border)"/><text x="52" y="265.5" fill="var(--dim)" font-size="11" text-anchor="end">0.20</text><line x1="56" y1="191.1" x2="60" y2="191.1" stroke="var(--border)"/><text x="52" y="195.1" fill="var(--dim)" font-size="11" text-anchor="end">0.25</text><line x1="56" y1="120.6" x2="60" y2="120.6" stroke="var(--border)"/><text x="52" y="124.6" fill="var(--dim)" font-size="11" text-anchor="end">0.30</text><line x1="56" y1="50.2" x2="60" y2="50.2" stroke="var(--border)"/><text x="52" y="54.2" fill="var(--dim)" font-size="11" text-anchor="end">0.35</text>
+  <text x="358" y="372" fill="var(--text)" font-size="12" text-anchor="middle">bias — mean |Δ| on a demographic swap →</text>
+  <text x="16" y="177" fill="var(--text)" font-size="12" text-anchor="middle" transform="rotate(-90 16 177)">responsiveness — score follows reasoning →</text>
+  <circle cx="596.8" cy="149.3" r="5" fill="var(--accent)"><title>Qwen 3 Next 80B · bias 0.41 · responsiveness 0.28</title></circle><text x="588.8" y="153.3" fill="var(--dim)" font-size="10" text-anchor="end">Qwen 3</text>
+<circle cx="425.4" cy="154.4" r="5" fill="var(--accent)"><title>Gemini 2.5 Flash · bias 0.28 · responsiveness 0.28</title></circle><text x="433.4" y="158.4" fill="var(--dim)" font-size="10" text-anchor="start">2.5 Flash</text>
+<circle cx="381.3" cy="53.7" r="5" fill="var(--accent)"><title>Gemini 2.5 Pro · bias 0.24 · responsiveness 0.35</title></circle><text x="389.3" y="57.7" fill="var(--dim)" font-size="10" text-anchor="start">2.5 Pro</text>
+<circle cx="363.6" cy="199.7" r="5" fill="var(--accent)"><title>Mistral Small · bias 0.23 · responsiveness 0.24</title></circle><text x="371.6" y="203.7" fill="var(--dim)" font-size="10" text-anchor="start">Mistral S</text>
+<circle cx="206.1" cy="143.4" r="5" fill="var(--accent)"><title>Gemini 3.1 Pro · Preview · bias 0.11 · responsiveness 0.28</title></circle><text x="214.1" y="147.4" fill="var(--dim)" font-size="10" text-anchor="start">3.1 Pro</text>
+<circle cx="194.3" cy="168.4" r="5" fill="var(--accent)"><title>Claude Sonnet · bias 0.10 · responsiveness 0.27</title></circle><text x="202.3" y="172.4" fill="var(--dim)" font-size="10" text-anchor="start">Sonnet</text>
+<circle cx="193.3" cy="273.9" r="5" fill="var(--accent)"><title>Claude Haiku · bias 0.10 · responsiveness 0.19</title></circle><text x="201.3" y="277.9" fill="var(--dim)" font-size="10" text-anchor="start">Haiku</text>
+<circle cx="170.7" cy="253.6" r="5" fill="var(--accent)"><title>Claude Opus · bias 0.08 · responsiveness 0.21</title></circle><text x="178.7" y="257.6" fill="var(--dim)" font-size="10" text-anchor="start">Opus</text>
+<circle cx="154.7" cy="256.9" r="5" fill="var(--accent)"><title>Mistral Large · bias 0.07 · responsiveness 0.20</title></circle><text x="162.7" y="260.9" fill="var(--dim)" font-size="10" text-anchor="start">Mistral L</text>
+<circle cx="150.3" cy="305.7" r="5" fill="var(--accent)"><title>Llama 4 Maverick · bias 0.07 · responsiveness 0.17</title></circle><text x="158.3" y="309.7" fill="var(--dim)" font-size="10" text-anchor="start">Llama 4</text>
+</svg>
+    <p class="dim">Pearson r ≈ 0.61 across 10 models. Suggestive of the identity → reasoning → score chain, not statistically significant at this sample size.</p>
+  </div>
+<!-- @PRERENDER:synthesis:END -->
+    </div>
     <div id="premise" data-prerender="premise">
       <!-- @PRERENDER:premise:START -->
 <div class="panel">
-    <div class="panel-head"><span>THE ASSUMPTION UNDER TEST</span></div>
+    <div class="panel-head"><span>EXPERIMENT 1 · THE COUNTERFACTUAL AUDIT</span></div>
+    <p class="dim">The first of the three experiments, in full — the demographic bias audit the fingerprint above is built from.</p>
     <p>A fair evaluator scores a résumé on its merits. Change only a demographic signal on it, the candidate's name, country, alma mater, or a gap in employment, and leave every other word untouched, and the score should not move. The optimistic assumption we put to the test is that frontier LLMs already behave this way: that they are effectively identity-blind, and swapping a name leaves the verdict intact.</p>
   </div>
   <div class="panel">

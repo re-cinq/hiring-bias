@@ -1101,7 +1101,8 @@ function premiseHtml(matrix) {
   const variantCount = variantCountOf(matrix);
   const jdCount = Object.keys(matrix.jd_labels ?? {}).length;
   return `<div class="panel">
-    <div class="panel-head"><span>THE ASSUMPTION UNDER TEST</span></div>
+    <div class="panel-head"><span>EXPERIMENT 1 · THE COUNTERFACTUAL AUDIT</span></div>
+    <p class="dim">The first of the three experiments, in full — the demographic bias audit the fingerprint above is built from.</p>
     <p>A fair evaluator scores a résumé on its merits. Change only a demographic signal on it, the candidate's name, country, alma mater, or a gap in employment, and leave every other word untouched, and the score should not move. The optimistic assumption we put to the test is that frontier LLMs already behave this way: that they are effectively identity-blind, and swapping a name leaves the verdict intact.</p>
   </div>
   <div class="panel">
