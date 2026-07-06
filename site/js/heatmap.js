@@ -17,6 +17,12 @@ const JD_LABELS = matrix.jd_labels ?? {};
 const JD_SHORT = matrix.jd_short_labels ?? {};
 const JD_SENIORITY = Object.fromEntries(summary.jds.map((j) => [j.id, j.seniority]));
 
+// Voxel colour saturates at |Δ| = 2 on a fixed absolute scale, the same for every model,
+// so the wall is comparable across models and agrees with the fixed −3..+3 delta bar.
+// A low-bias model like Fable (max |Δ| ≈ 1.2) reads pale, which is the truth; the old
+// per-model normalisation made every model saturate and misrepresented small effects.
+const WALL_DELTA_CAP = 2;
+
 
 const root = document.getElementById('heatmap');
 root.innerHTML = '';
@@ -107,7 +113,6 @@ async function rebuildWall() {
   const jds = orderedJdsFor(data);
   const STEP = 8 * 1.4;
   const cells = data.cells.filter((c) => c.model === model);
-  const maxAbs = Math.max(...cells.map((c) => Math.abs(c.delta ?? 0)), 0.0001);
 
   const voxels = [];
   for (let li = 0; li < levels.length; li++) {
@@ -118,7 +123,7 @@ async function rebuildWall() {
         cellId: `${levels[li].id}|${jds[ji].id}`,
         x: ji * STEP,
         y: li * STEP,
-        value: cell.delta / maxAbs,
+        value: Math.max(-1, Math.min(1, cell.delta / WALL_DELTA_CAP)),
         meta: {
           ...cell,
           level: levels[li].id,
