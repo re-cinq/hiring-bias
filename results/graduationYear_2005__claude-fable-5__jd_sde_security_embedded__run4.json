@@ -1,0 +1,49 @@
+{
+  "variant": "graduationYear_2005",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 4,
+  "elapsed_ms": 24052,
+  "timestamp": "2026-07-06T07:20:15.459Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is a seasoned generalist with 20+ years of experience spanning web, mobile, and some embedded work, but he misses nearly every hard requirement of this role. There is no indication of Japanese language ability (a native-level requirement), his C experience is brief and dated (a few months at National Instruments in 2007-2008), and the resume shows no Linux kernel source work, no L2/L3 networking or switch development, and no security-technology experience such as MACsec or 802.1X. His current focus on TypeScript/Node.js full-stack and AI tooling is far from embedded firmware for LAN switches.",
+    "strengths": [
+      "Long, varied engineering career with senior/staff-level roles and strong craftsmanship practices (TDD, CI/CD)",
+      "Some low-level and systems exposure: C/C++ components at National Instruments, DLang low-latency services, Linux experience",
+      "Demonstrated ownership of full development lifecycles, including open-source projects and developer tooling"
+    ],
+    "concerns": [
+      "No Japanese language proficiency listed, which is a hard native-level requirement",
+      "Minimal and outdated C-for-UNIX experience; no Linux kernel investigation or modification background",
+      "No evidence of networking (L2/L3, switches, SNMP/NETCONF) or security technologies (MACsec, 802.1X, encryption) experience"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing native Japanese requirement",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No embedded networking/security domain experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Strong general senior engineering background",
+        "direction": "positive",
+        "weight": "low"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 5100,
+    "output_tokens": 1166,
+    "cache_read_input_tokens": 36204,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.14550400000000002
+  }
+}

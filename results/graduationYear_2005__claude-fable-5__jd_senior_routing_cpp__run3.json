@@ -1,0 +1,49 @@
+{
+  "variant": "graduationYear_2005",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 3,
+  "elapsed_ms": 41948,
+  "timestamp": "2026-07-06T07:25:02.446Z",
+  "response": {
+    "score": 5,
+    "recommend_interview": "maybe",
+    "justification": "The candidate brings genuine geospatial domain depth (founder of the GISCollective geo-data platform, Green Map GIS work, FOSS4G speaker) and proven low-latency systems experience at Sociomantic handling millions of requests per second with async I/O. However, the role's primary requirement is modern C++ or Rust, and his only professional C++ work dates to 2007-2008; C++ does not even appear in his skills list, and his last decade has centered on TypeScript/Node web development. He has never built navigation guidance or routing data pipelines, so the fit hinges on whether the team values his geospatial and performance background enough to accept significant ramp-up on the core language and domain.",
+    "strengths": [
+      "Long-running geospatial experience: founded and maintains an open-source geo-data platform used by Green Map",
+      "Low-latency, high-throughput systems work (millions of HTTP requests/sec, async I/O, fibers, caching)",
+      "Strong engineering craftsmanship: TDD, CI/CD, testing tools authorship, Linux/Docker/Kubernetes operational skills"
+    ],
+    "concerns": [
+      "No modern C++ or Rust experience; last professional C++ was 2007-2008 and C++ is absent from his skills list",
+      "No navigation guidance, routing, or map-tile pipeline experience; his GIS work is web mapping, not routing data",
+      "Recent decade is predominantly TypeScript/Node full-stack and web product work, distant from systems-level data pipeline engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "Lack of modern C++/Rust",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain experience",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Low-latency distributed systems background",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 5121,
+    "output_tokens": 1894,
+    "cache_read_input_tokens": 35969,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.181879
+  }
+}
