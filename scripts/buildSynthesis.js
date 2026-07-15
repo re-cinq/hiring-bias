@@ -180,8 +180,9 @@ async function main() {
 
   const page = await fs.readFile(PAGE, 'utf8');
   const re = /(<!-- @PRERENDER:synthesis:START -->)[\s\S]*?(<!-- @PRERENDER:synthesis:END -->)/g;
+  if (!re.test(page)) { console.error('No synthesis marker found in index.html — add <!-- @PRERENDER:synthesis:START/END --> first.'); process.exit(1); }
+  re.lastIndex = 0;
   const next = page.replace(re, (_, a, b) => `${a}\n${html}\n${b}`);
-  if (next === page) { console.error('No synthesis marker found in index.html — add <!-- @PRERENDER:synthesis:START/END --> first.'); process.exit(1); }
   await fs.writeFile(PAGE, next);
   console.log(`Synthesis built: ${rows.length} models, bias↔responsiveness r=${corr ? corr.r.toFixed(2) : 'n/a'}. Prerendered index.html.`);
 }
