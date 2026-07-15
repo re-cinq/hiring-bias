@@ -15,19 +15,26 @@ move. Any delta between a variant and the baseline is attributable to the single
 signal that changed — the same logic as the classic [Bertrand–Mullainathan audit
 study](https://www.nber.org/papers/w9873), run against today's models.
 
+The audit is complemented by two follow-up experiments — a **reasoning
+transplant** (does the score follow the model's written reasoning?) and a
+**prompt lab** (can prompt engineering stabilise the score?) — and a synthesis
+that joins all three on their shared unit, the model.
+
 Results are explorable as a static site under [`site/`](site/) — heatmaps,
-counterfactual diffs, and per-job-description breakdowns.
+counterfactual diffs, per-job-description breakdowns, and one page per
+follow-up experiment, with the synthesis prerendered onto the homepage.
 
 ## Current run
 
 | | |
 |---|---|
-| Inferences collected | 25,500 |
-| Models | 10, across 6 vendors |
+| Inferences collected | 28,050 |
+| Models | 11, across 5 vendors |
 | Job descriptions | 17 (junior to CTO) |
 | Bias axes | 8 (7 injection, 1 redaction) |
-| Audit verdicts | 4,930 (one per variant cell, two samples judged per cell) |
-| API spend | ~$422 plus ~$31 for the audit pass |
+| Audit verdicts | 5,393 (one per variant cell, two samples judged per cell) |
+| Follow-up experiments | reasoning transplant (3,197 records) and prompt lab (4,800 records), 10 models each |
+| API spend | ~$835 plus the audit pass |
 
 ## The eight axes
 
@@ -53,10 +60,10 @@ Redaction (mitigation) axis:
 
 ## The models
 
-Ten model slots across six vendors, mixing flagship and cheap tiers to separate
-"vendor" effects from "tier" effects:
+Eleven model slots across five vendors, mixing flagship and cheap tiers to
+separate "vendor" effects from "tier" effects:
 
-- **Anthropic** — Claude Opus, Claude Sonnet, Claude Haiku
+- **Anthropic** — Claude Fable 5, Claude Opus, Claude Sonnet, Claude Haiku
 - **Google** — Gemini 2.5 Pro, Gemini 2.5 Flash, Gemini 3.1 Pro (preview)
 - **Meta** — Llama 4 Maverick (via Vertex AI)
 - **Alibaba** — Qwen 3 Next 80B (via Vertex AI)
@@ -70,6 +77,9 @@ through the Claude CLI rather than the Anthropic API, so they run at the CLI's
 default sampling, not at temperature 0.7. Treat cross-model comparisons
 involving Claude with that asymmetry in mind. See
 [`RESEARCH_NOTES.md`](RESEARCH_NOTES.md) for the full rationale.
+
+Claude Fable 5 appears in the counterfactual audit only; the transplant and
+prompt-lab experiments cover the other ten models.
 
 ## The audit layer
 
@@ -87,6 +97,23 @@ skipped until backfill completes. See the audit-design section in
 [`site/methodology.html`](site/methodology.html) for cost, judge selection, and
 the self-judging caveat.
 
+## The follow-up experiments
+
+Two smaller experiments probe *why* the audit deltas look the way they do. The
+homepage synthesis joins all three experiments into one per-model fingerprint.
+
+- **Reasoning transplant** ([`site/transplant.html`](site/transplant.html)) —
+  feed a model its own most-positive and most-negative written assessment of
+  the same résumé and ask it to score again. If the score follows the
+  transplanted reasoning, the bias is reasoned rather than a number decorated
+  after the fact. Run with `npm run run:transplant`, aggregate with
+  `npm run build:transplant`.
+- **Prompt lab** ([`site/prompt-lab.html`](site/prompt-lab.html)) — five prompt
+  strategies (score-last, rubric, blind instruction, chain-of-thought,
+  few-shot) against the naive baseline, asking whether prompt engineering can
+  stabilise the score. Run with `npm run run:prompt-lab`, aggregate with
+  `npm run build:prompt-lab`.
+
 ## Quick start
 
 Requires Node.js 20+.
@@ -98,8 +125,10 @@ npm run smoke              # verify every provider is wired
 npm run generate           # build variants from data/resume_base.md
 npm run run                # execute the experiment (resumable)
 npm run report             # produce report/data.csv and report/summary.md
-npm run build:site         # regenerate site/data/ for the static site
+npm run build:site         # regenerate site/data/ and prerender index.html (matrix + transplant + prompt lab + synthesis)
 npm run audit              # run the LLM-as-judge audit pass on completed cells
+npm run run:transplant     # execute the reasoning-transplant experiment
+npm run run:prompt-lab     # execute the prompt-lab experiment
 ```
 
 Each call writes its own result file keyed by (variant, model, JD, run), so runs
@@ -127,7 +156,7 @@ data/            baseline résumé, job descriptions, generated variants
 data/audits/     per-cell audit verdicts from the LLM-as-judge pass
 results/         raw per-inference model outputs (JSON)
 report/          aggregated data.csv and summary.md
-scripts/         buildSiteData.js (turns results into site data) and auditDiffs.js (the audit pass)
+scripts/         build*.js (site data, transplant, prompt lab, homepage synthesis), run*.js (follow-up experiments), auditDiffs.js (the audit pass)
 site/            static results explorer (heatmaps, diffs, per-JD pages, methodology)
 article/         working notes and drafts for the writeup (not part of the site build)
 ```
