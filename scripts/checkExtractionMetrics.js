@@ -112,6 +112,18 @@ check('empty entry shells score full recall but near-zero coverage', () => {
   assert.equal(fieldCoverage(extraction()).employment, 1);
 });
 
+check('a multi-value field that changes counts once, not once per element', () => {
+  const base = extraction({ employment: [role({ functions: ['backend', 'data'] })] });
+  const changed = extraction({ employment: [role({ functions: ['fullstack'] })] });
+  const diffs = diffExtractions(base, changed);
+  assert.equal(diffs.length, 1, 'one field changed, however many elements moved');
+  assert.equal(diffs[0].path, 'employment[0].functions');
+
+  // Order alone is not a change.
+  const reordered = extraction({ employment: [role({ functions: ['data', 'backend'] })] });
+  assert.deepEqual(diffExtractions(base, reordered), []);
+});
+
 check('allow-list keeps projects[].name off the companyNames axis', () => {
   const allowed = allowedPathsFor('companyNames_faang');
   assert.equal(allowed('employment[0].employer'), true);

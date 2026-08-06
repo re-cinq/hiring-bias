@@ -121,12 +121,34 @@ export function matchEntries(left, right, keys) {
   return pairs;
 }
 
+// Fields that are semantically a set, not an ordered list. Comparing these element by
+// element counts one changed field as several: a role going from ["backend","data"] to
+// ["fullstack"] would score three diffs instead of one.
+const MULTIVALUE = new Set([
+  'employment[].functions', 'employment[].technologies',
+  'domains', 'interests', 'notable_signals', 'skills_declared',
+  'talks_and_workshops[].urls', 'certifications', 'publications'
+]);
+
+const setValue = (items) => {
+  const parts = items.map((item) => {
+    if (item == null) return '';
+    if (typeof item === 'object') return String(item.name ?? item.value ?? JSON.stringify(item));
+    return String(item);
+  });
+  return `{${[...new Set(parts)].sort().join(',')}}`;
+};
+
 function flatten(value, prefix, out) {
   if (value === null || typeof value !== 'object') {
     out.set(prefix, value ?? null);
     return out;
   }
   if (Array.isArray(value)) {
+    if (MULTIVALUE.has(prefix.replace(/\[\d+\]/g, '[]'))) {
+      out.set(prefix, setValue(value));
+      return out;
+    }
     value.forEach((item, i) => flatten(item, `${prefix}[${i}]`, out));
     if (value.length === 0) out.set(prefix, '[]');
     return out;

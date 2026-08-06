@@ -115,7 +115,11 @@ function render(rows, matrix, transplant, status, corr) {
   const models = matrix.models.length;
   const records = status?.n_records ?? null;
   const tpEffect = fmt(transplant.overall?.mean_effect);
-  const tpDir = pct(transplant.overall?.directional_rate);
+  // Counts, not a rounded rate: pct() turns 0.996875 into "100%", claiming a clean sweep
+  // that one cell contradicts.
+  const tpDir = transplant.overall?.directional_cells != null
+    ? `${transplant.overall.directional_cells}/${transplant.overall.n_cells}`
+    : pct(transplant.overall?.directional_rate);
   // Overall share of demographic shifts that clear the noise floor (cell-weighted).
   let sigW = 0, nAll = 0;
   for (const r of rows) if (r.sig != null) { sigW += r.sig * (r.n ?? 0); nAll += (r.n ?? 0); }
