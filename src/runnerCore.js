@@ -41,11 +41,13 @@ export function backoffMs(err, attempt) {
 }
 
 // Retry transient provider failures — rate limits, overload, truncated/malformed JSON.
-export async function callWithRetry(model, prompt, retries = 2) {
+// `options` is forwarded to the provider adapter (temperature, and anything else a
+// caller needs to override); omitting it keeps every adapter on its own defaults.
+export async function callWithRetry(model, prompt, retries = 2, options) {
   let lastErr;
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      return await model.call(prompt);
+      return await model.call(prompt, options);
     } catch (err) {
       lastErr = err;
       if (isFatal(err) || attempt === retries) break;
