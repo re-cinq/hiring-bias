@@ -104,6 +104,7 @@ async function main() {
     n_cells: allCs.length,
     mean_effect: mean(allCs.map((c) => c.effect)),
     mean_signal_gap: mean(allCs.map((c) => c.signal_gap).filter((g) => typeof g === 'number')),
+    directional_cells: allCs.filter((c) => c.effect > 0).length,
     directional_rate: allCs.length ? allCs.filter((c) => c.effect > 0).length / allCs.length : null
   };
 
@@ -131,7 +132,12 @@ async function prerender(summary) {
   ).join('\n');
   const nCells = summary.overall?.n_cells ?? 0;
   const effectPts = fmt(summary.overall?.mean_effect);
-  const dirPct = summary.overall?.directional_rate != null ? Math.round(summary.overall.directional_rate * 100) : '–';
+  // Report the raw count alongside the rate. Rounding 0.996875 to a bare "100%" claims a
+  // clean sweep the data does not support — one cell moved against its reasoning.
+  const dirCells = summary.overall?.directional_cells;
+  const dirPhrase = summary.overall?.directional_rate != null
+    ? `${esc(dirCells)} of ${esc(nCells)} (${(summary.overall.directional_rate * 100).toFixed(1)}%)`
+    : '–';
   const resp = summary.by_model.map((m) => m.responsiveness).filter((x) => typeof x === 'number');
   const respRange = resp.length ? `${fmt(Math.min(...resp))} to ${fmt(Math.max(...resp))}` : '–';
   const nDriven = summary.by_model.filter((m) => m.verdict === 'reasoning-driven').length;
@@ -155,7 +161,7 @@ async function prerender(summary) {
   <table class="data"><thead><tr><th>Model</th><th class="num">score · neg</th><th class="num">score · pos</th><th class="num">effect (Δ)</th><th class="num">responsiveness</th><th>verdict</th></tr></thead><tbody>
 ${rows}
   </tbody></table>
-  <p><strong>What the results say about the assumption.</strong> The assumption is <strong>dismissed</strong>. The score <em>does</em> follow the reasoning, so it is not just post-hoc decoration. That is exactly what the <strong>reasoning-driven</strong> verdict in every row above means. Swapping the negative assessment for the positive one moved the score by <strong>${effectPts} points</strong> on average across ${esc(nCells)} cells, and the score moved in the reasoning's direction in <strong>${dirPct}%</strong> of them. ${drivenPhrase} lands reasoning-driven, and none behaved as if the number were fixed in advance. What would have <em>supported</em> the assumption, an effect near zero with the score sitting still no matter which reasoning it was handed, never appeared for any model. One caveat keeps a weak version alive. Responsiveness stays well below 1.0 (${respRange}), so the score moves in the reasoning's direction but by far less than the reasoning's own swing. The number is somewhat anchored, but not merely decorative.</p>
+  <p><strong>What the results say about the assumption.</strong> The assumption is <strong>dismissed</strong>. The score <em>does</em> follow the reasoning, so it is not just post-hoc decoration. That is exactly what the <strong>reasoning-driven</strong> verdict in every row above means. Swapping the negative assessment for the positive one moved the score by <strong>${effectPts} points</strong> on average across ${esc(nCells)} cells, and the score moved in the reasoning's direction in <strong>${dirPhrase}</strong> of them. ${drivenPhrase} lands reasoning-driven, and none behaved as if the number were fixed in advance. What would have <em>supported</em> the assumption, an effect near zero with the score sitting still no matter which reasoning it was handed, never appeared for any model. One caveat keeps a weak version alive. Responsiveness stays well below 1.0 (${respRange}), so the score moves in the reasoning's direction but by far less than the reasoning's own swing. The number is somewhat anchored, but not merely decorative.</p>
   <p class="dim"><strong>What this does <em>not</em> explain.</strong> A different question is why the <em>same</em> prompt scores differently from one run to the next. That is a separate stability question about sampling noise from temperature and few runs per cell, covered in the <a href="methodology.html">methodology</a> and measured per prompt variant in the <a href="prompt-lab.html">prompt lab</a>. This experiment reframes it. Because the score tracks the reasoning and the model writes fresh reasoning on every run, much of that run-to-run swing is the reasoning genuinely changing and the score following it. The instability is propagated through a causal link, and is not a random number wearing a justification.</p>
 </div>`;
   const file = 'site/transplant.html';

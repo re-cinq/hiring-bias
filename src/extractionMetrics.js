@@ -255,6 +255,39 @@ export function entryRecall(extraction) {
   );
 }
 
+// Fields an entry must actually carry to be worth anything downstream. Counting entries
+// alone is not enough: one model returned 15 employment objects containing nothing but
+// `employer_type`, which scored a perfect entry recall while carrying no facts at all.
+const REQUIRED_FIELDS = {
+  employment: ['employer', 'title', 'start', 'seniority_level', 'employment_type'],
+  education: ['institution', 'degree_title', 'level', 'field_category'],
+  talks_and_workshops: ['title', 'venue_type'],
+  projects: ['name', 'role'],
+  languages: ['language', 'proficiency']
+};
+
+const isPresent = (value) => value != null && value !== '' && !(Array.isArray(value) && value.length === 0);
+
+// Share of required fields actually filled in, per entry type and overall.
+export function fieldCoverage(extraction) {
+  const out = {};
+  let filled = 0;
+  let total = 0;
+  for (const [section, fields] of Object.entries(REQUIRED_FIELDS)) {
+    const entries = extraction?.[section] ?? [];
+    let sectionFilled = 0;
+    for (const entry of entries) {
+      for (const field of fields) if (isPresent(entry?.[field])) sectionFilled++;
+    }
+    const sectionTotal = entries.length * fields.length;
+    out[section] = sectionTotal ? sectionFilled / sectionTotal : null;
+    filled += sectionFilled;
+    total += sectionTotal;
+  }
+  out.overall = total ? filled / total : null;
+  return out;
+}
+
 const SECTION_HEADINGS = {
   employment: 'Employment History',
   education: 'Education',
@@ -312,6 +345,8 @@ export function spanIsGrounded(span, resumeText) {
   return needle.length > 0 && collapse(resumeText).includes(needle);
 }
 
+// A null rate means the model supplied no spans at all, which is a compliance failure and
+// must not be confused with a clean sheet. Callers pair this with fieldCoverage.
 export function groundedness(extraction, resumeText) {
   const spans = collectSpans(extraction);
   const grounded = spans.filter((span) => spanIsGrounded(span, resumeText)).length;
@@ -371,13 +406,20 @@ const AXIS_ALLOWED = {
 
 const HONEYPOTS = /(\.employer_type|\.institution_type)$/;
 
+// Provenance fields quote the document. When an axis rewrites the text — companyNames
+// renaming an employer, anonymize_all scrubbing it — the quote MUST change, so counting
+// that as leakage measures the mutator, not the model. Spans stay inside the
+// self-consistency metric, where the document is identical and a moving quote is real
+// instability, and groundedness polices them separately.
+export const PROVENANCE = /(\.source_span|\.span)$/;
+
 export function allowedPathsFor(variantName) {
   const axis = String(variantName).split('_')[0];
   const allow = AXIS_ALLOWED[axis];
   enforce(allow != null, `no allow-list for axis '${axis}' (variant '${variantName}')`);
   // anonymize_all additionally scrubs prestige signals; anonymize_name does not, but the
   // wider allow-list only risks under-reporting leakage, never inventing it.
-  return (path) => allow(path) || HONEYPOTS.test(path);
+  return (path) => allow(path) || HONEYPOTS.test(path) || PROVENANCE.test(path);
 }
 
 export function leakage(baselineExtraction, variantExtraction, variantName) {

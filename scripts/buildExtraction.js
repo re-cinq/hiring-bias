@@ -3,8 +3,9 @@ import path from 'node:path';
 import { mean, groupBy } from '../src/aggregate.js';
 import {
   agreementRate, ordinalDrift, offVocabRate, entryRecall, expectedEntryCounts,
-  groundedness, attributionAccuracy, diffExtractions, allowedPathsFor, positiveControlOk
+  groundedness, attributionAccuracy, diffExtractions, allowedPathsFor, positiveControlOk, fieldCoverage
 } from '../src/extractionMetrics.js';
+import { normalizeExtraction } from '../src/extractionSchema.js';
 
 const IN_DIR = 'results-extraction';
 const VARIANTS_DIR = 'data/variants';
@@ -18,7 +19,9 @@ async function loadRecords() {
     const files = await fs.readdir(path.join(IN_DIR, arm)).catch(() => []);
     for (const file of files) {
       if (!file.endsWith('.json')) continue;
-      records.push(JSON.parse(await fs.readFile(path.join(IN_DIR, arm, file), 'utf8')));
+      const record = JSON.parse(await fs.readFile(path.join(IN_DIR, arm, file), 'utf8'));
+      record.response = normalizeExtraction(record.response);
+      records.push(record);
     }
   }
   return records;
@@ -44,15 +47,38 @@ const meanOrNull = (xs) => (xs.length ? mean(xs) : null);
 
 // Pairs within one cell measure sampling noise; pairs across baseline↔variant measure
 // noise plus whatever the demographic swap moved. The difference is the signal.
+//
+// The floor pools within-baseline AND within-variant pairs. Using the variant's spread
+// alone makes the estimator asymmetric — the cross comparison draws from two cells and so
+// carries both cells' noise — which produced sharply negative "leakage" whenever the
+// baseline cell happened to be the steadier of the two.
+// Both sides need enough runs to estimate their own spread. A single baseline draw
+// anchors the whole comparison on one arbitrary sample, which on a noisy model produces a
+// confident number that means nothing.
+const MIN_RUNS_FOR_LEAKAGE = 3;
+
 function leakageFor(baselineRuns, variantRuns, variantName) {
+  if (baselineRuns.length < MIN_RUNS_FOR_LEAKAGE || variantRuns.length < MIN_RUNS_FOR_LEAKAGE) {
+    return {
+      observed: null,
+      noise_floor: null,
+      net: null,
+      insufficient_runs: { baseline: baselineRuns.length, variant: variantRuns.length },
+      control_ok: true
+    };
+  }
   const allowed = allowedPathsFor(variantName);
   const cross = [];
   for (const b of baselineRuns) for (const v of variantRuns) cross.push(leakCount(b, v, allowed));
 
-  const within = [];
-  for (let i = 0; i < variantRuns.length; i++) {
-    for (let j = i + 1; j < variantRuns.length; j++) within.push(leakCount(variantRuns[i], variantRuns[j], allowed));
-  }
+  const withinPairs = (runs) => {
+    const out = [];
+    for (let i = 0; i < runs.length; i++) {
+      for (let j = i + 1; j < runs.length; j++) out.push(leakCount(runs[i], runs[j], allowed));
+    }
+    return out;
+  };
+  const within = [...withinPairs(baselineRuns), ...withinPairs(variantRuns)];
   const observed = meanOrNull(cross);
   const floor = meanOrNull(within);
   return {
@@ -83,6 +109,8 @@ function cellMetrics(runs, resumeText) {
     ordinal_drift: ordinalDrift(runs),
     off_vocab_rate: meanOrNull(runs.map((r) => offVocabRate(r).rate)),
     entry_count_error: meanOrNull(recallErrors),
+    field_coverage: meanOrNull(runs.map((r) => fieldCoverage(r).overall).filter((x) => x != null)),
+    spans_provided: meanOrNull(runs.map((r) => groundedness(r, resumeText).checked)),
     groundedness: meanOrNull(grounded),
     attribution_recall: meanOrNull(attribution.map((a) => a.recall).filter((x) => x != null)),
     false_positives: meanOrNull(attribution.map((a) => a.false_positives.length)),
@@ -109,6 +137,8 @@ function poolCells(cells) {
     ordinal_drift: avg('ordinal_drift'),
     off_vocab_rate: avg('off_vocab_rate'),
     entry_count_error: avg('entry_count_error'),
+    field_coverage: avg('field_coverage'),
+    spans_provided: avg('spans_provided'),
     groundedness: avg('groundedness'),
     attribution_recall: avg('attribution_recall'),
     false_positives: avg('false_positives'),
@@ -138,7 +168,9 @@ function buildSummary(records, variantTexts) {
       }
     }
 
-    const netLeaks = leaks.map((l) => l.net).filter((x) => x != null);
+    // A variant whose control failed never demonstrably applied its own edit, so its
+    // leakage says nothing about bias. Counted and listed, never pooled.
+    const netLeaks = leaks.filter((l) => l.control_ok).map((l) => l.net).filter((x) => x != null);
     rows.push({
       model,
       arm,
@@ -147,8 +179,10 @@ function buildSummary(records, variantTexts) {
       pooled: poolCells(cells),
       leakage: {
         mean_net: meanOrNull(netLeaks),
-        mean_observed: meanOrNull(leaks.map((l) => l.observed).filter((x) => x != null)),
-        mean_noise_floor: meanOrNull(leaks.map((l) => l.noise_floor).filter((x) => x != null)),
+        mean_observed: meanOrNull(leaks.filter((l) => l.control_ok).map((l) => l.observed).filter((x) => x != null)),
+        mean_noise_floor: meanOrNull(leaks.filter((l) => l.control_ok).map((l) => l.noise_floor).filter((x) => x != null)),
+        measured: netLeaks.length,
+        skipped_thin_cells: leaks.filter((l) => l.insufficient_runs).length,
         controls_failed: leaks.filter((l) => !l.control_ok).map((l) => l.variant),
         by_variant: leaks
       },
@@ -171,7 +205,7 @@ const fmt = (x, d = 3) => (x == null ? '   –  ' : Number(x).toFixed(d).padStar
 
 function printReport(summary) {
   console.log(`\n${summary.n_records} records | ${summary.models.length} models | arms: ${summary.arms.join(', ')}\n`);
-  console.log('model                arm       cells  agree  tier1  tier2  ordDrift offVoc  entErr  ground  attrRec  netLeak');
+  console.log('model                arm       cells  agree  tier1  tier2  ordDrift offVoc  entErr  covrge  ground  attrRec  netLeak  nLeak');
   for (const row of summary.by_model_arm) {
     const p = row.pooled;
     console.log([
@@ -184,14 +218,79 @@ function printReport(summary) {
       fmt(p.ordinal_drift),
       fmt(p.off_vocab_rate),
       fmt(p.entry_count_error),
+      fmt(p.field_coverage),
       fmt(p.groundedness),
       fmt(p.attribution_recall),
-      fmt(row.leakage.mean_net)
+      fmt(row.leakage.mean_net),
+      String(row.leakage.measured).padStart(4)
     ].join(' '));
     if (row.leakage.controls_failed.length) {
       console.log(`  ! positive control failed: ${row.leakage.controls_failed.join(', ')}`);
     }
   }
+}
+
+const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+const num = (x, d = 3) => (x == null ? '–' : Number(x).toFixed(d));
+
+// The verdict is written from the data rather than asserted, so a partial grid produces a
+// hedged sentence instead of a confident wrong one.
+function verdictText(summary) {
+  const scored = summary.by_model_arm.filter((r) => r.pooled.agreement != null);
+  if (!scored.length) return 'Not enough complete cells yet to say anything. Collection is still running.';
+
+  const deterministic = scored.filter((r) => r.arm === 'temp0');
+  const perfect = deterministic.filter((r) => r.pooled.agreement === 1);
+  const best = scored.reduce((a, b) => (b.pooled.agreement > a.pooled.agreement ? b : a));
+  const worst = scored.reduce((a, b) => (b.pooled.agreement < a.pooled.agreement ? b : a));
+
+  const zeroTemp = deterministic.length
+    ? `At temperature 0, where the parse should be reproducible by construction, agreement runs from ${num(Math.min(...deterministic.map((r) => r.pooled.agreement)))} to ${num(Math.max(...deterministic.map((r) => r.pooled.agreement)))}, and ${perfect.length} of ${deterministic.length} model arms reach a clean 1.000.`
+    : 'No temperature-0 arm has completed yet.';
+
+  return `Extraction is steadier than scoring, but it is not still. Agreement across repeat runs of an identical résumé ranges from ${num(worst.pooled.agreement)} (${esc(worst.model)}) to ${num(best.pooled.agreement)} (${esc(best.model)}). ${zeroTemp} Every field path that moves between two runs of the same document is a field a downstream scorer would have read differently, which is the whole question this experiment exists to answer.`;
+}
+
+function prerenderSummary(summary) {
+  const rows = summary.by_model_arm.map((row) => {
+    const p = row.pooled;
+    return `<tr><td>${esc(row.model)}</td><td>${esc(row.arm)}</td><td class="num">${p.cells}</td>`
+      + `<td class="num">${num(p.agreement)}</td><td class="num">${num(p.agreement_tier1)}</td>`
+      + `<td class="num">${num(p.agreement_tier2)}</td><td class="num">${num(p.ordinal_drift, 2)}</td>`
+      + `<td class="num">${num(p.groundedness)}</td><td class="num">${num(row.leakage.mean_net, 2)}</td></tr>`;
+  }).join('\n');
+
+  return `<div class="panel">
+  <div class="panel-head"><span>CAN YOU PARSE WITH THE MODEL AND SCORE WITH CODE?</span></div>
+  <p><strong>The assumption under test.</strong> That the instability and bias in the first three experiments come from asking a model to <em>judge</em>. Use it only to <em>parse</em> the résumé into structured fields, score those fields in deterministic code, and the problem should disappear by construction. The reasoning-to-score link the transplant proved is severed, because there is no longer a score for reasoning to reach.</p>
+</div>
+<div class="panel">
+  <div class="panel-head"><span>HOW WE TEST IT</span></div>
+  <p class="dim">One parser prompt, no job description, run repeatedly over every résumé variant. The model is asked for structure and closed-vocabulary labels only; every rank, total and presence check is done in code.</p>
+  <p class="dim"><strong>Step 1.</strong> Ask each model to parse the résumé into a fixed schema: employment entries with dates and a seniority label, education with a level, talks, projects, languages, plus a verbatim quote backing every entry. The parser never sees a job description, so nothing it extracts can be a relevance judgement.</p>
+  <p class="dim"><strong>Step 2.</strong> Do it several times on the byte-identical document. Any field that changes between two of those runs changed for no reason at all, which fixes the noise floor for everything else.</p>
+  <p class="dim"><strong>Step 3.</strong> Do it again on each variant that differs from the baseline by one demographic line, and compare against the baseline parse. Fields the edit legitimately touches are allowed to move; anything else that moves is leakage.</p>
+  <p class="dim"><strong>Step 4.</strong> Grade what has a right answer. Entry counts come from counting headings in the source. Technology presence comes from searching the source. Every quoted span is checked back against the document, so a citation the model could not have read is caught mechanically.</p>
+  <p class="dim"><strong>Step 5.</strong> Read it. If the parse is identical across runs and moves only where the edit moved, the architecture holds and the scoring can safely be handed to code. If the parse itself wobbles, the instability was never in the scoring step.</p>
+</div>
+<div class="panel">
+  <div class="panel-head"><span>RESULTS BY MODEL AND ARM</span></div>
+  <p class="dim">Agreement is the share of extracted field paths matching across repeat runs of an identical résumé; 1.000 means the parse never moved. Tier 1 is transcribed and classified fact, tier 2 is the judgement fields. Ordinal drift is the mean rank distance on ordered labels such as seniority. Net leakage is how far a demographic swap moved fields it had no business touching, after subtracting what repeat runs move anyway.</p>
+  <table class="data"><thead><tr><th>model</th><th>arm</th><th class="num">cells</th><th class="num">agreement</th><th class="num">tier 1</th><th class="num">tier 2</th><th class="num">ordinal drift</th><th class="num">grounded</th><th class="num">net leakage</th></tr></thead><tbody>
+${rows}
+  </tbody></table>
+  <p><strong>What the results say about the assumption.</strong> ${verdictText(summary)}</p>
+  <p class="dim">Collected over ${summary.n_records} parses across ${summary.models.length} model${summary.models.length === 1 ? '' : 's'} and ${summary.variants.length} résumé variant${summary.variants.length === 1 ? '' : 's'}.</p>
+</div>`;
+}
+
+async function prerenderHtml(summaryHtml) {
+  const file = 'site/extraction.html';
+  let html;
+  try { html = await fs.readFile(file, 'utf8'); } catch { return; }
+  const re = /(<!-- @PRERENDER:extraction:START -->)[\s\S]*?(<!-- @PRERENDER:extraction:END -->)/g;
+  const next = html.replace(re, (_, a, b) => `${a}\n${summaryHtml}\n${b}`);
+  if (next !== html) { await fs.writeFile(file, next); console.log('  prerendered extraction.html'); }
 }
 
 async function main() {
@@ -205,6 +304,7 @@ async function main() {
 
   await fs.mkdir(OUT_DIR, { recursive: true });
   await fs.writeFile(path.join(OUT_DIR, 'summary.json'), JSON.stringify(summary, null, 2));
+  await prerenderHtml(prerenderSummary(summary));
   printReport(summary);
   console.log(`\nwrote ${OUT_DIR}/summary.json`);
 }

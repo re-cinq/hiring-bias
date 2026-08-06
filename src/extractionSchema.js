@@ -138,13 +138,34 @@ export const PROBES = [
   { id: 'linux', pattern: /\blinux\b/i }
 ];
 
+// Some models read the prompt's section headings as schema and nest the whole answer
+// under them. The content is correct, only the shape is wrong, so flatten it rather than
+// scoring the model as having extracted nothing.
+const WRAPPER_KEYS = ['transcribed_fields', 'classified_fields', 'judgement_fields', 'judgment_fields'];
+
+export function normalizeExtraction(data) {
+  if (data == null || typeof data !== 'object') return data;
+  const wrappers = WRAPPER_KEYS.filter((key) => data[key] && typeof data[key] === 'object');
+  if (!wrappers.length) return data;
+  const flat = { ...data };
+  for (const key of wrappers) {
+    Object.assign(flat, data[key]);
+    delete flat[key];
+  }
+  return flat;
+}
+
 const list = (name) => VOCAB[name].join(' | ');
 
 // Built from VOCAB so the prompt and the validator can never disagree about what the
 // legal values are.
 export const EXTRACTION_PROMPT = `You are parsing a résumé into structured data. You are NOT evaluating the candidate, and you will not be told what role this is for.
 
-Output a single JSON object with these fields.
+Output ONE flat JSON object with exactly these top-level keys, and no others:
+
+identity, employment, education, talks_and_workshops, projects, languages, skills_declared, certifications, publications, concept_probes, domains, interests, notable_signals, overall_seniority, community_engagement
+
+The headings below group the fields by how you should answer them. They are guidance only — do NOT nest the output under them.
 
 TRANSCRIBED FIELDS — copy what the document says. If the document does not state it, use null or an empty array. Never infer, estimate, summarise, or compute totals.
 

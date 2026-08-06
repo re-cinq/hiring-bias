@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   canonicalizeDate, canonicalize, unionMonths, matchEntries, diffExtractions, agreementRate,
   ordinalDistance, ordinalDrift, offVocabRate, entryRecall, probeGroundTruth, groundedness,
-  attributionAccuracy, allowedPathsFor, leakage, positiveControlOk, expectedEntryCounts
+  attributionAccuracy, allowedPathsFor, leakage, positiveControlOk, expectedEntryCounts, fieldCoverage
 } from '../src/extractionMetrics.js';
 
 const AS_OF = '2026-08';
@@ -102,6 +102,16 @@ check('expected entry counts come from the markdown, and track the careerGap var
   assert.equal(expectedEntryCounts(gap).employment, 16, 'the careerGap variant adds one role');
 });
 
+check('empty entry shells score full recall but near-zero coverage', () => {
+  const shells = extraction({
+    employment: Array.from({ length: 15 }, () => ({ employer_type: 'startup' })),
+    education: []
+  });
+  assert.equal(entryRecall(shells).employment, 15, 'the objects exist, so recall alone cannot catch this');
+  assert.equal(fieldCoverage(shells).employment, 0, 'none of the required fields are filled');
+  assert.equal(fieldCoverage(extraction()).employment, 1);
+});
+
 check('allow-list keeps projects[].name off the companyNames axis', () => {
   const allowed = allowedPathsFor('companyNames_faang');
   assert.equal(allowed('employment[0].employer'), true);
@@ -119,6 +129,18 @@ check('leakage separates the allowed change, the leak and the honeypot', () => {
   const result = leakage(base, variant, 'companyNames_faang');
   assert.deepEqual(result.leaked.map((d) => d.path), ['employment[0].seniority_level']);
   assert.deepEqual(result.honeypot.map((d) => d.path), ['employment[0].employer_type']);
+});
+
+check('a quote that changed because the document changed is not leakage', () => {
+  const base = extraction();
+  // companyNames rewrites the heading, so the span quoting it must change too.
+  const variant = extraction({
+    employment: [role({ employer: 'Google', source_span: '### Senior Software Developer, Google, Berlin' })]
+  });
+  assert.deepEqual(leakage(base, variant, 'companyNames_faang').leaked, []);
+
+  // The same moving span between two runs of an identical document is real instability.
+  assert.ok(agreementRate([base, variant]).overall < 1);
 });
 
 check('positive controls fail loudly when the variant never applied', () => {

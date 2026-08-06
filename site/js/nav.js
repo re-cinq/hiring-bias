@@ -8,6 +8,7 @@ const PAGES = [
   { href: 'jds.html', label: 'jobs' },
   { href: 'prompt-lab.html', label: 'prompt-lab' },
   { href: 'transplant.html', label: 'transplant' },
+  { href: 'extraction.html', label: 'extraction' },
   { href: 'methodology.html', label: 'methodology' },
   { href: 'downloads.html', label: 'downloads' },
   { href: 'about.html', label: 'about' }

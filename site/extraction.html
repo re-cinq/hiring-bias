@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Extraction Lab, Bias Research</title>
+  <meta name="description" content="If the LLM only parses the résumé into structured data and code does the scoring, does the bias go away? Measuring whether extraction holds still across repeat runs and across demographic swaps.">
+  <meta property="og:title" content="Extraction Lab, Bias Research">
+  <meta property="og:description" content="Parse with the model, score with code. Does the parse hold still?">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="css/site.css">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://analytics.giscollective.com/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '15']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+
+  </head>
+<body>
+  <main class="container">
+    <h1 class="sr-only">Extraction Lab</h1>
+    <div id="header"></div>
+    <div id="page" data-prerender="extraction">
+      <!-- @PRERENDER:extraction:START -->
+<div class="panel">
+  <div class="panel-head"><span>CAN YOU PARSE WITH THE MODEL AND SCORE WITH CODE?</span></div>
+  <p><strong>The assumption under test.</strong> That the instability and bias in the first three experiments come from asking a model to <em>judge</em>. Use it only to <em>parse</em> the résumé into structured fields, score those fields in deterministic code, and the problem should disappear by construction. The reasoning-to-score link the transplant proved is severed, because there is no longer a score for reasoning to reach.</p>
+</div>
+<div class="panel">
+  <div class="panel-head"><span>HOW WE TEST IT</span></div>
+  <p class="dim">One parser prompt, no job description, run repeatedly over every résumé variant. The model is asked for structure and closed-vocabulary labels only; every rank, total and presence check is done in code.</p>
+  <p class="dim"><strong>Step 1.</strong> Ask each model to parse the résumé into a fixed schema: employment entries with dates and a seniority label, education with a level, talks, projects, languages, plus a verbatim quote backing every entry. The parser never sees a job description, so nothing it extracts can be a relevance judgement.</p>
+  <p class="dim"><strong>Step 2.</strong> Do it several times on the byte-identical document. Any field that changes between two of those runs changed for no reason at all, which fixes the noise floor for everything else.</p>
+  <p class="dim"><strong>Step 3.</strong> Do it again on each variant that differs from the baseline by one demographic line, and compare against the baseline parse. Fields the edit legitimately touches are allowed to move; anything else that moves is leakage.</p>
+  <p class="dim"><strong>Step 4.</strong> Grade what has a right answer. Entry counts come from counting headings in the source. Technology presence comes from searching the source. Every quoted span is checked back against the document, so a citation the model could not have read is caught mechanically.</p>
+  <p class="dim"><strong>Step 5.</strong> Read it. If the parse is identical across runs and moves only where the edit moved, the architecture holds and the scoring can safely be handed to code. If the parse itself wobbles, the instability was never in the scoring step.</p>
+</div>
+<div class="panel">
+  <div class="panel-head"><span>RESULTS BY MODEL AND ARM</span></div>
+  <p class="dim">Agreement is the share of extracted field paths matching across repeat runs of an identical résumé; 1.000 means the parse never moved. Tier 1 is transcribed and classified fact, tier 2 is the judgement fields. Ordinal drift is the mean rank distance on ordered labels such as seniority. Net leakage is how far a demographic swap moved fields it had no business touching, after subtracting what repeat runs move anyway.</p>
+  <table class="data"><thead><tr><th>model</th><th>arm</th><th class="num">cells</th><th class="num">agreement</th><th class="num">tier 1</th><th class="num">tier 2</th><th class="num">ordinal drift</th><th class="num">grounded</th><th class="num">net leakage</th></tr></thead><tbody>
+<tr><td>gemini-2.5-pro</td><td>temp0</td><td class="num">30</td><td class="num">0.971</td><td class="num">0.976</td><td class="num">0.926</td><td class="num">0.47</td><td class="num">1.000</td><td class="num">5.78</td></tr>
+<tr><td>gemini-2.5-pro</td><td>temp07</td><td class="num">26</td><td class="num">0.909</td><td class="num">0.922</td><td class="num">0.788</td><td class="num">0.96</td><td class="num">1.000</td><td class="num">1.53</td></tr>
+<tr><td>llama-4-maverick</td><td>temp0</td><td class="num">30</td><td class="num">0.967</td><td class="num">0.967</td><td class="num">0.960</td><td class="num">0.73</td><td class="num">1.000</td><td class="num">2.66</td></tr>
+<tr><td>llama-4-maverick</td><td>temp07</td><td class="num">30</td><td class="num">0.940</td><td class="num">0.941</td><td class="num">0.919</td><td class="num">0.96</td><td class="num">0.999</td><td class="num">1.73</td></tr>
+<tr><td>mistral-large</td><td>temp0</td><td class="num">30</td><td class="num">0.953</td><td class="num">0.954</td><td class="num">0.945</td><td class="num">0.75</td><td class="num">0.969</td><td class="num">1.53</td></tr>
+<tr><td>mistral-large</td><td>temp07</td><td class="num">30</td><td class="num">0.914</td><td class="num">0.916</td><td class="num">0.888</td><td class="num">0.83</td><td class="num">0.969</td><td class="num">0.91</td></tr>
+<tr><td>mistral-small</td><td>temp0</td><td class="num">21</td><td class="num">0.837</td><td class="num">0.831</td><td class="num">0.876</td><td class="num">1.04</td><td class="num">0.982</td><td class="num">8.09</td></tr>
+<tr><td>qwen-3-next-80b</td><td>temp0</td><td class="num">30</td><td class="num">0.744</td><td class="num">0.736</td><td class="num">0.776</td><td class="num">0.88</td><td class="num">0.990</td><td class="num">28.61</td></tr>
+<tr><td>qwen-3-next-80b</td><td>temp07</td><td class="num">30</td><td class="num">0.728</td><td class="num">0.727</td><td class="num">0.764</td><td class="num">1.02</td><td class="num">0.991</td><td class="num">17.46</td></tr>
+  </tbody></table>
+  <p><strong>What the results say about the assumption.</strong> Extraction is steadier than scoring, but it is not still. Agreement across repeat runs of an identical résumé ranges from 0.728 (qwen-3-next-80b) to 0.971 (gemini-2.5-pro). At temperature 0, where the parse should be reproducible by construction, agreement runs from 0.744 to 0.971, and 0 of 5 model arms reach a clean 1.000. Every field path that moves between two runs of the same document is a field a downstream scorer would have read differently, which is the whole question this experiment exists to answer.</p>
+  <p class="dim">Collected over 1270 parses across 5 models and 30 résumé variants.</p>
+</div>
+<!-- @PRERENDER:extraction:END -->
+    </div>
+    <div id="lab"></div>
+  </main>
+  <script type="module" src="js/extraction.js"></script>
+</body>
+</html>
