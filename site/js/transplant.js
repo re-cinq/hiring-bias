@@ -1,5 +1,5 @@
 import { mountChrome } from './nav.js';
-import { loadJson, el, header, params, setParam, fmtNum, fmtSignedDelta, copyLinkButton, modelLabel, modelVersion } from './lib.js';
+import { loadJson, el, header, params, setParam, fmtNum, fmtSignedDelta, copyLinkButton, modelLabel, modelVersion, variantLabel } from './lib.js';
 import { renderRunScores } from './verdict-card.js';
 import { dotStrip, collapseValues, SCORE_SCALE } from './dot-strip.js';
 
@@ -12,15 +12,7 @@ const matrix = await loadJson('data/matrix.json');
 
 const MODELS = summary.models;
 const JD_LABEL = Object.fromEntries(siteSummary.jds.map((j) => [j.id, j.label]));
-const AXIS_LABELS = matrix.axis_labels ?? {};
-const LEVEL_LABELS = matrix.level_labels ?? {};
-
-function resumeLabel(variant) {
-  if (variant === 'baseline') return 'Baseline (unmodified résumé)';
-  const axis = variant.split('_')[0];
-  const level = variant.slice(axis.length + 1);
-  return `${AXIS_LABELS[axis] ?? axis} · ${LEVEL_LABELS[axis]?.[level] ?? level}`;
-}
+const resumeLabel = (variant) => variantLabel(matrix, variant);
 
 const lab = document.getElementById('lab');
 

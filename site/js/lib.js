@@ -88,6 +88,14 @@ export const MODEL_VERSION = {
 export const modelLabel = (m) => MODEL_DISPLAY[m] ?? m;
 export const modelVersion = (m) => MODEL_VERSION[m] ?? null;
 
+// "school_mit" → "School · MIT", using the axis and level names from matrix.json.
+export function variantLabel(matrix, variant) {
+  if (variant === 'baseline') return 'Baseline (unmodified résumé)';
+  const axis = variant.split('_')[0];
+  const level = variant.slice(axis.length + 1);
+  return `${matrix.axis_labels?.[axis] ?? axis} · ${matrix.level_labels?.[axis]?.[level] ?? level}`;
+}
+
 export function pill(recommend) {
   const r = (recommend ?? '').toLowerCase();
   const cls = ['yes', 'no', 'maybe'].includes(r) ? r : '';

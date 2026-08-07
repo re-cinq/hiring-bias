@@ -619,6 +619,90 @@ pre {
   font-size: 0.85em;
 }
 
+/* ---- Extraction sampler ---------------------------------------------------
+   Colour carries one bit here: a field held still, or it moved. Which of several
+   readings a run picked is carried by a letter, never by a hue, because the
+   accent/warn pair this site is built on is not separable under protanopia. */
+.sampler .controls-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.sampler h4 { margin: 12px 0 4px; }
+.sampler .toggle { display: inline-flex; align-items: center; gap: 2px; margin-bottom: 8px; }
+.sampler .big { font-size: 22px; font-weight: bold; }
+.sampler .wobble-figure { margin-bottom: 8px; }
+
+/* Headline bar: the share of this parse that survived repeat runs unchanged. */
+.stability { display: flex; gap: 2px; height: 8px; margin: 8px 0; }
+.stability .seg { border-radius: 2px; }
+.stability .seg.held { background: var(--accent); }
+.stability .seg.moved { background: var(--alert); }
+.sampler .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; }
+.sampler .legend .swatch {
+  display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px;
+}
+.sampler .legend .swatch.held { background: var(--accent); }
+.sampler .legend .swatch.majority { background: var(--border); }
+.sampler .legend .swatch.moved { background: var(--alert); }
+
+/* The mosaic: one row per moving field, one lettered mark per run. */
+.mosaic { display: flex; flex-direction: column; gap: 2px; }
+.mosaic .mrow {
+  display: grid;
+  grid-template-columns: minmax(180px, 22%) auto 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 4px 6px;
+  border-radius: var(--radius);
+}
+.mosaic .mrow:nth-child(even) { background: var(--bg); }
+.mosaic .mrow.head { background: none; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+.mosaic .path { font-size: 12px; overflow-wrap: anywhere; }
+.mosaic .path .tier { display: block; font-size: 11px; }
+.mosaic .marks, .mosaic .runlabel { display: flex; gap: 2px; }
+.mosaic .runlabel { width: 18px; justify-content: center; color: var(--dim); }
+.mosaic .mark {
+  width: 18px; height: 18px; border-radius: 2px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: bold; color: var(--bg);
+}
+/* Every row here is a field that moved, so the majority reading stays neutral — green
+   is reserved for the bar above, where it means "never moved at all". */
+.mosaic .mark.held { background: var(--border); color: var(--text); }
+.mosaic .mark.moved { background: var(--alert); }
+.mosaic .readings { display: flex; flex-direction: column; gap: 2px; font-size: 12px; }
+.mosaic .reading { overflow-wrap: anywhere; }
+.mosaic .readings .key, .mosaic .setgrid .key { font-weight: bold; color: var(--dim); }
+
+/* Set-valued fields, one column per member of the union across the readings: the same
+   member always lands in the same column, so a reading that dropped it shows a hole. */
+.mosaic .setgrid {
+  display: grid;
+  gap: 2px 10px;
+  font-size: 12px;
+  overflow-x: auto;
+  align-items: baseline;
+}
+/* Placeholder for a member this reading did not return. Dots hold the column's width so
+   the members either side of the hole stay aligned. */
+.mosaic .setgrid .miss { color: var(--alert); opacity: 0.55; user-select: none; }
+.mosaic .ins { color: var(--alert); }
+.mosaic .del { color: var(--dim); text-decoration: line-through; }
+
+/* One field's before/after, as a card rather than a table row. */
+.sampler .chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 8px; }
+.sampler .chip {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 6px 8px; background: var(--bg); font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.sampler .chip-path { color: var(--dim); margin-bottom: 2px; overflow-wrap: anywhere; }
+.sampler .chip .was { color: var(--alert); text-decoration: line-through; }
+.sampler .chip .now { color: var(--accent); }
+
+.sampler .diff-controls { margin-bottom: 8px; }
+.sampler .runpick { display: inline-flex; gap: 4px; }
+.sampler .runpick button { padding: 2px 8px; }
+.sampler .runpick button.sel { border-color: var(--accent); color: var(--accent); }
+.sampler .linediff { max-height: 520px; overflow: auto; }
+
 /* hero stats */
 .stats {
   display: grid;

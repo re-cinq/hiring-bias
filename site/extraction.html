@@ -49,7 +49,9 @@
   <div class="panel-head"><span>RESULTS BY MODEL AND ARM</span></div>
   <p class="dim">Agreement is the share of extracted field paths matching across repeat runs of an identical résumé; 1.000 means the parse never moved. Tier 1 is transcribed and classified fact, tier 2 is the judgement fields. Ordinal drift is the mean rank distance on ordered labels such as seniority. Net leakage is how far a demographic swap moved fields it had no business touching, after subtracting what repeat runs move anyway.</p>
   <table class="data"><thead><tr><th>model</th><th>arm</th><th class="num">cells</th><th class="num">agreement</th><th class="num">tier 1</th><th class="num">tier 2</th><th class="num">ordinal drift</th><th class="num">grounded</th><th class="num">net leakage</th></tr></thead><tbody>
-<tr><td>claude-opus</td><td>default</td><td class="num">22</td><td class="num">0.909</td><td class="num">0.900</td><td class="num">0.957</td><td class="num">1.44</td><td class="num">1.000</td><td class="num">1.45</td></tr>
+<tr><td>claude-haiku</td><td>default</td><td class="num">22</td><td class="num">0.876</td><td class="num">0.877</td><td class="num">0.812</td><td class="num">1.04</td><td class="num">0.999</td><td class="num">1.50</td></tr>
+<tr><td>claude-opus</td><td>default</td><td class="num">30</td><td class="num">0.908</td><td class="num">0.900</td><td class="num">0.958</td><td class="num">1.37</td><td class="num">1.000</td><td class="num">1.64</td></tr>
+<tr><td>claude-sonnet</td><td>default</td><td class="num">30</td><td class="num">0.933</td><td class="num">0.932</td><td class="num">0.937</td><td class="num">2.29</td><td class="num">0.998</td><td class="num">0.76</td></tr>
 <tr><td>gemini-2.5-flash</td><td>temp0</td><td class="num">30</td><td class="num">1.000</td><td class="num">1.000</td><td class="num">1.000</td><td class="num">0.00</td><td class="num">0.999</td><td class="num">21.14</td></tr>
 <tr><td>gemini-2.5-flash</td><td>temp07</td><td class="num">30</td><td class="num">0.884</td><td class="num">0.880</td><td class="num">0.897</td><td class="num">1.14</td><td class="num">0.999</td><td class="num">0.86</td></tr>
 <tr><td>gemini-2.5-pro</td><td>temp0</td><td class="num">30</td><td class="num">0.984</td><td class="num">0.985</td><td class="num">0.963</td><td class="num">0.47</td><td class="num">1.000</td><td class="num">3.54</td></tr>
@@ -66,7 +68,7 @@
 <tr><td>qwen-3-next-80b</td><td>temp07</td><td class="num">30</td><td class="num">0.705</td><td class="num">0.713</td><td class="num">0.808</td><td class="num">1.02</td><td class="num">0.991</td><td class="num">11.97</td></tr>
   </tbody></table>
   <p><strong>What the results say about the assumption.</strong> Extraction is steadier than scoring, but it is not still. Agreement across repeat runs of an identical résumé ranges from 0.705 (qwen-3-next-80b) to 1.000 (gemini-2.5-flash). At temperature 0, where the parse should be reproducible by construction, agreement runs from 0.715 to 1.000, and 1 of 7 model arms reach a clean 1.000. Every field path that moves between two runs of the same document is a field a downstream scorer would have read differently, which is the whole question this experiment exists to answer.</p>
-  <p class="dim">Collected over 2207 parses across 8 models and 30 résumé variants.</p>
+  <p class="dim">Collected over 2504 parses across 10 models and 30 résumé variants.</p>
 </div>
 <!-- @PRERENDER:extraction:END -->
     </div>

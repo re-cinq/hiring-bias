@@ -271,6 +271,9 @@ export function offVocabRate(extraction) {
   return { checked, offenders, rate: checked ? offenders.length / checked : 0 };
 }
 
+// How many leaf fields one parse carries, as the denominator for "n of these moved".
+export const pathCount = (extraction) => flatten(canonicalize(extraction), '', new Map()).size;
+
 export function entryRecall(extraction) {
   return Object.fromEntries(
     Object.keys(ENTRY_KEYS).map((field) => [field, (extraction?.[field] ?? []).length])
@@ -343,7 +346,7 @@ function roleSections(resumeText) {
   return employment[1].split(/^### /m).filter(Boolean).map((block) => `### ${block}`);
 }
 
-const collectSpans = (extraction) => {
+export const collectSpans = (extraction) => {
   const spans = [];
   for (const entry of extraction?.employment ?? []) {
     if (entry?.source_span) spans.push(entry.source_span);

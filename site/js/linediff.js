@@ -9,9 +9,9 @@ function lcsTable(a, b) {
   return dp;
 }
 
-export function diffLines(textA, textB) {
-  const a = textA.split('\n');
-  const b = textB.split('\n');
+// Sequence diff over any two arrays of strings: ctx for what both sides share, del for
+// what only the left has, add for what only the right has.
+export function diffSequence(a, b) {
   const dp = lcsTable(a, b);
   const out = [];
   let i = 0, j = 0;
@@ -24,6 +24,8 @@ export function diffLines(textA, textB) {
   while (j < b.length) { out.push({ kind: 'add', text: b[j++] }); }
   return out;
 }
+
+export const diffLines = (textA, textB) => diffSequence(textA.split('\n'), textB.split('\n'));
 
 // Word-level diff. Returns the textB token stream, each token flagged
 // `changed: true` when it was inserted/substituted relative to textA.

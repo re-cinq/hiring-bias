@@ -1,5 +1,5 @@
 import { mountChrome } from './nav.js';
-import { loadJson, el, header, params, setParam, fmtNum, fmtSignedDelta, copyLinkButton, modelLabel, modelVersion } from './lib.js';
+import { loadJson, el, header, params, setParam, fmtNum, fmtSignedDelta, copyLinkButton, modelLabel, modelVersion, variantLabel } from './lib.js';
 import { verdictCard } from './verdict-card.js';
 import { dotStrip, collapseValues } from './dot-strip.js';
 
@@ -18,15 +18,7 @@ const STRAT_TEMPLATE = Object.fromEntries(strategiesDoc.map((s) => [s.id, s.temp
 const STRATS = summary.strategies;
 const JD_LABEL = Object.fromEntries(siteSummary.jds.map((j) => [j.id, j.label]));
 
-const AXIS_LABELS = matrix.axis_labels ?? {};
-const LEVEL_LABELS = matrix.level_labels ?? {};
-
-function resumeLabel(variant) {
-  if (variant === 'baseline') return 'Baseline (unmodified résumé)';
-  const axis = variant.split('_')[0];
-  const level = variant.slice(axis.length + 1);
-  return `${AXIS_LABELS[axis] ?? axis} · ${LEVEL_LABELS[axis]?.[level] ?? level}`;
-}
+const resumeLabel = (variant) => variantLabel(matrix, variant);
 
 // Largest value of an open-ended metric anywhere in the summary (values and their
 // distributions), rounded up to 0.5, so its strip domain covers all data.

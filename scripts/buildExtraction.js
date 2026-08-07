@@ -3,7 +3,8 @@ import path from 'node:path';
 import { mean, groupBy } from '../src/aggregate.js';
 import {
   agreementRate, ordinalDrift, offVocabRate, entryRecall, expectedEntryCounts,
-  groundedness, attributionAccuracy, diffExtractions, allowedPathsFor, positiveControlOk, fieldCoverage
+  groundedness, attributionAccuracy, diffExtractions, allowedPathsFor, positiveControlOk, fieldCoverage,
+  leakage, collectSpans, spanIsGrounded, pathCount
 } from '../src/extractionMetrics.js';
 import { normalizeExtraction } from '../src/extractionSchema.js';
 
@@ -201,6 +202,103 @@ function buildSummary(records, variantTexts) {
   };
 }
 
+// ---- Samplable cells ------------------------------------------------------
+// The summary answers "how far did it move"; these answer "what moved". One file per
+// model × arm × variant, holding one full parse plus every path the repeat runs
+// disagreed on, so the page can show the actual text behind an agreement number.
+
+const CELLS_DIR = 'cells';
+// A model at 0.7 agreement produces hundreds of moving paths. Ship the first slice and
+// report the rest as a count rather than pretending the list is complete.
+const MAX_LISTED_PATHS = 250;
+
+const clip = (value) => (typeof value === 'string' && value.length > 240 ? `${value.slice(0, 240)}…` : value);
+
+// Every path where at least one run disagreed with run 1, carrying each run's own value.
+// Anchoring on run 1 is complete: two runs can only differ from each other if at least
+// one of them also differs from the anchor.
+function unstablePaths(runs) {
+  const byPath = new Map();
+  runs.slice(1).forEach((run, offset) => {
+    for (const diff of diffExtractions(runs[0], run)) {
+      const entry = byPath.get(diff.path)
+        ?? { path: diff.path, tier: diff.tier, distance: diff.distance, values: Array(runs.length).fill(clip(diff.from)) };
+      entry.values[offset + 1] = clip(diff.to);
+      if (diff.distance != null) entry.distance = diff.distance;
+      byPath.set(diff.path, entry);
+    }
+  });
+  return [...byPath.values()].sort((a, b) => a.tier - b.tier || a.path.localeCompare(b.path));
+}
+
+const listed = (items) => ({ total: items.length, shown: items.slice(0, MAX_LISTED_PATHS) });
+
+const clipDiff = (diff) => ({ path: diff.path, tier: diff.tier, from: clip(diff.from), to: clip(diff.to) });
+
+// Baseline run 1 against variant run 1: a single readable pair, not the cross-product the
+// leakage metric averages over. Sampling shows what one swap did, not what it does on average.
+function baselineComparison(variant, baselineRun, variantRun) {
+  const allowed = allowedPathsFor(variant);
+  const diffs = diffExtractions(baselineRun, variantRun);
+  return {
+    leaked: listed(diffs.filter((d) => !allowed(d.path)).map(clipDiff)),
+    allowed: listed(diffs.filter((d) => allowed(d.path)).map(clipDiff)),
+    honeypot: leakage(baselineRun, variantRun, variant).honeypot.map(clipDiff)
+  };
+}
+
+function sampleCell({ model, arm, temperature, variant, records, resumeText, baselineRun }) {
+  const runs = records.map((r) => r.response);
+  return {
+    model,
+    arm,
+    temperature,
+    variant,
+    // Every run in full: the page diffs any two of them against each other, and a
+    // reconstructed diff would not be the raw response the model actually returned.
+    runs: records.map((r) => ({ run: r.run, response: r.response })),
+    path_count: pathCount(runs[0]),
+    unstable: listed(runs.length > 1 ? unstablePaths(runs) : []),
+    vs_baseline: variant === BASELINE || !baselineRun ? null : baselineComparison(variant, baselineRun, runs[0]),
+    ungrounded_spans: records.map((record) => ({
+      run: record.run,
+      spans: collectSpans(record.response).filter((span) => !spanIsGrounded(span, resumeText)).map(clip)
+    }))
+  };
+}
+
+async function writeCells(records, variantTexts) {
+  const dir = path.join(OUT_DIR, CELLS_DIR);
+  await fs.rm(dir, { recursive: true, force: true });
+  await fs.mkdir(dir, { recursive: true });
+
+  const byArm = groupBy(records, (r) => `${r.model}__${r.arm}`);
+  let written = 0;
+  for (const [key, armRecords] of byArm) {
+    const [model, arm] = key.split('__');
+    const byVariant = groupBy(armRecords, (r) => r.variant);
+    const ordered = (variantRecords) => [...variantRecords].sort((a, b) => a.run - b.run);
+    const baselineRun = byVariant.has(BASELINE) ? ordered(byVariant.get(BASELINE))[0].response : null;
+
+    for (const [variant, variantRecords] of byVariant) {
+      const resumeText = variantTexts.get(variant);
+      if (!resumeText) continue;
+      const cell = sampleCell({
+        model,
+        arm,
+        temperature: variantRecords[0]?.temperature ?? null,
+        variant,
+        records: ordered(variantRecords),
+        resumeText,
+        baselineRun
+      });
+      await fs.writeFile(path.join(dir, `${variant}__${model}__${arm}.json`), JSON.stringify(cell));
+      written++;
+    }
+  }
+  return written;
+}
+
 const fmt = (x, d = 3) => (x == null ? '   –  ' : Number(x).toFixed(d).padStart(6));
 
 function printReport(summary) {
@@ -304,9 +402,10 @@ async function main() {
 
   await fs.mkdir(OUT_DIR, { recursive: true });
   await fs.writeFile(path.join(OUT_DIR, 'summary.json'), JSON.stringify(summary, null, 2));
+  const cells = await writeCells(records, variantTexts);
   await prerenderHtml(prerenderSummary(summary));
   printReport(summary);
-  console.log(`\nwrote ${OUT_DIR}/summary.json`);
+  console.log(`\nwrote ${OUT_DIR}/summary.json and ${cells} sample cells`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) main();

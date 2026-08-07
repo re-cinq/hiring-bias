@@ -1,10 +1,13 @@
 import { mountChrome } from './nav.js';
 import { loadJson, el, header, fmtNum } from './lib.js';
+import { sampler } from './extraction-sampler.js';
 
 await mountChrome();
 document.getElementById('header').append(header('EXTRACTION LAB'));
 
 const summary = await loadJson('data/extraction/summary.json');
+// Reuse the axis and level names the rest of the site labels résumé variants with.
+const matrix = await loadJson('data/matrix.json');
 const lab = document.getElementById('lab');
 
 const ARM_LABEL = { temp0: 'temperature 0', temp07: 'temperature 0.7', default: 'CLI default' };
@@ -67,3 +70,5 @@ lab.append(main);
 
 const warnings = controlWarnings();
 if (warnings) lab.append(warnings);
+
+lab.append(sampler(summary, matrix, ARM_LABEL));
