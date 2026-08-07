@@ -74,6 +74,15 @@ export function fieldTier(path) {
 
 export const FIELD_TIERS = { fieldTier, TIER_2_PATHS };
 
+// Ordinal rank of a closed-vocabulary label. The order lives in VOCAB, so ranking is a
+// code artifact that can be reviewed and diffed — never the model's opinion.
+export function rank(vocabName, label) {
+  const values = VOCAB[vocabName];
+  if (!Array.isArray(values)) throw new Error(`unknown vocabulary '${vocabName}'`);
+  const i = values.indexOf(String(label ?? '').trim().toLowerCase());
+  return i < 0 ? null : i;
+}
+
 // Surface form → canonical technology id. The model emits whatever the résumé says;
 // this map does the vocabulary enforcement so the mapping stays reviewable in code.
 export const TECH_ALIASES = new Map(Object.entries({
