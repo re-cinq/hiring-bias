@@ -23,7 +23,10 @@
     "build:site": "npm run build:matrix && npm run build:transplant && npm run build:prompt-lab && npm run build:extraction && npm run build:synthesis",
     "serve": "npx --yes serve site -l 8080",
     "audit": "node scripts/auditDiffs.js",
-    "audit:cli": "bash scripts/audit-diffs.sh"
+    "audit:cli": "bash scripts/audit-diffs.sh",
+    "run:scorer": "node scripts/runScorer.js",
+    "check:scorer": "node scripts/checkScorer.js",
+    "check:article": "node scripts/checkArticleNumbers.js"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",

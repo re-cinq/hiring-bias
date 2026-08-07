@@ -346,7 +346,7 @@ function verdictText(summary) {
     ? `At temperature 0, where the parse should be reproducible by construction, agreement runs from ${num(Math.min(...deterministic.map((r) => r.pooled.agreement)))} to ${num(Math.max(...deterministic.map((r) => r.pooled.agreement)))}, and ${perfect.length} of ${deterministic.length} model arms reach a clean 1.000.`
     : 'No temperature-0 arm has completed yet.';
 
-  return `Extraction is steadier than scoring, but it is not still. Agreement across repeat runs of an identical résumé ranges from ${num(worst.pooled.agreement)} (${esc(worst.model)}) to ${num(best.pooled.agreement)} (${esc(best.model)}). ${zeroTemp} Every field path that moves between two runs of the same document is a field a downstream scorer would have read differently, which is the whole question this experiment exists to answer.`;
+  return `Extraction is steadier than scoring, but it is not still. Agreement across repeat runs of an identical résumé ranges from ${num(worst.pooled.agreement)} (${esc(worst.model)}) to ${num(best.pooled.agreement)} (${esc(best.model)}). ${zeroTemp} Every field that changes between two readings of the same document is a field that anything built on top would have read differently the second time.`;
 }
 
 function prerenderSummary(summary) {
@@ -365,11 +365,20 @@ function prerenderSummary(summary) {
 <div class="panel">
   <div class="panel-head"><span>HOW WE TEST IT</span></div>
   <p class="dim">One parser prompt, no job description, run repeatedly over every résumé variant. The model is asked for structure and closed-vocabulary labels only; every rank, total and presence check is done in code.</p>
-  <p class="dim"><strong>Step 1.</strong> Ask each model to parse the résumé into a fixed schema: employment entries with dates and a seniority label, education with a level, talks, projects, languages, plus a verbatim quote backing every entry. The parser never sees a job description, so nothing it extracts can be a relevance judgement.</p>
-  <p class="dim"><strong>Step 2.</strong> Do it several times on the byte-identical document. Any field that changes between two of those runs changed for no reason at all, which fixes the noise floor for everything else.</p>
-  <p class="dim"><strong>Step 3.</strong> Do it again on each variant that differs from the baseline by one demographic line, and compare against the baseline parse. Fields the edit legitimately touches are allowed to move; anything else that moves is leakage.</p>
-  <p class="dim"><strong>Step 4.</strong> Grade what has a right answer. Entry counts come from counting headings in the source. Technology presence comes from searching the source. Every quoted span is checked back against the document, so a citation the model could not have read is caught mechanically.</p>
-  <p class="dim"><strong>Step 5.</strong> Read it. If the parse is identical across runs and moves only where the edit moved, the architecture holds and the scoring can safely be handed to code. If the parse itself wobbles, the instability was never in the scoring step.</p>
+  <ol class="steps">
+    <li><span class="act">Ask the model to copy the résumé into a fixed set of fields. No score, no opinion of the candidate.</span>
+        <span class="eg">Each job becomes an entry with an employer, dates, a seniority label from a fixed list, and a quote from the document proving the entry is real. The model never sees the job description, so it cannot judge relevance to anything.</span></li>
+    <li><span class="act">Parse the identical document five times over.</span>
+        <span class="eg">Nothing has changed between those runs, so any field that comes back different changed for no reason. That gives us the noise floor.</span></li>
+    <li><span class="act">Parse each variant résumé, then compare it against the baseline parse.</span>
+        <span class="eg">Swap the name to Aisha Okonkwo. The name field is allowed to change. If the job titles or the technologies change too, that is leakage.</span></li>
+    <li><span class="act">Only count a change as leakage if it is bigger than the noise floor from step 2.</span>
+        <span class="eg">If two runs of the same document already disagree on three fields, then three fields of difference after a name swap proves nothing.</span></li>
+    <li><span class="act">Check the parse against the document itself, where a right answer exists.</span>
+        <span class="eg">The résumé has 15 jobs, so a parse returning 13 is wrong. If the text says Kubernetes and the parse does not, that is a miss. If a quote is not in the document, the model invented it.</span></li>
+    <li><span class="act">Read it. A parse that holds still can be scored by code. A parse that wobbles cannot.</span>
+        <span class="eg">If the same document parses differently twice, the instability was never in the scoring step, and moving the scoring into code fixes nothing.</span></li>
+  </ol>
 </div>
 <div class="panel">
   <div class="panel-head"><span>RESULTS BY MODEL AND ARM</span></div>

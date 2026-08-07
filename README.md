@@ -15,10 +15,11 @@ move. Any delta between a variant and the baseline is attributable to the single
 signal that changed — the same logic as the classic [Bertrand–Mullainathan audit
 study](https://www.nber.org/papers/w9873), run against today's models.
 
-The audit is complemented by two follow-up experiments — a **reasoning
-transplant** (does the score follow the model's written reasoning?) and a
-**prompt lab** (can prompt engineering stabilise the score?) — and a synthesis
-that joins all three on their shared unit, the model.
+The audit is complemented by three follow-up experiments — a **reasoning
+transplant** (does the score follow the model's written reasoning?), a **prompt
+lab** (can prompt engineering stabilise the score?) and an **extraction lab**
+(if the model only parses and code does the scoring, does the bias go away?) —
+plus a synthesis that joins all four on their shared unit, the model.
 
 Results are explorable as a static site under [`site/`](site/) — heatmaps,
 counterfactual diffs, per-job-description breakdowns, and one page per
@@ -28,13 +29,15 @@ follow-up experiment, with the synthesis prerendered onto the homepage.
 
 | | |
 |---|---|
-| Inferences collected | 28,050 |
+| Inferences collected | 28,050 (audit) + 10,697 (follow-ups) |
 | Models | 11, across 5 vendors |
 | Job descriptions | 17 (junior to CTO) |
 | Bias axes | 8 (7 injection, 1 redaction) |
 | Audit verdicts | 5,393 (one per variant cell, two samples judged per cell) |
-| Follow-up experiments | reasoning transplant (3,197 records) and prompt lab (4,800 records), 10 models each |
-| API spend | ~$835 plus the audit pass |
+| Reasoning transplant | 3,197 records, 320 cells, 10 models |
+| Prompt lab | 4,800 records, 6 strategies, 80 cells, 10 models |
+| Extraction lab | 2,700 parses, 30 variants × 11 models × 5 runs × 2 temperature arms |
+| API spend | ~$835 plus the audit and follow-up passes |
 
 ## The eight axes
 
@@ -78,8 +81,9 @@ default sampling, not at temperature 0.7. Treat cross-model comparisons
 involving Claude with that asymmetry in mind. See
 [`RESEARCH_NOTES.md`](RESEARCH_NOTES.md) for the full rationale.
 
-Claude Fable 5 appears in the counterfactual audit only; the transplant and
-prompt-lab experiments cover the other ten models.
+Claude Fable 5 sits out the transplant and prompt-lab experiments, which cover
+the other ten models. It is included in the counterfactual audit and in the
+extraction lab.
 
 ## The audit layer
 
@@ -99,8 +103,9 @@ the self-judging caveat.
 
 ## The follow-up experiments
 
-Two smaller experiments probe *why* the audit deltas look the way they do. The
-homepage synthesis joins all three experiments into one per-model fingerprint.
+Three smaller experiments probe *why* the audit deltas look the way they do, and
+whether anything fixes them. The homepage synthesis joins all four experiments
+into one per-model fingerprint.
 
 - **Reasoning transplant** ([`site/transplant.html`](site/transplant.html)) —
   feed a model its own most-positive and most-negative written assessment of
@@ -113,6 +118,21 @@ homepage synthesis joins all three experiments into one per-model fingerprint.
   few-shot) against the naive baseline, asking whether prompt engineering can
   stabilise the score. Run with `npm run run:prompt-lab`, aggregate with
   `npm run build:prompt-lab`.
+- **Extraction lab** ([`site/extraction.html`](site/extraction.html)) — use the
+  model only to parse the résumé into a structured, closed-vocabulary schema and
+  score that in deterministic code. The parser is JD-blind by design. Measures
+  whether the same document parses the same way twice, and whether a demographic
+  swap moves fields it has no business touching. Run with
+  `npm run run:extraction`, aggregate with `npm run build:extraction`.
+
+The extraction lab ships with the other half of the architecture: a
+deterministic scorer ([`src/scorer.js`](src/scorer.js)) that reads only the
+factual tier of an extraction, greps technology presence from the source
+document rather than trusting the model, and recomputes experience as a union of
+overlapping intervals. Job requirements are versioned config under
+[`data/jobspecs/`](data/jobspecs/). Score every extraction with
+`npm run run:scorer`; check the pure functions with `npm run check:scorer` and
+`npm run check:extraction`.
 
 ## Quick start
 
@@ -129,6 +149,10 @@ npm run build:site         # regenerate site/data/ and prerender index.html (mat
 npm run audit              # run the LLM-as-judge audit pass on completed cells
 npm run run:transplant     # execute the reasoning-transplant experiment
 npm run run:prompt-lab     # execute the prompt-lab experiment
+npm run run:extraction     # execute the extraction-lab experiment
+npm run run:scorer         # score every extraction with the deterministic scorer
+npm run check:extraction   # fixtures for the extraction metrics
+npm run check:scorer       # fixtures for the deterministic scorer
 ```
 
 Each call writes its own result file keyed by (variant, model, JD, run), so runs
@@ -152,11 +176,14 @@ the judge with `BIAS_AUDITOR_MODEL=gemini-2.5-flash` (or any other slot from
 ```
 src/             experiment engine (generate → run → aggregate → report)
 src/providers/   one adapter per model vendor
+src/extraction*  extraction-lab schema (closed vocabularies) and its pure metrics
+src/scorer.js    deterministic scorer over an extraction — no model call
 data/            baseline résumé, job descriptions, generated variants
 data/audits/     per-cell audit verdicts from the LLM-as-judge pass
-results/         raw per-inference model outputs (JSON)
+data/jobspecs/   versioned scoring policy: weighted requirements per job
+results*/        raw per-inference model outputs (JSON), one tree per experiment
 report/          aggregated data.csv and summary.md
-scripts/         build*.js (site data, transplant, prompt lab, homepage synthesis), run*.js (follow-up experiments), auditDiffs.js (the audit pass)
+scripts/         build*.js (site data + each experiment + homepage synthesis), run*.js (experiments), check*.js (fixtures), auditDiffs.js (the audit pass)
 site/            static results explorer (heatmaps, diffs, per-JD pages, methodology)
 article/         working notes and drafts for the writeup (not part of the site build)
 ```

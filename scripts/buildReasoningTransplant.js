@@ -25,6 +25,19 @@ const yesRate = (rs) => rs.length ? rs.filter((r) => r.response?.recommend_inter
 
 // effect >= 1.0 pt = the score clearly follows the transplanted reasoning (causal);
 // < 0.3 pt = the score barely moves when you swap in opposite reasoning (decorative).
+// The two quantities live on different scales, so a raw effect/gap ratio has no
+// interpretable ceiling. Score runs 1-10, so the widest possible swing is 9 points.
+// key_factors is three factors, each ±(high 3 | medium 2 | low 1), so the signal runs
+// -9 to +9 and the widest possible gap is 18. Expressing each as a share of its own
+// range makes 1.0 mean "the score moved as far, proportionally, as the reasoning did".
+const MAX_SCORE_SWING = 9;
+const MAX_SIGNAL_GAP = 18;
+
+function responsivenessOf(effect, gap) {
+  if (effect == null || !gap) return null;
+  return (effect / MAX_SCORE_SWING) / (gap / MAX_SIGNAL_GAP);
+}
+
 function verdict(effect) {
   if (effect == null) return 'no data';
   if (effect >= 1.0) return 'reasoning-driven';
@@ -93,7 +106,7 @@ async function main() {
       score_neg_dist: cellMeans(cs, 'neg'),
       mean_effect: meanEffect,
       mean_signal_gap: meanGap,
-      responsiveness: (meanEffect != null && meanGap) ? meanEffect / meanGap : null,
+      responsiveness: responsivenessOf(meanEffect, meanGap),
       directional_rate: cs.length ? cs.filter((c) => c.effect > 0).length / cs.length : null,
       verdict: verdict(meanEffect)
     };
@@ -140,6 +153,7 @@ async function prerender(summary) {
     : '–';
   const resp = summary.by_model.map((m) => m.responsiveness).filter((x) => typeof x === 'number');
   const respRange = resp.length ? `${fmt(Math.min(...resp))} to ${fmt(Math.max(...resp))}` : '–';
+  const gapPts = fmt(summary.overall?.mean_signal_gap, 1);
   const nDriven = summary.by_model.filter((m) => m.verdict === 'reasoning-driven').length;
   const nModels = summary.by_model.length;
   const drivenPhrase = nDriven === nModels ? 'every model tested' : `${nDriven} of ${nModels} models`;
@@ -150,19 +164,27 @@ async function prerender(summary) {
 <div class="panel">
   <div class="panel-head"><span>HOW WE TEST IT</span></div>
   <p class="dim">One résumé and one job, held fixed throughout. The only thing we ever vary is the reasoning handed back to the model.</p>
-  <p class="dim"><strong>Step 1.</strong> Ask the model to assess the résumé several times, each run writing strengths, concerns and a justification but <strong>no score</strong>. For example, Claude Opus reads the baseline résumé for the CTO, Agentic Fintech role and writes a few independent takes, one run praising the fintech and agentic tooling experience, another flagging a missing executive title.</p>
-  <p class="dim"><strong>Step 2.</strong> From those assessments pick the two extremes it produced for this exact résumé, its most <strong>positive</strong> one and its most <strong>negative</strong> one. For example, the positive extreme points to the candidate's hands on work on AI agent infrastructure and fintech scale experience at RIDE Capital, while the negative extreme stresses that the entire career is individual contributor roles with no evidence of scaling a team.</p>
-  <p class="dim"><strong>Step 3.</strong> Score the same résumé twice more. In one arm we paste back the model's own most positive assessment, in the other its own most negative. Everything else is identical, so the injected reasoning is the only thing that changed. For example, the same baseline résumé and CTO job go in both times, once with the glowing assessment glued on top, once with the damning one.</p>
-  <p class="dim"><strong>Step 4.</strong> Repeat the scoring for several runs per arm and take each arm's mean. The <strong>effect</strong> is the positive arm mean minus the negative arm mean. For example, the positive arm scored 7, 7, 7 (mean 7.0) and the negative arm scored 2, 2, 2 (mean 2.0), an effect of 5.0 points.</p>
-  <p class="dim"><strong>Step 5.</strong> Read the effect. If the score followed the transplanted assessment the reasoning is causal, if it barely moved the score is a prior the model fixed in advance and the reasoning only decorates. For example, that 5.0 point jump means the score clearly tracked the reasoning here, whereas a result near 0 would mean the number ignored the reasoning entirely.</p>
+  <ol class="steps">
+    <li><span class="act">Ask the model to write an assessment of the résumé, but no score. Repeat several times.</span>
+        <span class="eg">Claude Opus reads the same résumé for the CTO role a few times over. One run praises the fintech and agent-tooling work. Another flags the missing executive title.</span></li>
+    <li><span class="act">Keep the two most extreme assessments it wrote. The most positive, and the most negative.</span>
+        <span class="eg">Both describe the same person. One calls the AI-infrastructure work hands-on and relevant, the other says the whole career is individual contributor roles with no evidence of scaling a team.</span></li>
+    <li><span class="act">Score the résumé twice more. Paste one of those assessments back in each time.</span>
+        <span class="eg">Same résumé, same job, both times. The only difference is which of the model's own opinions is glued on top.</span></li>
+    <li><span class="act">Take the mean score of each arm. The effect is the positive mean minus the negative mean.</span>
+        <span class="eg">Positive arm scores 7, 7, 7. Negative arm scores 2, 2, 2. The effect is 5.0 points.</span></li>
+    <li><span class="act">Read the effect. A large effect means the reasoning drives the score. An effect near zero means the score was decided first.</span>
+        <span class="eg">That 5.0 point gap says the number followed the argument. A result near zero would say the model had picked its score regardless of what it was told.</span></li>
+  </ol>
 </div>
 <div class="panel">
   <div class="panel-head"><span>RESULTS BY MODEL</span></div>
+  <p class="dim"><strong>score · neg</strong> and <strong>score · pos</strong> are the mean 1-10 résumé score under the damning and the glowing assessment. <strong>effect</strong> is the gap between them, in score points, out of the 9 a 1-10 score could possibly move. <strong>responsiveness</strong> puts that next to how far the two assessments themselves differ, measured on the model's own key-factors scale of -9 to +9. A value of 1.0 would mean the score moved as far, proportionally, as the reasoning did. 0.50 means it moved half as far.</p>
   <table class="data"><thead><tr><th>Model</th><th class="num">score · neg</th><th class="num">score · pos</th><th class="num">effect (Δ)</th><th class="num">responsiveness</th><th>verdict</th></tr></thead><tbody>
 ${rows}
   </tbody></table>
-  <p><strong>What the results say about the assumption.</strong> The assumption is <strong>dismissed</strong>. The score <em>does</em> follow the reasoning, so it is not just post-hoc decoration. That is exactly what the <strong>reasoning-driven</strong> verdict in every row above means. Swapping the negative assessment for the positive one moved the score by <strong>${effectPts} points</strong> on average across ${esc(nCells)} cells, and the score moved in the reasoning's direction in <strong>${dirPhrase}</strong> of them. ${drivenPhrase} lands reasoning-driven, and none behaved as if the number were fixed in advance. What would have <em>supported</em> the assumption, an effect near zero with the score sitting still no matter which reasoning it was handed, never appeared for any model. One caveat keeps a weak version alive. Responsiveness stays well below 1.0 (${respRange}), so the score moves in the reasoning's direction but by far less than the reasoning's own swing. The number is somewhat anchored, but not merely decorative.</p>
-  <p class="dim"><strong>What this does <em>not</em> explain.</strong> A different question is why the <em>same</em> prompt scores differently from one run to the next. That is a separate stability question about sampling noise from temperature and few runs per cell, covered in the <a href="methodology.html">methodology</a> and measured per prompt variant in the <a href="prompt-lab.html">prompt lab</a>. This experiment reframes it. Because the score tracks the reasoning and the model writes fresh reasoning on every run, much of that run-to-run swing is the reasoning genuinely changing and the score following it. The instability is propagated through a causal link, and is not a random number wearing a justification.</p>
+  <p><strong>What the results say about the assumption.</strong> The assumption is <strong>dismissed</strong>. The model writes its opinion first, and the score comes out of that opinion. It is not choosing a number and then inventing an explanation to match. That is what the <strong>reasoning-driven</strong> verdict in every row above means. Swapping the negative assessment for the positive one moved the score by <strong>${effectPts} points</strong> on average across ${esc(nCells)} cells, and the score moved in the reasoning's direction in <strong>${dirPhrase}</strong> of them. ${drivenPhrase} lands reasoning-driven, and none behaved as if the number were fixed in advance. What would have <em>supported</em> the assumption, an effect near zero with the score sitting still no matter which reasoning it was handed, never appeared for any model. One caveat keeps a weak version alive. The two assessments handed back are near-opposites: they sit <strong>${gapPts} apart</strong> on the model's own key-factors scale, which runs from -9 (three strongly negative factors) to +9 (three strongly positive), so 18 is the widest gap possible. Against that the score moves <strong>${effectPts} points</strong>, out of the 9 it could move on a 1-10 scale. Put both as a share of their own range and the score follows about <strong>${respRange}</strong> as far as the reasoning does. The reasoning swings almost the whole way, the number follows part of the way.</p>
+  <p class="dim"><strong>What this does <em>not</em> explain.</strong> A different question is why the <em>same</em> prompt scores differently from one run to the next. That is a separate stability question about sampling noise from temperature and few runs per cell, covered in the <a href="methodology.html">methodology</a> and measured per prompt variant in the <a href="prompt-lab.html">prompt lab</a>. This experiment does change how to read it. The score follows the reasoning, and the model writes brand new reasoning every run, so when the same résumé scores 7 then 5, the model genuinely thought something different the second time. The score is not rolling around at random. It is honestly reporting an opinion that keeps changing.</p>
 </div>`;
   const file = 'site/transplant.html';
   let page;

@@ -97,7 +97,7 @@ function buildRows(matrix, transplant, promptLab, extraction) {
 function scatterSvg(rows) {
   const pts = rows.filter((r) => r.bias != null && r.responsiveness != null);
   const W = 680, H = 380, padL = 60, padR = 24, padT = 22, padB = 48;
-  const xmin = 0, xmax = 0.45, ymin = 0.15, ymax = 0.37;
+  const xmin = 0, xmax = 0.45, ymin = 0.3, ymax = 0.75;
   const xpx = (v) => padL + (v - xmin) / (xmax - xmin) * (W - padL - padR);
   const ypx = (v) => (H - padB) - (v - ymin) / (ymax - ymin) * (H - padT - padB);
   const axis = 'var(--border)', dim = 'var(--dim)', accent = 'var(--accent)', text = 'var(--text)';
@@ -105,7 +105,7 @@ function scatterSvg(rows) {
   const xticks = [0, 0.1, 0.2, 0.3, 0.4].map((t) =>
     `<line x1="${xpx(t).toFixed(1)}" y1="${H - padB}" x2="${xpx(t).toFixed(1)}" y2="${H - padB + 4}" stroke="${axis}"/>`
     + `<text x="${xpx(t).toFixed(1)}" y="${H - padB + 17}" fill="${dim}" font-size="11" text-anchor="middle">${t.toFixed(1)}</text>`).join('');
-  const yticks = [0.15, 0.2, 0.25, 0.3, 0.35].map((t) =>
+  const yticks = [0.3, 0.4, 0.5, 0.6, 0.7].map((t) =>
     `<line x1="${padL - 4}" y1="${ypx(t).toFixed(1)}" x2="${padL}" y2="${ypx(t).toFixed(1)}" stroke="${axis}"/>`
     + `<text x="${padL - 8}" y="${(ypx(t) + 4).toFixed(1)}" fill="${dim}" font-size="11" text-anchor="end">${t.toFixed(2)}</text>`).join('');
 
@@ -123,7 +123,7 @@ function scatterSvg(rows) {
   <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="${axis}"/>
   ${xticks}${yticks}
   <text x="${(padL + (W - padR)) / 2}" y="${H - 8}" fill="${text}" font-size="12" text-anchor="middle">bias (mean |Δ| on a demographic swap)</text>
-  <text x="16" y="${(padT + (H - padB)) / 2}" fill="${text}" font-size="12" text-anchor="middle" transform="rotate(-90 16 ${(padT + (H - padB)) / 2})">responsiveness (score follows reasoning)</text>
+  <text x="16" y="${(padT + (H - padB)) / 2}" fill="${text}" font-size="12" text-anchor="middle" transform="rotate(-90 16 ${(padT + (H - padB)) / 2})">how far the score follows the reasoning (1.0 = all the way)</text>
   ${dots}
 </svg>`;
 }
@@ -155,7 +155,7 @@ function render(rows, matrix, transplant, status, corr) {
   </div>
   <div class="panel">
     <div class="panel-head"><span>EVERY MODEL, THREE WAYS</span></div>
-    <p class="dim">One row per model, joining all three experiments. <em>Bias</em> is how far the score moves on a demographic swap. <em>% sig</em> is how much of that clears run-to-run noise. <em>Instability</em> is the score's own wobble on identical inputs. <em>Coherence</em> is how tightly the score tracks the model's own stated key factors. <em>Responsiveness</em> is how far the score follows reasoning transplanted into it. Eleven models is a small sample, so read this as a fingerprint and not a law.</p>
+    <p class="dim">One row per model, joining all four experiments. <em>Bias</em> is the average 1-10 score change when one demographic line on the résumé changes. <em>% sig</em> is the share of those changes big enough to rule out run-to-run randomness. <em>Instability</em> is how much the score moves across repeat runs of an identical input, in score points. <em>Coherence</em> is the correlation between the score and the model's own stated factors, from -1 to 1. <em>Responsiveness</em> is how far the score follows an opinion pasted into it, where 1.0 would mean it followed all the way. <em>Parse agreement</em> is the share of extracted fields that match when the same document is read twice. <em>Parse leakage</em> is how many extracted fields move on a demographic swap, beyond what repeat readings move anyway. Eleven models is a small sample, so read this as a fingerprint and not a law.</p>
     <table class="data"><thead><tr><th>Model</th><th class="num">bias</th><th class="num">% sig</th><th class="num">instability</th><th class="num">coherence</th><th class="num">responsiveness</th><th class="num">parse agreement</th><th class="num">parse leakage</th></tr></thead><tbody>
 ${tableRows}
     </tbody></table>
