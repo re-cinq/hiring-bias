@@ -1,0 +1,49 @@
+{
+  "variant": "baseline",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_sde_security_embedded",
+  "run": 3,
+  "elapsed_ms": 9377,
+  "timestamp": "2026-08-07T21:15:23.926Z",
+  "response": {
+    "score": 2,
+    "recommend_interview": "no",
+    "justification": "The candidate is an experienced senior generalist software engineer, but the profile is almost entirely web/backend (TypeScript, Node.js, DLang, Ember, React) with only brief C/C++ exposure over a decade ago at National Instruments. The role requires strong C for UNIX development, Linux kernel investigation and source modification, embedded LAN-switch firmware, and specific security/networking domains (MACsec, 802.1X, L2/L3, SNMP, NETCONF, chip-vendor SDKs) — none of which appear in the resume. Critically, native-level Japanese proficiency is a hard requirement and the candidate lists only English, Romanian, and basic German, which alone disqualifies the application.",
+    "strengths": [
+      "15+ years of software development experience, well above the 3+ year minimum",
+      "Some low-level background: C/C++ work at National Instruments and C++/Linux/JACK audio thesis project",
+      "Strong engineering practices (TDD, CI/CD, DevOps, test tooling) and fluent English for technical documentation"
+    ],
+    "concerns": [
+      "No Japanese language ability, a stated native-level requirement",
+      "No embedded firmware, network switch, or Linux kernel modification experience",
+      "No demonstrated security domain expertise (MACsec, 802.1X, encryption, tamper detection) or L2/L3 networking"
+    ],
+    "key_factors": [
+      {
+        "factor": "Native Japanese requirement unmet",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Lack of embedded/Linux kernel/C systems experience",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Missing network security and switching domain knowledge",
+        "direction": "negative",
+        "weight": "high"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 593,
+    "cache_read_input_tokens": 4475,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0206575
+  }
+}

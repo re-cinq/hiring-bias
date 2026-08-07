@@ -9,6 +9,10 @@ import { costFor } from '../src/pricing.js';
 import { mdToHtml, esc } from '../site/js/markdown.js';
 
 const RESULTS_DIR = 'results';
+// The Claude slots were re-collected here under a clean CLI invocation, without the
+// ~29k tokens of Claude Code harness the original run carried. Only the control axis and
+// the A/B read it; every published bias number still comes from RESULTS_DIR alone.
+const CLEAN_RESULTS_DIR = 'results-clean';
 const VARIANTS_DIR = 'data/variants';
 const JDS_DIR = 'data/jds';
 const AUDITS_DIR = 'data/audits';
@@ -57,6 +61,18 @@ function camelCaseToWords(s) {
 }
 
 function levelLabel(axis, levelId) {
+  if (axis === 'placebo') {
+    const map = {
+      'noop-whitespace': 'No-op (one blank line)',
+      'day-tuesday': 'Submitted Tuesday',
+      'day-saturday': 'Submitted Saturday',
+      'car-red': 'Red car',
+      'car-silver': 'Silver car',
+      'weather-clear': 'Clear weather',
+      'weather-rain': 'Rain'
+    };
+    return map[levelId] ?? titleCase(levelId);
+  }
   if (axis === 'anonymize') {
     const map = { name: 'Name blind', all: 'Fully blinded' };
     return map[levelId] ?? titleCase(levelId);
@@ -143,6 +159,7 @@ const AXIS_DESCRIPTIONS = {
   companyLocations: 'Geographic location of past employers. Same companies, different home countries.',
   companyNames: 'Prestige tier of past employers (FAANG, mid-tier, regional, non-Western).',
   school: 'University attended. Same degree, different alma mater.',
+  placebo: 'The control. Job-irrelevant edits — a submission day, a car colour, the weather, and one edit that changes nothing at all — run through the identical pipeline to establish how far the score moves when the change means nothing. Excluded from every bias aggregate on this site.',
   anonymize: 'Identifying signals removed (a blind résumé). Tests whether hiding name, employer, school and location reduces the bias seen in the other axes. A score change when a signal is removed reveals the model was relying on it.'
 };
 
@@ -250,6 +267,149 @@ function buildMatrix(cells, axes, models, axisLabels, levelLabels, jdLabels, jdS
     }
   }
   return { axes, models, levels_by_axis: levelsByAxis, matrix, axis_labels: axisLabels, axis_descriptions: axisDescriptions, level_labels: levelLabels, jd_labels: jdLabels, jd_short_labels: jdShortLabels };
+}
+
+// ---- The control axis ------------------------------------------------------
+// Not a bias dimension and deliberately excluded from every bias aggregate. It exists to
+// answer one question the rest of the study cannot answer about itself: how far does the
+// score move when the edit means nothing at all?
+
+const PLACEBO_AXIS = 'placebo';
+const CONTROL_AXES = new Set([PLACEBO_AXIS]);
+const PLACEBO_NOOP = 'noop-whitespace';
+
+// Each pair is two values of one irrelevant field. The difference between the pair is the
+// control's analogue of swapping James for Aisha; the difference from baseline is not,
+// because it also carries the arrival of the line itself.
+const PLACEBO_PAIRS = [
+  { id: 'day', label: 'Submission day', a: 'day-tuesday', b: 'day-saturday' },
+  { id: 'car', label: 'Car colour', a: 'car-red', b: 'car-silver' },
+  { id: 'weather', label: 'Weather at submission', a: 'weather-clear', b: 'weather-rain' }
+];
+
+const isClaude = (model) => model.startsWith('claude');
+const placeboVariant = (level) => `${PLACEBO_AXIS}_${level}`;
+
+// Claude's control cells come from the clean re-run, everyone else's from the main
+// results. Each group is differenced against a baseline collected the same way, or the
+// control would be measuring the CLI invocation rather than the placebo.
+function controlRecords(records, cleanRecords) {
+  const wanted = (r) => r.variant === 'baseline' || axisOf(r.variant) === PLACEBO_AXIS;
+  return [
+    ...records.filter((r) => wanted(r) && !isClaude(r.model)),
+    ...cleanRecords.filter((r) => wanted(r) && isClaude(r.model))
+  ];
+}
+
+// Per model, the spread between the two levels of one pair, measured JD by JD and then
+// pooled. Reported as an absolute mean because a control has no expected direction.
+function valueEffects(controlCells, models) {
+  const byKey = new Map(controlCells.map((c) => [`${c.variant}|${c.model}|${c.jd}`, c]));
+  const jds = [...new Set(controlCells.map((c) => c.jd))].sort();
+  const rows = [];
+
+  for (const pair of PLACEBO_PAIRS) {
+    for (const model of models) {
+      const gaps = [];
+      for (const jd of jds) {
+        const a = byKey.get(`${placeboVariant(pair.a)}|${model}|${jd}`);
+        const b = byKey.get(`${placeboVariant(pair.b)}|${model}|${jd}`);
+        if (a?.mean == null || b?.mean == null) continue;
+        gaps.push(a.mean - b.mean);
+      }
+      if (!gaps.length) continue;
+      const ci = tInterval95(gaps.map(Math.abs));
+      rows.push({
+        pair: pair.id, pair_label: pair.label, model, n_jds: gaps.length,
+        mean_abs: mean(gaps.map(Math.abs)),
+        mean_signed: mean(gaps),
+        ci_lo: ci?.lo ?? null,
+        ci_hi: ci?.hi ?? null
+      });
+    }
+  }
+  return rows;
+}
+
+// The floor: the same estimator applied to an edit that changed bytes and nothing else.
+function noopFloor(controlCells, models) {
+  return Object.fromEntries(models.map((model) => {
+    const deltas = controlCells
+      .filter((c) => c.variant === placeboVariant(PLACEBO_NOOP) && c.model === model && c.delta != null)
+      .map((c) => Math.abs(c.delta));
+    return [model, deltas.length ? mean(deltas) : null];
+  }));
+}
+
+// Same variant, same JD, same model, two different CLI invocations. The dirty side is
+// already on disk from the original run, so this costs only the clean side.
+function harnessAbTest(records, cleanRecords) {
+  const meanFor = (rows) => {
+    const scores = rows.map((r) => r.response?.score).filter((s) => typeof s === 'number');
+    return scores.length ? mean(scores) : null;
+  };
+  const key = (r) => `${r.variant}|${r.model}`;
+  const dirty = groupBy(records.filter((r) => isClaude(r.model)), key);
+  const clean = groupBy(cleanRecords.filter((r) => isClaude(r.model)), key);
+
+  const rows = [];
+  for (const [k, cleanRows] of clean) {
+    const dirtyRows = dirty.get(k);
+    if (!dirtyRows) continue;
+    const [variant, model] = k.split('|');
+    const withHarness = meanFor(dirtyRows);
+    const without = meanFor(cleanRows);
+    if (withHarness == null || without == null) continue;
+    rows.push({
+      variant, model, n_clean: cleanRows.length, n_dirty: dirtyRows.length,
+      mean_with_harness: withHarness, mean_without_harness: without, delta: without - withHarness
+    });
+  }
+  return rows.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+}
+
+function buildPlacebo(controlCells, models, biasByModel, records, cleanRecords) {
+  const controlMatrix = buildMatrix(controlCells, [PLACEBO_AXIS], models, {}, {}, {}, {}, {});
+  const presence = [];
+  for (const level of AXIS_LEVELS[PLACEBO_AXIS].map((l) => l.id)) {
+    for (const model of models) {
+      const cell = controlMatrix.matrix[PLACEBO_AXIS][level][model];
+      if (!cell) continue;
+      presence.push({ level, model, ...cell });
+    }
+  }
+
+  const value = valueEffects(controlCells, models);
+  const floor = noopFloor(controlCells, models);
+  const demographic = Object.fromEntries(biasByModel.map((row) => [row.model, row.mean_abs]));
+
+  // The headline: for each model, its largest irrelevant-value effect against the mean
+  // demographic effect the study reports. A ratio at or above 1 means the demographic
+  // reading for that model is not separable from the noise this control measures.
+  const comparison = models.map((model) => {
+    const pairs = value.filter((v) => v.model === model);
+    const worst = pairs.reduce((acc, v) => (acc == null || v.mean_abs > acc.mean_abs ? v : acc), null);
+    const demo = demographic[model] ?? null;
+    return {
+      model,
+      noop_floor: floor[model],
+      placebo_value_effect: worst?.mean_abs ?? null,
+      worst_pair: worst?.pair ?? null,
+      demographic_mean_abs: demo,
+      ratio: worst?.mean_abs != null && demo ? worst.mean_abs / demo : null
+    };
+  }).sort((a, b) => (b.ratio ?? -1) - (a.ratio ?? -1));
+
+  return {
+    generated_at: new Date().toISOString(),
+    models,
+    levels: AXIS_LEVELS[PLACEBO_AXIS].map((l) => ({ id: l.id, label: levelLabel(PLACEBO_AXIS, l.id), line: l.value })),
+    pairs: PLACEBO_PAIRS,
+    presence, value, comparison,
+    noop_floor: floor,
+    harness_ab: harnessAbTest(records, cleanRecords),
+    n_control_cells: controlCells.length
+  };
 }
 
 function buildHeatmap(cells, axes, models) {
@@ -778,8 +938,14 @@ async function main() {
 
   const records = await loadResults(RESULTS_DIR);
   if (records.length === 0) throw new Error(`No results in ${RESULTS_DIR}`);
+  // Absent until the clean Claude arm has been collected; the control axis simply has no
+  // Claude rows until then.
+  const cleanRecords = await loadResults(CLEAN_RESULTS_DIR).catch(() => []);
 
-  const axes = Object.keys(AXIS_LEVELS).sort();
+  // Control axes are not bias dimensions. Filtering here rather than at each use site is
+  // what keeps them out of the heatmap, the volcano, the bias index and every published
+  // "across the eight axes" figure — `axes` is the single place they would leak in from.
+  const axes = Object.keys(AXIS_LEVELS).filter((a) => !CONTROL_AXES.has(a)).sort();
   const models = [...new Set(records.map((r) => r.model))].sort();
   const jdFiles = (await fs.readdir(JDS_DIR)).filter((f) => f.endsWith('.md')).sort();
   const jds = jdFiles.map((f) => f.replace(/\.md$/, ''));
@@ -819,7 +985,17 @@ async function main() {
   }));
 
   outputs.push(await writeJson('heatmap.json', buildHeatmap(cells, axes, models)));
-  outputs.push(await writeJson('matrix.json', buildMatrix(cells, axes, models, axisLabels, levelLabels, jdLabels, jdShortLabels, axisDescriptions)));
+  const matrixJson = buildMatrix(cells, axes, models, axisLabels, levelLabels, jdLabels, jdShortLabels, axisDescriptions);
+  outputs.push(await writeJson('matrix.json', matrixJson));
+
+  // The control axis, differenced against a baseline collected under the same conditions
+  // and never pooled into anything above.
+  const controlCells = computeCells(controlRecords(records, cleanRecords));
+  applyDeltas(controlCells, indexBaselines(controlCells));
+  if (controlCells.some((c) => axisOf(c.variant) === PLACEBO_AXIS)) {
+    const biasByModel = computeBiasIndexSnapshot(matrixJson);
+    outputs.push(await writeJson('placebo.json', buildPlacebo(controlCells, models, biasByModel, records, cleanRecords)));
+  }
 
   outputs.push(await writeJson('models.json', buildModels(records, cells, models)));
 
@@ -1532,7 +1708,7 @@ async function prerenderHtml({ status, matrixData, topDiffs, axes, models, jds, 
 }
 
 async function writeSitemap() {
-  const pages = ['index.html', 'heatmap.html', 'diff.html', 'resume-diff.html', 'jds.html', 'methodology.html', 'downloads.html', 'about.html'];
+  const pages = ['index.html', 'heatmap.html', 'diff.html', 'resume-diff.html', 'jds.html', 'placebo.html', 'methodology.html', 'downloads.html', 'about.html'];
   const today = new Date().toISOString().slice(0, 10);
   const urls = pages.map((p) => `  <url>
     <loc>${p === 'index.html' ? '/' : `/${p}`}</loc>

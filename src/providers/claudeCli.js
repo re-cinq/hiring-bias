@@ -27,8 +27,27 @@ function runClaude(args) {
   });
 }
 
-export async function callClaudeCli({ prompt, model = 'opus' }) {
-  const stdout = await runClaude(['-p', prompt, '--model', model, '--output-format', 'json']);
+// Without these the CLI attaches its own operating context to every call: the Claude Code
+// system prompt, the built-in tool definitions, MCP schemas and whatever CLAUDE.md it
+// auto-discovers. Measured against the first 28,050 results that is ~29,000 input tokens
+// per call on top of a ~2,800-token prompt, and it is context the API-called models in
+// this study never see, which makes the two groups unequal on more than the model.
+//
+// Not `--bare`, which does the same job but forces auth to ANTHROPIC_API_KEY — exactly
+// what runClaude deletes above so the call bills the CLI session instead of API credit.
+//
+// The empty --system-prompt is what closes the gap the rest of the flags only narrow.
+// Every API provider here sends one user message and no system prompt at all, so this is
+// the setting that puts the Claude slots in the same condition as the other seven models
+// rather than merely a cheaper version of their own. Measured: 31,600 → 167 input tokens.
+const NO_HARNESS_ARGS = [
+  '--safe-mode', '--tools', '', '--strict-mcp-config', '--no-session-persistence', '--system-prompt', ''
+];
+
+export async function callClaudeCli({ prompt, model = 'opus', harnessContext = false }) {
+  const args = ['-p', prompt, '--model', model, '--output-format', 'json'];
+  if (!harnessContext) args.push(...NO_HARNESS_ARGS);
+  const stdout = await runClaude(args);
   const envelope = JSON.parse(stdout);
   const text = envelope.result ?? envelope.message ?? '';
   const u = envelope.usage ?? {};

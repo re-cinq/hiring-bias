@@ -9,6 +9,7 @@ const PAGES = [
   { href: 'prompt-lab.html', label: 'prompt-lab' },
   { href: 'transplant.html', label: 'transplant' },
   { href: 'extraction.html', label: 'extraction' },
+  { href: 'placebo.html', label: 'control' },
   { href: 'methodology.html', label: 'methodology' },
   { href: 'downloads.html', label: 'downloads' },
   { href: 'about.html', label: 'about' }

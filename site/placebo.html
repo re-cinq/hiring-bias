@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Control, Bias Research</title>
+  <meta name="description" content="Every result in this study is a delta against a baseline, with nothing establishing how large a delta a meaningless edit produces. This measures that: car colour, submission day, the weather, and one edit that changes nothing at all.">
+  <meta property="og:title" content="The Control, Bias Research">
+  <meta property="og:description" content="How far does the score move when the change means nothing? The floor every other number is read against.">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="css/site.css">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://analytics.giscollective.com/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '15']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+
+  </head>
+<body>
+  <main class="container">
+    <h1 class="sr-only">The Control</h1>
+    <div id="header"></div>
+    <div id="page">
+<div class="panel">
+  <div class="panel-head"><span>THE ASSUMPTION UNDER TEST</span></div>
+  <p><strong>That a score delta means something.</strong> Every number in this study is a difference against an untouched résumé: change the name, watch the score move. What no part of the study has established is how far the score moves when the change means <em>nothing</em>. Without that floor, "this model shifts by 0.29 when the name changes" is a measurement with no unit.</p>
+  <p class="dim">The idea is not ours. u/hex4def6 proposed it in the thread under the first article: add obviously irrelevant variables — car colour, submission day of week, the weather — and see whether they move the score too. If they do, the demographic findings are reading instability rather than prejudice. It was the sharpest untested objection to the whole project, and it went unrun for months.</p>
+</div>
+<div class="panel">
+  <div class="panel-head"><span>HOW WE TEST IT</span></div>
+  <p class="dim"><strong>Step 1.</strong> Add one line of job-irrelevant metadata to the top of the résumé, in the form an applicant tracking system might attach: the day the application arrived, the weather when it did, the colour of the car on file. Nothing a screener could defend acting on.</p>
+  <p class="dim"><strong>Step 2.</strong> Do it twice per field, changing exactly one word. Tuesday against Saturday, red against silver, clear against rain. The difference between a pair is the control's analogue of swapping James for Aisha — same document, same length, one meaningless value replaced by another.</p>
+  <p class="dim"><strong>Step 3.</strong> Add one edit that changes nothing at all: a single extra blank line. Meaning identical, bytes different. This is the absolute floor, the score movement attributable to nothing whatsoever.</p>
+  <p class="dim"><strong>Step 4.</strong> Run all of it through the identical pipeline — same prompt, same eleven models, same seventeen job descriptions, same five runs per cell — so the resulting number is produced by the same instrument, with the same error bars, as every demographic figure it will be compared against.</p>
+  <p class="dim"><strong>Step 5.</strong> Read it. If the placebo floor is near zero, every demographic delta on this site is strengthened. If the floor is the same size as the demographic effects, the honest headline was never "these models are biased" but "these models are unstable, and the demographic reading was inside the noise".</p>
+  <p class="dim">The control axis is excluded from every bias aggregate on this site — the heatmap, the volcano, the index. It is a ruler, not a finding.</p>
+</div>
+    </div>
+    <div id="lab"></div>
+  </main>
+  <script type="module" src="js/placebo.js"></script>
+</body>
+</html>

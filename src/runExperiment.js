@@ -10,7 +10,10 @@ const RUNS_PER_CELL = Number(process.env.BIAS_RUNS_PER_CELL ?? 5);
 const CONCURRENCY = Number(process.env.BIAS_CONCURRENCY ?? 4);
 const VARIANTS_DIR = 'data/variants';
 const JDS_DIR = 'data/jds';
-const RESULTS_DIR = 'results';
+// A result file is keyed by (variant, model, jd, run) and runOne skips any cell that
+// already has one, so re-collecting a cell under different conditions — a different
+// Claude CLI invocation, say — has to write somewhere else or it silently no-ops.
+const RESULTS_DIR = process.env.BIAS_RESULTS_DIR ?? 'results';
 
 function enforce(cond, msg) {
   if (!cond) throw new Error(msg);
