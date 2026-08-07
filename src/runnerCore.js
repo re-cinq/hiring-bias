@@ -29,7 +29,11 @@ export function isFatal(err) {
     || m.includes('invalid_grant') || m.includes('invalid_rapt')  // google cloud / vertex reauth
     || m.includes('billing details')                     // generic billing hint
     || m.includes('401') || m.includes('403')
-    || m.includes('authentication');
+    || m.includes('authentication')
+    // Claude CLI rejected the call before reaching the API — zero duration, zero tokens,
+    // zero cost. That is a usage cap, not a transient blip, so retrying just burns
+    // backoff on every remaining call in the run.
+    || (m.includes('"is_error":true') && m.includes('"duration_api_ms":0') && m.includes('"total_cost_usd":0'));
 }
 
 // Hitting a per-minute rate limit (Mistral, OpenAI, etc.) only clears when the window rolls,

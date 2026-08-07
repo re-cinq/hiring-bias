@@ -58,9 +58,23 @@ function biasByModel(matrix) {
   return out;
 }
 
-function buildRows(matrix, transplant, promptLab) {
+// The extraction arm to join on is temperature 0 — the parser as anyone would deploy it,
+// and the condition where a wobble cannot be blamed on sampling. Claude models have no
+// temperature control and land in the 'default' arm instead.
+function extractionByModel(extraction) {
+  const out = {};
+  for (const row of extraction?.by_model_arm ?? []) {
+    const preferred = out[row.model];
+    if (preferred && preferred.arm === 'temp0') continue;
+    if (row.arm === 'temp0' || row.arm === 'default' || !preferred) out[row.model] = row;
+  }
+  return out;
+}
+
+function buildRows(matrix, transplant, promptLab, extraction) {
   const bias = biasByModel(matrix);
   const tp = Object.fromEntries(transplant.by_model.map((m) => [m.model, m]));
+  const ex = extractionByModel(extraction);
   const baseline = promptLab.by_strategy.find((s) => s.strategy === 'baseline');
   const pl = baseline?.by_model ?? {};
   return matrix.models.map((m) => ({
@@ -73,7 +87,10 @@ function buildRows(matrix, transplant, promptLab) {
     stability: pl[m]?.stability ?? null,
     coherence: pl[m]?.coherence ?? null,
     responsiveness: tp[m]?.responsiveness ?? null,
-    tp_effect: tp[m]?.mean_effect ?? null
+    tp_effect: tp[m]?.mean_effect ?? null,
+    parse_agreement: ex[m]?.pooled?.agreement ?? null,
+    parse_leakage: ex[m]?.leakage?.mean_net ?? null,
+    parse_arm: ex[m]?.arm ?? null
   })).sort((a, b) => (b.bias ?? -1) - (a.bias ?? -1));
 }
 
@@ -129,7 +146,7 @@ function render(rows, matrix, transplant, status, corr) {
 
   const tableRows = rows.map((r) => {
     const hi = r.model === 'qwen-3-next-80b' ? ' class="row-hi"' : '';
-    return `<tr${hi}><td>${esc(r.label)}</td><td class="num">${fmt(r.bias)}</td><td class="num">${pct(r.sig)}</td><td class="num">${fmt(r.stability)}</td><td class="num">${fmt(r.coherence)}</td><td class="num">${fmt(r.responsiveness)}</td></tr>`;
+    return `<tr${hi}><td>${esc(r.label)}</td><td class="num">${fmt(r.bias)}</td><td class="num">${pct(r.sig)}</td><td class="num">${fmt(r.stability)}</td><td class="num">${fmt(r.coherence)}</td><td class="num">${fmt(r.responsiveness)}</td><td class="num">${fmt(r.parse_agreement, 3)}</td><td class="num">${fmt(r.parse_leakage)}</td></tr>`;
   }).join('\n');
 
   return `<div class="panel">
@@ -139,7 +156,7 @@ function render(rows, matrix, transplant, status, corr) {
   <div class="panel">
     <div class="panel-head"><span>EVERY MODEL, THREE WAYS</span></div>
     <p class="dim">One row per model, joining all three experiments. <em>Bias</em> is how far the score moves on a demographic swap. <em>% sig</em> is how much of that clears run-to-run noise. <em>Instability</em> is the score's own wobble on identical inputs. <em>Coherence</em> is how tightly the score tracks the model's own stated key factors. <em>Responsiveness</em> is how far the score follows reasoning transplanted into it. Eleven models is a small sample, so read this as a fingerprint and not a law.</p>
-    <table class="data"><thead><tr><th>Model</th><th class="num">bias</th><th class="num">% sig</th><th class="num">instability</th><th class="num">coherence</th><th class="num">responsiveness</th></tr></thead><tbody>
+    <table class="data"><thead><tr><th>Model</th><th class="num">bias</th><th class="num">% sig</th><th class="num">instability</th><th class="num">coherence</th><th class="num">responsiveness</th><th class="num">parse agreement</th><th class="num">parse leakage</th></tr></thead><tbody>
 ${tableRows}
     </tbody></table>
     <p class="dim">Claude Fable 5 appears in the audit only. It is excluded from the transplant and prompt-lab experiments, so its follow-up columns are blank.</p>
@@ -176,11 +193,14 @@ async function main() {
   let status = null;
   try { status = await readJson('status.json'); } catch { /* optional */ }
 
-  const rows = buildRows(matrix, transplant, promptLab);
+  let extraction = null;
+  try { extraction = await readJson('extraction/summary.json'); } catch { /* optional until the grid lands */ }
+
+  const rows = buildRows(matrix, transplant, promptLab, extraction);
   const corr = pearson(rows.map((r) => [r.bias, r.responsiveness]));
   const html = render(rows, matrix, transplant, status, corr);
 
-  await fs.writeFile(`${DATA}/synthesis.json`, JSON.stringify({ generated_from: 'matrix + transplant + prompt-lab summaries', rows, corr_bias_responsiveness: corr }, null, 2));
+  await fs.writeFile(`${DATA}/synthesis.json`, JSON.stringify({ generated_from: 'matrix + transplant + prompt-lab + extraction summaries', rows, corr_bias_responsiveness: corr }, null, 2));
 
   const page = await fs.readFile(PAGE, 'utf8');
   const re = /(<!-- @PRERENDER:synthesis:START -->)[\s\S]*?(<!-- @PRERENDER:synthesis:END -->)/g;

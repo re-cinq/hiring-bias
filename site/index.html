@@ -41,18 +41,18 @@
   <div class="panel">
     <div class="panel-head"><span>EVERY MODEL, THREE WAYS</span></div>
     <p class="dim">One row per model, joining all three experiments. <em>Bias</em> is how far the score moves on a demographic swap. <em>% sig</em> is how much of that clears run-to-run noise. <em>Instability</em> is the score's own wobble on identical inputs. <em>Coherence</em> is how tightly the score tracks the model's own stated key factors. <em>Responsiveness</em> is how far the score follows reasoning transplanted into it. Eleven models is a small sample, so read this as a fingerprint and not a law.</p>
-    <table class="data"><thead><tr><th>Model</th><th class="num">bias</th><th class="num">% sig</th><th class="num">instability</th><th class="num">coherence</th><th class="num">responsiveness</th></tr></thead><tbody>
-<tr class="row-hi"><td>Qwen 3 Next 80B</td><td class="num">0.41</td><td class="num">38%</td><td class="num">0.24</td><td class="num">0.87</td><td class="num">0.28</td></tr>
-<tr><td>Gemini 2.5 Flash</td><td class="num">0.28</td><td class="num">0%</td><td class="num">0.84</td><td class="num">0.67</td><td class="num">0.28</td></tr>
-<tr><td>Gemini 2.5 Pro</td><td class="num">0.24</td><td class="num">0%</td><td class="num">0.82</td><td class="num">0.93</td><td class="num">0.35</td></tr>
-<tr><td>Mistral Small</td><td class="num">0.23</td><td class="num">7%</td><td class="num">0.34</td><td class="num">0.72</td><td class="num">0.24</td></tr>
-<tr><td>Claude Fable 5</td><td class="num">0.16</td><td class="num">0%</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
-<tr><td>Gemini 3.1 Pro · Preview</td><td class="num">0.11</td><td class="num">0%</td><td class="num">0.55</td><td class="num">0.94</td><td class="num">0.28</td></tr>
-<tr><td>Claude Sonnet</td><td class="num">0.10</td><td class="num">0%</td><td class="num">0.53</td><td class="num">0.97</td><td class="num">0.27</td></tr>
-<tr><td>Claude Haiku</td><td class="num">0.10</td><td class="num">0%</td><td class="num">0.73</td><td class="num">0.74</td><td class="num">0.19</td></tr>
-<tr><td>Claude Opus</td><td class="num">0.08</td><td class="num">3%</td><td class="num">0.40</td><td class="num">0.98</td><td class="num">0.21</td></tr>
-<tr><td>Mistral Large</td><td class="num">0.07</td><td class="num">0%</td><td class="num">0.00</td><td class="num">0.75</td><td class="num">0.20</td></tr>
-<tr><td>Llama 4 Maverick</td><td class="num">0.07</td><td class="num">0%</td><td class="num">0.11</td><td class="num">0.21</td><td class="num">0.17</td></tr>
+    <table class="data"><thead><tr><th>Model</th><th class="num">bias</th><th class="num">% sig</th><th class="num">instability</th><th class="num">coherence</th><th class="num">responsiveness</th><th class="num">parse agreement</th><th class="num">parse leakage</th></tr></thead><tbody>
+<tr class="row-hi"><td>Qwen 3 Next 80B</td><td class="num">0.41</td><td class="num">38%</td><td class="num">0.24</td><td class="num">0.87</td><td class="num">0.28</td><td class="num">0.715</td><td class="num">20.95</td></tr>
+<tr><td>Gemini 2.5 Flash</td><td class="num">0.28</td><td class="num">0%</td><td class="num">0.84</td><td class="num">0.67</td><td class="num">0.28</td><td class="num">1.000</td><td class="num">21.14</td></tr>
+<tr><td>Gemini 2.5 Pro</td><td class="num">0.24</td><td class="num">0%</td><td class="num">0.82</td><td class="num">0.93</td><td class="num">0.35</td><td class="num">0.984</td><td class="num">3.54</td></tr>
+<tr><td>Mistral Small</td><td class="num">0.23</td><td class="num">7%</td><td class="num">0.34</td><td class="num">0.72</td><td class="num">0.24</td><td class="num">0.928</td><td class="num">3.66</td></tr>
+<tr><td>Claude Fable 5</td><td class="num">0.16</td><td class="num">0%</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
+<tr><td>Gemini 3.1 Pro · Preview</td><td class="num">0.11</td><td class="num">0%</td><td class="num">0.55</td><td class="num">0.94</td><td class="num">0.28</td><td class="num">0.982</td><td class="num">6.06</td></tr>
+<tr><td>Claude Sonnet</td><td class="num">0.10</td><td class="num">0%</td><td class="num">0.53</td><td class="num">0.97</td><td class="num">0.27</td><td class="num">–</td><td class="num">–</td></tr>
+<tr><td>Claude Haiku</td><td class="num">0.10</td><td class="num">0%</td><td class="num">0.73</td><td class="num">0.74</td><td class="num">0.19</td><td class="num">–</td><td class="num">–</td></tr>
+<tr><td>Claude Opus</td><td class="num">0.08</td><td class="num">3%</td><td class="num">0.40</td><td class="num">0.98</td><td class="num">0.21</td><td class="num">0.909</td><td class="num">1.45</td></tr>
+<tr><td>Mistral Large</td><td class="num">0.07</td><td class="num">0%</td><td class="num">0.00</td><td class="num">0.75</td><td class="num">0.20</td><td class="num">0.972</td><td class="num">1.37</td></tr>
+<tr><td>Llama 4 Maverick</td><td class="num">0.07</td><td class="num">0%</td><td class="num">0.11</td><td class="num">0.21</td><td class="num">0.17</td><td class="num">0.974</td><td class="num">2.23</td></tr>
     </tbody></table>
     <p class="dim">Claude Fable 5 appears in the audit only. It is excluded from the transplant and prompt-lab experiments, so its follow-up columns are blank.</p>
   </div>
