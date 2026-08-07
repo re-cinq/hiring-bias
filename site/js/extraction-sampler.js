@@ -1,5 +1,6 @@
 import { loadJson, el, params, setParam, fmtNum, copyLinkButton, modelLabel, modelVersion, variantLabel } from './lib.js';
 import { renderLineDiff, diffSequence } from './linediff.js';
+import { fieldLabel, fieldLine } from './extraction-fields.js';
 
 // Drill-down under the aggregate tables: pick one model × arm × résumé variant and look
 // at the parse the numbers came from. Cells are lazy-loaded, one file per combination.
@@ -9,7 +10,11 @@ import { renderLineDiff, diffSequence } from './linediff.js';
 // moved. The diff below it is the raw response, array order and all, because that is
 // what the model actually returned and reordering is itself a finding.
 
-const TIER_LABEL = { 0: 'identity', 1: 'tier 1 · fact', 2: 'tier 2 · judgement' };
+const TIER_LABEL = {
+  0: { text: 'who the candidate is', title: 'Identity field. Not scored, shown because a swap moving it is worth seeing.' },
+  1: { text: 'copied from the résumé', title: 'Tier 1. A fact the résumé states; the model only has to transcribe or classify it.' },
+  2: { text: 'the model’s own judgement', title: 'Tier 2. A label the model chose; the résumé does not state it outright.' }
+};
 
 // Letters, not hues. Encoding which of several values a run picked as a colour would
 // need a categorical palette, and this site's accent/warn pair fails CVD separation.
@@ -43,8 +48,8 @@ function panel(title, ...children) {
 function stabilityBar(moved, total) {
   const held = Math.max(total - moved, 0);
   const bar = el('div', { class: 'stability' });
-  bar.append(el('div', { class: 'seg held', style: { flexGrow: String(held) }, title: `${held} field paths identical in every run` }));
-  if (moved) bar.append(el('div', { class: 'seg moved', style: { flexGrow: String(moved) }, title: `${moved} field paths changed between runs` }));
+  bar.append(el('div', { class: 'seg held', style: { flexGrow: String(held) }, title: `${held} fields identical in every run` }));
+  if (moved) bar.append(el('div', { class: 'seg moved', style: { flexGrow: String(moved) }, title: `${moved} fields changed between runs` }));
   return bar;
 }
 
@@ -55,7 +60,7 @@ function headline(cell, metrics, leak) {
 
   box.append(el('div', { class: 'wobble-figure' }, [
     el('span', { class: moved ? 'alert big' : 'accent big' }, String(moved)),
-    el('span', { class: 'dim' }, ` of ${total} field paths moved across ${plural(cell.runs.length, 'run')} of the identical document`)
+    el('span', { class: 'dim' }, ` of ${total} extracted fields moved across ${plural(cell.runs.length, 'run')} of the identical document`)
   ]));
   box.append(stabilityBar(moved, total));
   box.append(el('div', { class: 'legend' }, [
@@ -117,14 +122,28 @@ function setGrid(readings) {
 // reading is simply a different answer, and is shown whole.
 const MIN_OVERLAP = 0.3;
 
+// A model that returns 2019 where the others returned "2019" moved the field, but both
+// readings print the same characters, so the row has to say what the eye cannot see.
+function typeWord(value) {
+  if (value == null || value === '') return 'nothing';
+  if (Array.isArray(value)) return 'a list';
+  return { string: 'text', number: 'a number', boolean: 'true/false' }[typeof value] ?? 'an object';
+}
+
 function readingLine(letter, value, majority) {
   const line = el('span', { class: 'reading' }, el('span', { class: 'key' }, letter));
   const words = (text) => show(text).split(/\s+/).filter(Boolean);
   const mine = words(value);
   const theirs = words(majority);
   const whole = (cls) => line.append(' ', el('span', { class: cls }, show(value)));
+  const note = (text) => line.append(' ', el('span', { class: 'dim note' }, text));
 
   if (value === majority) { whole(''); return line; }
+  if (show(value) === show(majority)) {
+    whole('ins');
+    note(`— returned as ${typeWord(value)}, where the agreed reading is ${typeWord(majority)}`);
+    return line;
+  }
   if (mine.length < 2 || theirs.length < 2) { whole('ins'); return line; }
 
   const tokens = diffSequence(theirs, mine);
@@ -134,6 +153,9 @@ function readingLine(letter, value, majority) {
   for (const token of tokens) {
     line.append(' ', el('span', { class: token.kind === 'add' ? 'ins' : token.kind === 'del' ? 'del' : '' }, token.text));
   }
+  // Two readings whose words all match differ only in spacing or line breaks. Nothing above
+  // would have drawn a single mark, leaving the reader comparing two identical-looking lines.
+  if (!tokens.some((token) => token.kind !== 'ctx')) note('— same words, different spacing or line breaks');
   return line;
 }
 
@@ -146,7 +168,11 @@ function readingsBlock(letters) {
   return el('div', { class: 'readings' }, readings.map(([value, letter]) => readingLine(letter, value, majority)));
 }
 
-function mosaicRow(entry, runNumbers) {
+// How loudly a field failed: four different readings across the runs is a worse failure
+// than one run slipping once, and the reader should meet the loudest first.
+const spread = (entry) => new Set(entry.values).size;
+
+function mosaicRow(entry, runNumbers, repeatsEntry) {
   const letters = letterValues(entry.values);
   const marks = el('div', { class: 'marks' });
   entry.values.forEach((value, index) => {
@@ -157,17 +183,47 @@ function mosaicRow(entry, runNumbers) {
     }, letter));
   });
 
-  const readings = readingsBlock(letters);
-
+  const tier = TIER_LABEL[entry.tier];
   return el('div', { class: 'mrow' }, [
     el('div', { class: 'path' }, [
-      el('span', {}, entry.path),
-      el('span', { class: 'dim tier' }, TIER_LABEL[entry.tier] ?? entry.tier),
-      entry.distance ? el('span', { class: 'alert tier' }, `${plural(entry.distance, 'rank')} apart`) : null
+      // The entry a field belongs to is printed once per run of rows, so a job with four
+      // moving fields reads as one block rather than four repetitions of its name.
+      entry.label.entry && !repeatsEntry ? el('span', { class: 'dim item' }, entry.label.entry) : null,
+      el('span', { class: 'fld' }, entry.label.field),
+      el('span', { class: 'dim tier', title: tier?.title }, tier?.text ?? entry.tier),
+      entry.distance ? el('span', { class: 'alert tier' }, `${plural(entry.distance, 'rank')} apart`) : null,
+      el('span', { class: 'dim raw' }, entry.label.raw)
     ]),
     marks,
-    readings
+    readingsBlock(letters)
   ]);
+}
+
+// Section (Jobs, Education, …) → the entries inside it → the fields that moved on each,
+// every level ordered worst-first.
+function groupSections(entries, response) {
+  const sections = new Map();
+  for (const entry of entries) {
+    const label = fieldLabel(entry.path, response);
+    if (!sections.has(label.section)) sections.set(label.section, { name: label.section, entries: new Map(), count: 0 });
+    const section = sections.get(label.section);
+    if (!section.entries.has(label.entryKey)) section.entries.set(label.entryKey, []);
+    section.entries.get(label.entryKey).push({ ...entry, label });
+    section.count += 1;
+  }
+
+  return [...sections.values()]
+    .map((section) => ({
+      name: section.name,
+      count: section.count,
+      itemNoun: [...section.entries.values()][0][0].label.itemNoun ?? 'item',
+      items: [...section.entries.values()].filter((rows) => rows[0].label.entry).length,
+      rows: [...section.entries.values()]
+        .map((rows) => rows.sort((a, b) => spread(b) - spread(a) || a.label.field.localeCompare(b.label.field)))
+        .sort((a, b) => spread(b[0]) - spread(a[0]) || a[0].label.entryKey.localeCompare(b[0].label.entryKey))
+        .flat()
+    }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 }
 
 function wobblePanel(cell) {
@@ -180,45 +236,61 @@ function wobblePanel(cell) {
   }
 
   const runNumbers = cell.runs.map((r) => r.run);
+  const response = cell.runs[0].response;
   const quotes = cell.unstable.shown.filter((entry) => isQuotePath(entry.path)).length;
   const hide = el('input', { type: 'checkbox' });
+  const raw = el('input', { type: 'checkbox' });
   const rowHost = el('div', { class: 'mosaic' });
-  const moreHost = el('div');
-  // The worst models move hundreds of fields. Open on the loudest ones rather than a
-  // wall of rows, and say plainly how many are folded away.
-  const FIRST_PAGE = 40;
-  let limit = FIRST_PAGE;
+  // The worst models move hundreds of fields. Open on a few rows per section rather than
+  // a wall, and say plainly how many are folded away and where.
+  const FIRST_PAGE = 6;
+  const opened = new Set();
 
   function draw() {
     rowHost.innerHTML = '';
-    moreHost.innerHTML = '';
     const shown = hide.checked ? cell.unstable.shown.filter((entry) => !isQuotePath(entry.path)) : cell.unstable.shown;
-    // Worst first: a field with four different readings is a louder failure than one
-    // that slipped once, and the reader should meet it first.
-    const ranked = [...shown].sort((a, b) => new Set(b.values).size - new Set(a.values).size || a.path.localeCompare(b.path));
     rowHost.append(el('div', { class: 'mrow head' }, [
-      el('div', { class: 'path dim' }, 'field'),
+      el('div', { class: 'path dim' }, 'what moved'),
       el('div', { class: 'marks' }, runNumbers.map((n) => el('span', { class: 'runlabel' }, String(n)))),
       el('div', { class: 'readings dim' }, 'what came back')
     ]));
-    for (const entry of ranked.slice(0, limit)) rowHost.append(mosaicRow(entry, runNumbers));
-    if (ranked.length > limit) {
-      moreHost.append(el('button', { onclick: () => { limit = Infinity; draw(); } },
-        `[show the other ${ranked.length - limit}, worst first]`));
+
+    for (const section of groupSections(shown, response)) {
+      const limit = opened.has(section.name) ? Infinity : FIRST_PAGE;
+      const across = section.items ? ` across ${plural(section.items, section.itemNoun)}` : '';
+      rowHost.append(el('div', { class: 'msection' }, [
+        el('span', { class: 'msection-name' }, section.name),
+        el('span', { class: 'dim' }, ` ${plural(section.count, 'field')} moved${across}`)
+      ]));
+
+      const rows = el('div', { class: 'mrows' });
+      let previousEntry = null;
+      for (const entry of section.rows.slice(0, limit)) {
+        rows.append(mosaicRow(entry, runNumbers, entry.label.entryKey === previousEntry));
+        previousEntry = entry.label.entryKey;
+      }
+      rowHost.append(rows);
+      if (section.rows.length > limit) {
+        rowHost.append(el('button', { onclick: () => { opened.add(section.name); draw(); } },
+          `[show the other ${section.rows.length - limit} in ${section.name.toLowerCase()}]`));
+      }
     }
   }
-  hide.addEventListener('change', () => { limit = FIRST_PAGE; draw(); });
+  hide.addEventListener('change', () => { opened.clear(); draw(); });
+  raw.addEventListener('change', () => rowHost.classList.toggle('show-raw', raw.checked));
   draw();
 
   return panel('WHERE THE PARSE WOBBLED',
-    el('p', { class: 'dim' }, 'One row per field the repeat runs disagreed on, one mark per run, numbered along the top. A is the reading the runs agreed on most often; every other letter is a run that read the same résumé differently. (no value) means that run left the field out or returned null.'),
+    el('p', { class: 'dim' }, 'One row per field the repeat runs disagreed on, grouped by the part of the résumé it came from, worst first. One mark per run, numbered along the top: A is the reading the runs agreed on most often, and every other letter is a run that read the same résumé differently. (no value) means that run left the field out entirely.'),
     el('div', { class: 'legend' }, [
       el('span', {}, [el('span', { class: 'swatch majority' }), ' agreed with the majority reading']),
       el('span', {}, [el('span', { class: 'swatch moved' }), ' read it differently'])
     ]),
-    quotes ? el('label', { class: 'toggle' }, [hide, el('span', { class: 'dim' }, ` hide ${plural(quotes, 'quote field')}, where the model re-quoted the same line with different whitespace`)]) : null,
+    el('div', { class: 'controls-row' }, [
+      quotes ? el('label', { class: 'toggle' }, [hide, el('span', { class: 'dim' }, ` hide ${plural(quotes, 'quote field')}, where the model re-quoted the same line with different whitespace`)]) : null,
+      el('label', { class: 'toggle' }, [raw, el('span', { class: 'dim' }, ' show the schema field names')])
+    ]),
     rowHost,
-    moreHost,
     cell.unstable.total > cell.unstable.shown.length
       ? el('p', { class: 'dim' }, `${cell.unstable.total - cell.unstable.shown.length} further moving fields are not carried in this cell's data file.`)
       : null);
@@ -266,15 +338,19 @@ function runDiffPanel(cell) {
 
 // ---- What one demographic line did ----------------------------------------
 
-function changeChips(diffs) {
+// Set-valued fields arrive as "{backend,data}"; on a card there is room to read them as
+// the list they are.
+const showValue = (value) => (isSetLike(value) && setMembers(value).length ? setMembers(value).join(', ') : show(value));
+
+function changeChips(diffs, response) {
   const list = el('div', { class: 'chips' });
   for (const diff of diffs) {
     list.append(el('div', { class: 'chip' }, [
-      el('div', { class: 'chip-path' }, diff.path),
+      el('div', { class: 'chip-path', title: diff.path }, fieldLine(diff.path, response)),
       el('div', {}, [
-        el('span', { class: 'was' }, show(diff.from)),
+        el('span', { class: 'was' }, showValue(diff.from)),
         el('span', { class: 'dim arrow' }, ' → '),
-        el('span', { class: 'now' }, show(diff.to))
+        el('span', { class: 'now' }, showValue(diff.to))
       ])
     ]));
   }
@@ -284,6 +360,7 @@ function changeChips(diffs) {
 function leakagePanel(cell, baselineCell) {
   if (!cell.vs_baseline) return null;
   const { leaked, allowed, honeypot } = cell.vs_baseline;
+  const response = cell.runs[0].response;
 
   const box = panel('WHAT THE SWAP MOVED · baseline run 1 against this variant run 1',
     el('div', { class: 'wobble-figure' }, [
@@ -292,18 +369,18 @@ function leakagePanel(cell, baselineCell) {
     ]));
 
   box.append(leaked.total
-    ? changeChips(leaked.shown)
+    ? changeChips(leaked.shown, response)
     : el('p', { class: 'accent' }, 'Nothing outside the edit moved on this pair.'));
   if (leaked.total > leaked.shown.length) box.append(el('p', { class: 'dim' }, `Showing the first ${leaked.shown.length} of ${leaked.total}.`));
 
   if (honeypot.length) {
     box.append(el('h4', {}, 'Honeypots · the prestige labels the edit should never reach'));
-    box.append(changeChips(honeypot));
+    box.append(changeChips(honeypot, response));
   }
 
   const details = el('details', { class: 'jd-collapse' });
   details.append(el('summary', {}, [el('span', { class: 'jd-caret' }, '▸'), el('span', {}, ` Allowed to move · ${plural(allowed.total, 'field')}`)]));
-  if (allowed.total) details.append(changeChips(allowed.shown));
+  if (allowed.total) details.append(changeChips(allowed.shown, response));
   box.append(details);
 
   if (baselineCell) {

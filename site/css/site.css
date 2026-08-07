@@ -652,10 +652,25 @@ pre {
   padding: 4px 6px;
   border-radius: var(--radius);
 }
-.mosaic .mrow:nth-child(even) { background: var(--bg); }
+.mosaic .mrows { display: flex; flex-direction: column; gap: 2px; }
+.mosaic .mrows .mrow:nth-child(even) { background: var(--bg); }
+.mosaic > button { align-self: start; }
 .mosaic .mrow.head { background: none; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
 .mosaic .path { font-size: 12px; overflow-wrap: anywhere; }
 .mosaic .path .tier { display: block; font-size: 11px; }
+/* Which part of the résumé the rows below came from. Rows for one entry run together,
+   so the entry is named once and the fields under it read as its block. */
+.mosaic .msection {
+  margin-top: 12px; padding: 4px 6px 2px;
+  border-bottom: 1px solid var(--border); font-size: 12px;
+}
+.mosaic .msection-name { font-weight: bold; text-transform: uppercase; letter-spacing: 0.06em; }
+.mosaic .path .item { display: block; font-size: 11px; }
+.mosaic .path .fld { display: block; }
+/* The schema address behind the row. Off by default: it answers a question only someone
+   holding the parser schema is asking. */
+.mosaic .path .raw { display: none; font-size: 11px; opacity: 0.7; }
+.mosaic.show-raw .path .raw { display: block; }
 .mosaic .marks, .mosaic .runlabel { display: flex; gap: 2px; }
 .mosaic .runlabel { width: 18px; justify-content: center; color: var(--dim); }
 .mosaic .mark {
@@ -683,8 +698,13 @@ pre {
 /* Placeholder for a member this reading did not return. Dots hold the column's width so
    the members either side of the hole stay aligned. */
 .mosaic .setgrid .miss { color: var(--alert); opacity: 0.55; user-select: none; }
-.mosaic .ins { color: var(--alert); }
-.mosaic .del { color: var(--dim); text-decoration: line-through; }
+/* A reading often differs from the majority by one token — a "###" the model kept or
+   dropped. Colour alone does not carry that at 12px, so both sides get a tint the eye
+   catches as a shape, and the removed side keeps its strike. */
+.mosaic .ins, .mosaic .del { border-radius: 2px; padding: 0 3px; }
+.mosaic .ins { color: var(--alert); background: rgba(184, 91, 91, 0.16); }
+.mosaic .del { color: var(--dim); text-decoration: line-through; background: rgba(127, 127, 127, 0.18); }
+.mosaic .note { font-style: italic; }
 
 /* One field's before/after, as a card rather than a table row. */
 .sampler .chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 8px; }
