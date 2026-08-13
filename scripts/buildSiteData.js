@@ -159,7 +159,7 @@ const AXIS_DESCRIPTIONS = {
   companyLocations: 'Geographic location of past employers. Same companies, different home countries.',
   companyNames: 'Prestige tier of past employers (FAANG, mid-tier, regional, non-Western).',
   school: 'University attended. Same degree, different alma mater.',
-  placebo: 'The control. Job-irrelevant edits — a submission day, a car colour, the weather, and one edit that changes nothing at all — run through the identical pipeline to establish how far the score moves when the change means nothing. Excluded from every bias aggregate on this site.',
+  placebo: 'The control. Job-irrelevant edits (a submission day, a car colour, the weather, and one edit that changes nothing at all) run through the identical pipeline to establish how far the score moves when the change means nothing. Excluded from every bias aggregate on this site.',
   anonymize: 'Identifying signals removed (a blind résumé). Tests whether hiding name, employer, school and location reduces the bias seen in the other axes. A score change when a signal is removed reveals the model was relying on it.'
 };
 
@@ -290,6 +290,12 @@ const PLACEBO_PAIRS = [
 const isClaude = (model) => model.startsWith('claude');
 const placeboVariant = (level) => `${PLACEBO_AXIS}_${level}`;
 
+// The control is filtered out once, on the records themselves, rather than at each of the
+// dozen places that consume them. Several of those — the per-model axis sensitivities, the
+// best/worst candidate on a job page, the diff corpus, cross-model agreement — read the
+// variant list directly and would otherwise quietly price a car colour as a bias signal.
+export const isControlVariant = (variant) => CONTROL_AXES.has(axisOf(variant));
+
 // Claude's control cells come from the clean re-run, everyone else's from the main
 // results. Each group is differenced against a baseline collected the same way, or the
 // control would be measuring the CLI invocation rather than the placebo.
@@ -368,7 +374,7 @@ function harnessAbTest(records, cleanRecords) {
   return rows.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
 }
 
-function buildPlacebo(controlCells, models, biasByModel, records, cleanRecords) {
+function buildPlacebo(controlCells, controlRows, models, biasByModel, records, cleanRecords) {
   const controlMatrix = buildMatrix(controlCells, [PLACEBO_AXIS], models, {}, {}, {}, {}, {});
   const presence = [];
   for (const level of AXIS_LEVELS[PLACEBO_AXIS].map((l) => l.id)) {
@@ -406,9 +412,158 @@ function buildPlacebo(controlCells, models, biasByModel, records, cleanRecords) 
     levels: AXIS_LEVELS[PLACEBO_AXIS].map((l) => ({ id: l.id, label: levelLabel(PLACEBO_AXIS, l.id), line: l.value })),
     pairs: PLACEBO_PAIRS,
     presence, value, comparison,
+    mentions: mentionRates(controlRows),
     noop_floor: floor,
     harness_ab: harnessAbTest(records, cleanRecords),
     n_control_cells: controlCells.length
+  };
+}
+
+// ---- The control, cell by cell ---------------------------------------------
+// The tables above pool 833 cells into one ratio per model, and nothing on the page lets a
+// reader check that pooling. These publish the control arm as per-cell files, the same way
+// the counterfactual diff page publishes the bias arm, so the headline can be read back to
+// the two verdicts it came from.
+
+// Which irrelevant field each level belongs to, and the words a response would have to use
+// to show it noticed the line. Matching the values themselves — "red", "silver", and above
+// all "clear" — would fire on ordinary hiring prose ("clear communication" appears in
+// hundreds of these), so what is matched is the subject noun, plus a colour only where it
+// qualifies the vehicle.
+const PLACEBO_FIELD_TOKENS = {
+  car: [/volkswagen/i, /\bgolf\b/i, /\bvehicles?\b/i, /\bcars?\b/i, /\b(?:red|silver) car\b/i],
+  day: [/\btuesday\b/i, /\bsaturday\b/i, /\bweekends?\b/i, /application received/i, /submission (?:day|time)/i, /day of the week/i],
+  weather: [/\bweather\b/i, /\brain(?:y|ing)?\b/i, /\d\s*°\s*C\b/i, /conditions at submission/i, /local conditions/i]
+};
+
+const PLACEBO_FIELD_OF = Object.fromEntries(PLACEBO_PAIRS.flatMap((p) => [[p.a, p.id], [p.b, p.id]]));
+const PLACEBO_FIELD_LABEL = Object.fromEntries(PLACEBO_PAIRS.map((p) => [p.id, p.label]));
+
+const SNIPPET_RADIUS = 60;
+const MENTION_EXAMPLES = 3;
+const TOP_CONTROL_GAPS = 40;
+
+function responseTexts(response) {
+  if (!response) return [];
+  return [
+    response.justification,
+    ...(response.strengths ?? []),
+    ...(response.concerns ?? []),
+    ...(response.key_factors ?? []).map((f) => f?.factor)
+  ].filter((text) => typeof text === 'string');
+}
+
+function snippetAround(text, index, length) {
+  const from = Math.max(index - SNIPPET_RADIUS, 0);
+  const to = Math.min(index + length + SNIPPET_RADIUS, text.length);
+  return `${from ? '…' : ''}${text.slice(from, to).trim()}${to < text.length ? '…' : ''}`;
+}
+
+// The no-op level added no line, so there is nothing it could refer to; it returns no hits
+// and is reported as not-applicable rather than as a zero rate.
+function mentionsIn(response, level) {
+  const tokens = PLACEBO_FIELD_TOKENS[PLACEBO_FIELD_OF[level]];
+  if (!tokens) return [];
+  const hits = new Map();
+  for (const text of responseTexts(response)) {
+    for (const token of tokens) {
+      const match = token.exec(text);
+      if (!match || hits.has(match[0].toLowerCase())) continue;
+      hits.set(match[0].toLowerCase(), { token: match[0], snippet: snippetAround(text, match.index, match[0].length) });
+    }
+  }
+  return [...hits.values()];
+}
+
+// Per model and irrelevant field, how often the model said anything about the line at all.
+// Read beside that model's ratio: a score that moves half a point while the car is never
+// once mentioned is instability, not a judgement about the car.
+function mentionRates(controlRows) {
+  const rows = new Map();
+  for (const record of controlRows) {
+    const level = levelOf(record.variant);
+    const field = PLACEBO_FIELD_OF[level];
+    if (!field) continue;
+    const key = `${record.model}|${field}`;
+    if (!rows.has(key)) {
+      rows.set(key, { model: record.model, field, field_label: PLACEBO_FIELD_LABEL[field], n_responses: 0, n_mentioning: 0, examples: [] });
+    }
+    const row = rows.get(key);
+    row.n_responses += 1;
+    const hits = mentionsIn(record.response, level);
+    if (!hits.length) continue;
+    row.n_mentioning += 1;
+    if (row.examples.length < MENTION_EXAMPLES) {
+      row.examples.push({ jd: record.jd, level, run: record.run, snippet: hits[0].snippet });
+    }
+  }
+  return [...rows.values()]
+    .map((row) => ({ ...row, rate: row.n_mentioning / row.n_responses }))
+    .sort((a, b) => b.rate - a.rate);
+}
+
+function placeboCell(cell, records) {
+  const level = levelOf(cell.variant);
+  const runs = records.map((r) => ({ run: r.run, response: r.response, elapsed_ms: r.elapsed_ms }));
+  return {
+    id: `${cell.variant}__${cell.model}__${cell.jd}`,
+    variant: cell.variant, level, model: cell.model, jd: cell.jd,
+    mean: cell.mean, recommend_rate: cell.recommend_yes_rate, scores: cell.scores,
+    ci_lo: cell.ci_lo, ci_hi: cell.ci_hi,
+    delta: cell.delta, significant: cell.significant,
+    runs,
+    mentions: runs.map((r) => ({ run: r.run, hits: mentionsIn(r.response, level) })).filter((m) => m.hits.length)
+  };
+}
+
+// Baseline cells are written too: comparing a level against the untouched résumé loads the
+// baseline cell as its left-hand side.
+function writePlaceboCells(controlCells, controlRows) {
+  const runsByCell = indexAllRunsByCell(controlRows);
+  return Promise.all(controlCells.map((cell) => {
+    const id = `${cell.variant}__${cell.model}__${cell.jd}`;
+    return writeJson(`placebo/cells/${id}.json`, placeboCell(cell, runsByCell.get(id) ?? []));
+  }));
+}
+
+// The paired spread, one row per model × JD × pair — the quantity valueEffects() pools into
+// the headline, left unpooled so the pooling can be checked.
+function controlGaps(controlCells) {
+  const byKey = new Map(controlCells.map((c) => [cellKey(c.variant, c.model, c.jd), c]));
+  const rows = [];
+  for (const pair of PLACEBO_PAIRS) {
+    for (const a of controlCells) {
+      if (levelOf(a.variant) !== pair.a || a.mean == null) continue;
+      const b = byKey.get(cellKey(placeboVariant(pair.b), a.model, a.jd));
+      if (b?.mean == null) continue;
+      rows.push({ pair: pair.id, model: a.model, jd: a.jd, a_mean: a.mean, b_mean: b.mean, gap: a.mean - b.mean });
+    }
+  }
+  return rows.sort((x, y) => Math.abs(y.gap) - Math.abs(x.gap)).slice(0, TOP_CONTROL_GAPS);
+}
+
+// The floor's worst cells: the document did not change, and the score did.
+function noopWobble(controlCells) {
+  return controlCells
+    .filter((c) => levelOf(c.variant) === PLACEBO_NOOP && c.delta != null && c.scores.length)
+    .map((c) => ({ model: c.model, jd: c.jd, delta: c.delta, spread: Math.max(...c.scores) - Math.min(...c.scores) }))
+    .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))
+    .slice(0, TOP_CONTROL_GAPS);
+}
+
+function buildPlaceboIndex(controlCells, jdLabels) {
+  const placeboCells = controlCells.filter((c) => axisOf(c.variant) === PLACEBO_AXIS);
+  const models = [...new Set(placeboCells.map((c) => c.model))].sort();
+  const jds = [...new Set(placeboCells.map((c) => c.jd))].sort();
+  return {
+    generated_at: new Date().toISOString(),
+    models,
+    jds: jds.map((id) => ({ id, label: jdLabels[id] ?? id })),
+    levels: AXIS_LEVELS[PLACEBO_AXIS].map((l) => ({ id: l.id, label: levelLabel(PLACEBO_AXIS, l.id), line: l.value })),
+    pairs: PLACEBO_PAIRS,
+    noop_level: PLACEBO_NOOP,
+    top_gaps: controlGaps(controlCells),
+    top_noop: noopWobble(controlCells)
   };
 }
 
@@ -616,7 +771,7 @@ function buildModels(records, cells, models) {
 
     const modelCells = cells.filter((c) => c.model === model && c.delta != null);
     const axisSens = {};
-    for (const axis of Object.keys(AXIS_LEVELS)) {
+    for (const axis of Object.keys(AXIS_LEVELS).filter((a) => !CONTROL_AXES.has(a))) {
       const inCell = modelCells.filter((c) => axisOf(c.variant) === axis);
       axisSens[axis] = inCell.length ? mean(inCell.map((c) => Math.abs(c.delta))) : null;
     }
@@ -936,8 +1091,11 @@ async function gzipFile(srcText, relpath) {
 async function main() {
   await fs.mkdir(OUT_DIR, { recursive: true });
 
-  const records = await loadResults(RESULTS_DIR);
-  if (records.length === 0) throw new Error(`No results in ${RESULTS_DIR}`);
+  const allRecords = await loadResults(RESULTS_DIR);
+  if (allRecords.length === 0) throw new Error(`No results in ${RESULTS_DIR}`);
+  // Everything the site publishes as a bias figure — counts, cost, cells, diffs, the raw
+  // dump — is built from the bias records alone. The control arm reaches only placebo.json.
+  const records = allRecords.filter((r) => !isControlVariant(r.variant));
   // Absent until the clean Claude arm has been collected; the control axis simply has no
   // Claude rows until then.
   const cleanRecords = await loadResults(CLEAN_RESULTS_DIR).catch(() => []);
@@ -990,11 +1148,14 @@ async function main() {
 
   // The control axis, differenced against a baseline collected under the same conditions
   // and never pooled into anything above.
-  const controlCells = computeCells(controlRecords(records, cleanRecords));
+  const controlRows = controlRecords(allRecords, cleanRecords);
+  const controlCells = computeCells(controlRows);
   applyDeltas(controlCells, indexBaselines(controlCells));
   if (controlCells.some((c) => axisOf(c.variant) === PLACEBO_AXIS)) {
     const biasByModel = computeBiasIndexSnapshot(matrixJson);
-    outputs.push(await writeJson('placebo.json', buildPlacebo(controlCells, models, biasByModel, records, cleanRecords)));
+    outputs.push(await writeJson('placebo.json', buildPlacebo(controlCells, controlRows, models, biasByModel, records, cleanRecords)));
+    outputs.push(await writeJson('placebo/index.json', buildPlaceboIndex(controlCells, jdLabels)));
+    outputs.push(...await writePlaceboCells(controlCells, controlRows));
   }
 
   outputs.push(await writeJson('models.json', buildModels(records, cells, models)));
@@ -1110,7 +1271,7 @@ function modelVersionsPanelHtml() {
       <thead><tr><th>Model</th><th>Invoked as</th><th>Resolved version</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
-    <p class="dim">Versions were probed live on 2026-05-29; the run set was collected ~2026-05-20. These snapshots were the current production versions across that window. Because the floating aliases were not pinned at collection time, a re-run after a provider promotes a new snapshot could resolve differently.</p>
+    <p class="dim">Versions were probed live on 2026-05-29. The run set was collected ~2026-05-20. These snapshots were the current production versions across that window. Because the floating aliases were not pinned at collection time, a re-run after a provider promotes a new snapshot could resolve differently.</p>
   </div>`;
 }
 
@@ -1188,7 +1349,7 @@ function variantWithDeltaHtml(matrix, entry, klass) {
 
 function biasIndexTableHtml(matrix, opts = {}) {
   const title = opts.title ?? 'GLOBAL BIAS INDEX · MEAN |Δ| ACROSS ALL CELLS';
-  const description = opts.description ?? 'For each model, the average absolute score change when a demographic signal is altered, taken over every (axis, variant, JD) cell with data. Higher = the model is more sensitive to demographic signals; lower = more even-handed.';
+  const description = opts.description ?? 'For each model, the average absolute score change when a demographic signal is altered, taken over every (axis, variant, JD) cell with data. Higher = the model is more sensitive to demographic signals, lower = more even-handed.';
   const stats = computeBiasIndexSnapshot(matrix);
   const worldMax = Math.max(...stats.map((s) => s.mean_abs ?? 0), 0.0001);
   const rows = stats.map((s) => {
@@ -1249,7 +1410,7 @@ function heroHtml(topDiffs, matrix) {
   const jdL = matrix.jd_labels?.[top.jd] ?? top.jd;
   return `<div class="panel">
     <div class="panel-head"><span>THE STARKEST DELTA WE HAVE SO FAR</span></div>
-    <p>When the only change is <strong>${esc(levelL)}</strong> (axis: <em class="dim">${esc(axisL)}</em>), <strong>${esc(modelDisplay(top.model))}</strong> shifts its score by <span class="${signedClass(top.delta)}">${fmtSigned(top.delta, 2)}</span> on the role: <em>${esc(jdL)}</em>.</p>
+    <p>When the only change is <strong>${esc(levelL)}</strong> (the <em class="dim">${esc(axisL)}</em> axis), <strong>${esc(modelDisplay(top.model))}</strong> shifts its score by <span class="${signedClass(top.delta)}">${fmtSigned(top.delta, 2)}</span> on the role <em>${esc(jdL)}</em>.</p>
     <p><a href="diff.html?variant=${esc(top.axis)}_${esc(top.level)}&model=${esc(top.model)}&jd=${esc(top.jd)}">See this counterfactual →</a></p>
   </div>`;
 }
@@ -1279,15 +1440,15 @@ function premiseHtml(matrix) {
   return `<div class="panel">
     <div class="panel-head"><span>EXPERIMENT 1 · THE COUNTERFACTUAL AUDIT</span></div>
     <p class="dim">The first of the three experiments, in full. This is the demographic bias audit the fingerprint above is built from.</p>
-    <p>A fair evaluator scores a résumé on its merits. Change only a demographic signal on it, the candidate's name, country, alma mater, or a gap in employment, and leave every other word untouched, and the score should not move. The optimistic assumption we put to the test is that frontier LLMs already behave this way: that they are effectively identity-blind, and swapping a name leaves the verdict intact.</p>
+    <p>A fair evaluator scores a résumé on its merits. Change only a demographic signal on it, the candidate's name, country, alma mater, or a gap in employment, and leave every other word untouched, and the score should not move. The optimistic assumption we put to the test is that frontier LLMs already behave this way, that they are effectively identity-blind and swapping a name leaves the verdict intact.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>HOW WE TEST IT</span></div>
-    <p class="dim">A counterfactual audit: hold the résumé, job and model fixed, change one demographic line, and watch the score.</p>
+    <p class="dim">A counterfactual audit. Hold the résumé, job and model fixed, change one demographic line, and watch the score.</p>
     <p class="dim"><strong>Step 1.</strong> Take one real résumé as the baseline and generate variants that each differ from it by a single demographic line. For example, the baseline candidate becomes Maria Rodriguez for a first-name swap, or the address country becomes India, with every other word left identical.</p>
     <p class="dim"><strong>Step 2.</strong> Score the baseline and every variant with the same model on the same job, several times each. For example, all ${esc(modelCount)} models score the ${esc(variantCount)} résumé variants across ${esc(jdCount)} jobs, repeated over multiple runs.</p>
     <p class="dim"><strong>Step 3.</strong> For each variant measure the delta, its mean score minus the baseline's, and check whether that gap clears the run to run noise. For example, a model that scores the baseline 6.2 and the India variant 5.6 has dropped the score by 0.6.</p>
-    <p class="dim"><strong>Step 4.</strong> Pool the deltas two ways: by model, to see which is least even-handed, and by dimension, to see which swapped signal moves scores the most. The two tables below are exactly those two views.</p>
+    <p class="dim"><strong>Step 4.</strong> Pool the deltas two ways. By model, to see which is least even-handed, and by dimension, to see which swapped signal moves scores the most. The two tables below are exactly those two views.</p>
     <p class="dim"><strong>Step 5.</strong> Read it. If demographic swaps leave the score flat, the model is identity-blind and the assumption holds. If the score moves, and moves the same way across runs and across models, the evaluator is not judging the work alone.</p>
   </div>`;
 }
@@ -1498,7 +1659,7 @@ function jdsPageHtml({ matrix, jds, jdLabels, jdShortLabels, jdTexts, cells }) {
   return `<div class="panel">
     <div class="panel-head"><span>${jds.length} JOB DESCRIPTIONS</span></div>
     <p>Every one of the ${variantCountOf(matrix)} résumé variants is scored against each of these jobs by each of the ${matrix.models.length} models in the study. Click any role to expand its full description and see which résumé variant scored best and worst on it.</p>
-    <p class="dim">Each role shows a "bias fingerprint": one line per model, x = résumé variants grouped by dimension, y = score Δ vs the baseline résumé. Where the models agree, their colours add toward white. That brightness is shared bias.</p>
+    <p class="dim">Each role shows a "bias fingerprint". One line per model, x = résumé variants grouped by dimension, y = score Δ vs the baseline résumé. Where the models agree, their colours add toward white. That brightness is shared bias.</p>
     <div class="wave-legend" id="wave-legend"></div>
   </div>
   ${sections}`;
@@ -1513,7 +1674,7 @@ function auditStabilityPanelHtml(stats) {
     <p>Every audited cell is judged twice, once on the first-run sample and once on the median-typical sample. When the two samples are different evaluations, the auditor can in principle disagree with itself. This stat measures how often it does.</p>
     <p><strong>Disagreement rate (when two distinct sampled pairs were judged): <span class="alert">${pct}</span></strong> &nbsp;(${stats.disagree} of ${denom} cells).</p>
     ${confusionMatrixHtml(stats)}
-    <p class="dim">Of <strong>${stats.total.toLocaleString()}</strong> total audited cells, <strong>${stats.coincide.toLocaleString()}</strong> had identical first-and-median samples (a single pair selected twice, no disagreement possible by construction) and were excluded from the denominator. The remaining <strong>${denom.toLocaleString()}</strong> cells had two genuinely different sampled pairs from the same cell, and on that set, the auditor returned a different verdict <strong>${pct}</strong> of the time. This is the empirical reason we aggregate over five runs per cell rather than relying on a single judgement: at temperature 0.7, even an LLM judge faced with two different samples of <em>the same</em> bias case will not always agree with itself.</p>
+    <p class="dim">Of <strong>${stats.total.toLocaleString()}</strong> total audited cells, <strong>${stats.coincide.toLocaleString()}</strong> had identical first-and-median samples (a single pair selected twice, no disagreement possible by construction) and were excluded from the denominator. The remaining <strong>${denom.toLocaleString()}</strong> cells had two genuinely different sampled pairs from the same cell, and on that set, the auditor returned a different verdict <strong>${pct}</strong> of the time. This is the empirical reason we aggregate over five runs per cell rather than relying on a single judgement. At temperature 0.7, even an LLM judge faced with two different samples of <em>the same</em> bias case will not always agree with itself.</p>
   </div>
   `;
 }
@@ -1549,7 +1710,7 @@ function confusionMatrixHtml(stats) {
   const flipJB = mat.justified.bias;
   const asymmetry = flipJB ? (flipBJ / flipJB).toFixed(2) : '–';
   return `<div class="cm-wrap">
-    <p class="cm-howto"><strong>How to read this:</strong> each cell counts (variant × model × JD) pairs where the judge said <em>X</em> about the first sampled run and <em>Y</em> about the median-typical run. <span class="cm-key cm-key-agree">●</span> green = same verdict (judge agreed with itself); <span class="cm-key cm-key-disagree">●</span> red = different verdict (judge flipped).</p>
+    <p class="cm-howto"><strong>How to read this.</strong> Each cell counts (variant × model × JD) pairs where the judge said <em>X</em> about the first sampled run and <em>Y</em> about the median-typical run. <span class="cm-key cm-key-agree">●</span> green = same verdict (judge agreed with itself), <span class="cm-key cm-key-disagree">●</span> red = different verdict (judge flipped).</p>
     <table class="data cm">
       <thead>
         <tr><th></th><th colspan="${verdicts.length}" class="cm-axis-label">JUDGE'S VERDICT ON THE MEDIAN-TYPICAL SAMPLE →</th><th></th></tr>
@@ -1565,8 +1726,8 @@ function confusionMatrixHtml(stats) {
       </tfoot>
     </table>
     <p class="dim cm-caption">
-      Diagonal cells (green) are where the auditor agreed with itself; off-diagonal cells (red) are flips. The largest flip cell is
-      <strong>bias → justified</strong> at <strong>${flipBJ}</strong> cases, the judge said the first sample looked like bias but later judged the median sample as justified. The reverse direction, <strong>justified → bias</strong>, is only <strong>${flipJB}</strong> cases. That ${asymmetry}× asymmetry matters: it means a single-sample audit on the <em>first</em> run would systematically over-call bias compared to one that picks a more representative sample.
+      Diagonal cells (green) are where the auditor agreed with itself. Off-diagonal cells (red) are flips. The largest flip cell is
+      <strong>bias → justified</strong> at <strong>${flipBJ}</strong> cases, the judge said the first sample looked like bias but later judged the median sample as justified. The reverse direction, <strong>justified → bias</strong>, is only <strong>${flipJB}</strong> cases. That ${asymmetry}× asymmetry matters. It means a single-sample audit on the <em>first</em> run would systematically over-call bias compared to one that picks a more representative sample.
     </p>
   </div>
   `;

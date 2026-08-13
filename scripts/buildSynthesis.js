@@ -204,7 +204,7 @@ async function main() {
 
   const page = await fs.readFile(PAGE, 'utf8');
   const re = /(<!-- @PRERENDER:synthesis:START -->)[\s\S]*?(<!-- @PRERENDER:synthesis:END -->)/g;
-  if (!re.test(page)) { console.error('No synthesis marker found in index.html — add <!-- @PRERENDER:synthesis:START/END --> first.'); process.exit(1); }
+  if (!re.test(page)) { console.error('No synthesis marker found in index.html. Add <!-- @PRERENDER:synthesis:START/END --> first.'); process.exit(1); }
   re.lastIndex = 0;
   const next = page.replace(re, (_, a, b) => `${a}\n${html}\n${b}`);
   await fs.writeFile(PAGE, next);

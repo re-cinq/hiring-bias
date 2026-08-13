@@ -25,11 +25,11 @@ if (top) {
   panel.append(el('p', {}, [
     'When the only change is ',
     el('strong', {}, levelL),
-    ' (axis: ', el('em', { class: 'dim' }, axisL), '), ',
+    ' (the ', el('em', { class: 'dim' }, axisL), ' axis), ',
     el('strong', { title: modelVersion(top.model) }, modelLabel(top.model)),
     ' shifts its score by ',
     el('span', { class: deltaClass(top.delta) }, fmtSignedDelta(top.delta, 2)),
-    ' on the role: ',
+    ' on the role ',
     el('em', {}, jdL),
     '.'
   ]));

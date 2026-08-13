@@ -1,4 +1,4 @@
-import { loadJson, el, params, setParam, fmtNum, copyLinkButton, modelLabel, modelVersion, variantLabel } from './lib.js';
+import { loadJson, el, panel, params, setParam, fmtNum, copyLinkButton, modelLabel, modelVersion, variantLabel } from './lib.js';
 import { renderLineDiff, diffSequence } from './linediff.js';
 import { fieldLabel, fieldLine } from './extraction-fields.js';
 
@@ -12,8 +12,8 @@ import { fieldLabel, fieldLine } from './extraction-fields.js';
 
 const TIER_LABEL = {
   0: { text: 'who the candidate is', title: 'Identity field. Not scored, shown because a swap moving it is worth seeing.' },
-  1: { text: 'copied from the résumé', title: 'Tier 1. A fact the résumé states; the model only has to transcribe or classify it.' },
-  2: { text: 'the model’s own judgement', title: 'Tier 2. A label the model chose; the résumé does not state it outright.' }
+  1: { text: 'copied from the résumé', title: 'Tier 1. A fact the résumé states, so the model only has to transcribe or classify it.' },
+  2: { text: 'the model\'s own judgement', title: 'Tier 2. A label the model chose. The résumé does not state it outright.' }
 };
 
 // Letters, not hues. Encoding which of several values a run picked as a colour would
@@ -35,13 +35,6 @@ async function loadCell(variant, model, arm) {
 // unusable either way, so both read as one thing.
 const show = (value) => (value == null || value === '' ? '(no value)' : String(value));
 const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
-
-function panel(title, ...children) {
-  const box = el('div', { class: 'panel' });
-  if (title) box.append(el('div', { class: 'panel-head' }, el('span', {}, title)));
-  for (const child of children) if (child) box.append(child);
-  return box;
-}
 
 // ---- The headline: how much of this parse held still ----------------------
 
@@ -141,7 +134,7 @@ function readingLine(letter, value, majority) {
   if (value === majority) { whole(''); return line; }
   if (show(value) === show(majority)) {
     whole('ins');
-    note(`— returned as ${typeWord(value)}, where the agreed reading is ${typeWord(majority)}`);
+    note(`(returned as ${typeWord(value)}, where the agreed reading is ${typeWord(majority)})`);
     return line;
   }
   if (mine.length < 2 || theirs.length < 2) { whole('ins'); return line; }
@@ -155,7 +148,7 @@ function readingLine(letter, value, majority) {
   }
   // Two readings whose words all match differ only in spacing or line breaks. Nothing above
   // would have drawn a single mark, leaving the reader comparing two identical-looking lines.
-  if (!tokens.some((token) => token.kind !== 'ctx')) note('— same words, different spacing or line breaks');
+  if (!tokens.some((token) => token.kind !== 'ctx')) note('(same words, different spacing or line breaks)');
   return line;
 }
 
@@ -281,7 +274,7 @@ function wobblePanel(cell) {
   draw();
 
   return panel('WHERE THE PARSE WOBBLED',
-    el('p', { class: 'dim' }, 'One row per field the repeat runs disagreed on, grouped by the part of the résumé it came from, worst first. One mark per run, numbered along the top: A is the reading the runs agreed on most often, and every other letter is a run that read the same résumé differently. (no value) means that run left the field out entirely.'),
+    el('p', { class: 'dim' }, 'One row per field the repeat runs disagreed on, grouped by the part of the résumé it came from, worst first. One mark per run, numbered along the top. A is the reading the runs agreed on most often, and every other letter is a run that read the same résumé differently. (no value) means that run left the field out entirely.'),
     el('div', { class: 'legend' }, [
       el('span', {}, [el('span', { class: 'swatch majority' }), ' agreed with the majority reading']),
       el('span', {}, [el('span', { class: 'swatch moved' }), ' read it differently'])
@@ -434,7 +427,7 @@ export function sampler(summary, matrix, armLabel) {
   const controls = el('div', { class: 'panel' });
   controls.append(el('div', { class: 'panel-head' }, [el('span', {}, 'SAMPLE THE DATA'), copyLinkButton()]));
   controls.append(el('p', { class: 'dim' },
-    'The tables above pool thousands of parses into one number per model. This reads one cell at a time: which fields moved between repeat runs of the same document, what each run actually said, and what a single demographic line changed.'));
+    'The tables above pool thousands of parses into one number per model. This reads one cell at a time. You get which fields moved between repeat runs of the same document, what each run actually said, and what a single demographic line changed.'));
 
   const selectors = el('div', { class: 'controls-row' });
   controls.append(el('div', { class: 'controls-row' },

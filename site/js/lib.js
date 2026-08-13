@@ -59,6 +59,21 @@ export function el(tag, attrs = {}, children = []) {
   return node;
 }
 
+export function panel(title, ...children) {
+  const box = el('div', { class: 'panel' });
+  if (title) box.append(el('div', { class: 'panel-head' }, el('span', {}, title)));
+  for (const child of children) if (child) box.append(child);
+  return box;
+}
+
+// Cells are `{ text, num, cls }`; headers are `{ label, num }`. `num` right-aligns.
+export function table(headers, rows) {
+  const head = el('tr', {}, headers.map((h) => el('th', { class: h.num ? 'num' : '' }, h.label)));
+  const body = el('tbody', {}, rows.map((cells) => el('tr', {}, cells.map((c) =>
+    el('td', { class: `${c.num ? 'num' : ''} ${c.cls ?? ''}`.trim(), title: c.title }, c.text)))));
+  return el('table', { class: 'data' }, [el('thead', {}, head), body]);
+}
+
 export const MODEL_DISPLAY = {
   'claude-opus': 'Claude Opus',
   'claude-sonnet': 'Claude Sonnet',

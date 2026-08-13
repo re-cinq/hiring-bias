@@ -72,7 +72,7 @@ const ul = el('ul');
 ul.append(el('li', {}, '5 runs per cell is small. Confidence intervals are wide. Only cells where the CI excludes baseline are flagged significant.'));
 ul.append(el('li', {}, 'A single résumé is the foundation for all variants. Other résumés would produce different absolute scores. The deltas are what matter.'));
 ul.append(el('li', {}, 'Job descriptions are LinkedIn postings collected by the author. They reflect one slice of the industry.'));
-ul.append(el('li', {}, 'Model API responses are non-deterministic. Models update silently. The dataset represents the API state during collection.'));
+ul.append(el('li', {}, 'Model API responses are non-deterministic. Models update silently. The dataset shows the API state during collection.'));
 ul.append(el('li', {}, 'A model rewarding or penalising a variant does not mean the variant is "good" or "bad". It means the model treats two otherwise-identical résumés differently.'));
 limitations.append(ul);
 page.append(limitations);

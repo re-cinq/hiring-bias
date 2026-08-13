@@ -37,7 +37,7 @@ export function renderVolcano(host, data, matrix, modelLabel) {
 
   const panel = el('div', { class: 'panel' });
   panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'WHICH SHIFTS ARE REAL, NOT NOISE?')));
-  panel.append(el('p', { class: 'dim' }, 'Every dot is one experiment. We drop a demographic signal into the résumé, run the same prompt five times, and compare the average score against the unmodified version. Left means the candidate was penalised, right means boosted. The higher a dot sits, the more reliably that shift showed up across all five reruns. The dashed line is the conventional p < 0.05 threshold for "not random." Dots are coloured by model (same palette as the waves); where many models pile on the same spot, the colours blend toward white. Click a model in the legend to isolate it. Hover any dot for the case, click to open the diff.'));
+  panel.append(el('p', { class: 'dim' }, 'Every dot is one experiment. We drop a demographic signal into the résumé, run the same prompt five times, and compare the average score against the unmodified version. Left means the candidate was penalised, right means boosted. The higher a dot sits, the more reliably that shift showed up across all five reruns. The dashed line is the conventional p < 0.05 threshold for "not random." Dots are coloured by model (same palette as the waves). Where many models pile on the same spot, the colours blend toward white. Click a model in the legend to isolate it. Hover any dot for the case, click to open the diff.'));
 
   const howto = el('details', { class: 'vol-howto' }, [
     el('summary', {}, 'How to spot bias on this chart'),

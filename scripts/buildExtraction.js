@@ -364,7 +364,7 @@ function prerenderSummary(summary) {
 </div>
 <div class="panel">
   <div class="panel-head"><span>HOW WE TEST IT</span></div>
-  <p class="dim">One parser prompt, no job description, run repeatedly over every résumé variant. The model is asked for structure and closed-vocabulary labels only; every rank, total and presence check is done in code.</p>
+  <p class="dim">One parser prompt, no job description, run repeatedly over every résumé variant. The model is asked for structure and closed-vocabulary labels only. Every rank, total and presence check is done in code.</p>
   <ol class="steps">
     <li><span class="act">Ask the model to copy the résumé into a fixed set of fields. No score, no opinion of the candidate.</span>
         <span class="eg">Each job becomes an entry with an employer, dates, a seniority label from a fixed list, and a quote from the document proving the entry is real. The model never sees the job description, so it cannot judge relevance to anything.</span></li>
@@ -382,7 +382,7 @@ function prerenderSummary(summary) {
 </div>
 <div class="panel">
   <div class="panel-head"><span>RESULTS BY MODEL AND ARM</span></div>
-  <p class="dim">Agreement is the share of extracted field paths matching across repeat runs of an identical résumé; 1.000 means the parse never moved. Tier 1 is transcribed and classified fact, tier 2 is the judgement fields. Ordinal drift is the mean rank distance on ordered labels such as seniority. Net leakage is how far a demographic swap moved fields it had no business touching, after subtracting what repeat runs move anyway.</p>
+  <p class="dim">Agreement is the share of extracted field paths matching across repeat runs of an identical résumé, so 1.000 means the parse never moved. Tier 1 is transcribed and classified fact, tier 2 is the judgement fields. Ordinal drift is the mean rank distance on ordered labels such as seniority. Net leakage is how far a demographic swap moved fields it had no business touching, after subtracting what repeat runs move anyway.</p>
   <table class="data"><thead><tr><th>model</th><th>arm</th><th class="num">cells</th><th class="num">agreement</th><th class="num">tier 1</th><th class="num">tier 2</th><th class="num">ordinal drift</th><th class="num">grounded</th><th class="num">net leakage</th></tr></thead><tbody>
 ${rows}
   </tbody></table>

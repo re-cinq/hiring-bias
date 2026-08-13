@@ -60,7 +60,7 @@
 <tr><td>Mistral Large</td><td><code>mistral-large-latest</code></td><td><code>mistral-large-2512</code></td></tr>
 <tr><td>Mistral Small</td><td><code>mistral-small-latest</code></td><td><code>mistral-small-2603</code></td></tr></tbody>
     </table>
-    <p class="dim">Versions were probed live on 2026-05-29; the run set was collected ~2026-05-20. These snapshots were the current production versions across that window. Because the floating aliases were not pinned at collection time, a re-run after a provider promotes a new snapshot could resolve differently.</p>
+    <p class="dim">Versions were probed live on 2026-05-29. The run set was collected ~2026-05-20. These snapshots were the current production versions across that window. Because the floating aliases were not pinned at collection time, a re-run after a provider promotes a new snapshot could resolve differently.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>AUDIT METHODOLOGY · HOW VERDICTS ARE PRODUCED</span></div>
@@ -96,7 +96,7 @@
     <p>Every audited cell is judged twice, once on the first-run sample and once on the median-typical sample. When the two samples are different evaluations, the auditor can in principle disagree with itself. This stat measures how often it does.</p>
     <p><strong>Disagreement rate (when two distinct sampled pairs were judged): <span class="alert">46.73%</span></strong> &nbsp;(1022 of 2187 cells).</p>
     <div class="cm-wrap">
-    <p class="cm-howto"><strong>How to read this:</strong> each cell counts (variant × model × JD) pairs where the judge said <em>X</em> about the first sampled run and <em>Y</em> about the median-typical run. <span class="cm-key cm-key-agree">●</span> green = same verdict (judge agreed with itself); <span class="cm-key cm-key-disagree">●</span> red = different verdict (judge flipped).</p>
+    <p class="cm-howto"><strong>How to read this.</strong> Each cell counts (variant × model × JD) pairs where the judge said <em>X</em> about the first sampled run and <em>Y</em> about the median-typical run. <span class="cm-key cm-key-agree">●</span> green = same verdict (judge agreed with itself), <span class="cm-key cm-key-disagree">●</span> red = different verdict (judge flipped).</p>
     <table class="data cm">
       <thead>
         <tr><th></th><th colspan="3" class="cm-axis-label">JUDGE'S VERDICT ON THE MEDIAN-TYPICAL SAMPLE →</th><th></th></tr>
@@ -127,12 +127,12 @@
       </tfoot>
     </table>
     <p class="dim cm-caption">
-      Diagonal cells (green) are where the auditor agreed with itself; off-diagonal cells (red) are flips. The largest flip cell is
-      <strong>bias → justified</strong> at <strong>650</strong> cases, the judge said the first sample looked like bias but later judged the median sample as justified. The reverse direction, <strong>justified → bias</strong>, is only <strong>338</strong> cases. That 1.92× asymmetry matters: it means a single-sample audit on the <em>first</em> run would systematically over-call bias compared to one that picks a more representative sample.
+      Diagonal cells (green) are where the auditor agreed with itself. Off-diagonal cells (red) are flips. The largest flip cell is
+      <strong>bias → justified</strong> at <strong>650</strong> cases, the judge said the first sample looked like bias but later judged the median sample as justified. The reverse direction, <strong>justified → bias</strong>, is only <strong>338</strong> cases. That 1.92× asymmetry matters. It means a single-sample audit on the <em>first</em> run would systematically over-call bias compared to one that picks a more representative sample.
     </p>
   </div>
   
-    <p class="dim">Of <strong>5,393</strong> total audited cells, <strong>3,206</strong> had identical first-and-median samples (a single pair selected twice, no disagreement possible by construction) and were excluded from the denominator. The remaining <strong>2,187</strong> cells had two genuinely different sampled pairs from the same cell, and on that set, the auditor returned a different verdict <strong>46.73%</strong> of the time. This is the empirical reason we aggregate over five runs per cell rather than relying on a single judgement: at temperature 0.7, even an LLM judge faced with two different samples of <em>the same</em> bias case will not always agree with itself.</p>
+    <p class="dim">Of <strong>5,393</strong> total audited cells, <strong>3,206</strong> had identical first-and-median samples (a single pair selected twice, no disagreement possible by construction) and were excluded from the denominator. The remaining <strong>2,187</strong> cells had two genuinely different sampled pairs from the same cell, and on that set, the auditor returned a different verdict <strong>46.73%</strong> of the time. This is the empirical reason we aggregate over five runs per cell rather than relying on a single judgement. At temperature 0.7, even an LLM judge faced with two different samples of <em>the same</em> bias case will not always agree with itself.</p>
   </div>
   
   <div class="panel">

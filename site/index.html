@@ -102,15 +102,15 @@
 <div class="panel">
     <div class="panel-head"><span>EXPERIMENT 1 · THE COUNTERFACTUAL AUDIT</span></div>
     <p class="dim">The first of the three experiments, in full. This is the demographic bias audit the fingerprint above is built from.</p>
-    <p>A fair evaluator scores a résumé on its merits. Change only a demographic signal on it, the candidate's name, country, alma mater, or a gap in employment, and leave every other word untouched, and the score should not move. The optimistic assumption we put to the test is that frontier LLMs already behave this way: that they are effectively identity-blind, and swapping a name leaves the verdict intact.</p>
+    <p>A fair evaluator scores a résumé on its merits. Change only a demographic signal on it, the candidate's name, country, alma mater, or a gap in employment, and leave every other word untouched, and the score should not move. The optimistic assumption we put to the test is that frontier LLMs already behave this way, that they are effectively identity-blind and swapping a name leaves the verdict intact.</p>
   </div>
   <div class="panel">
     <div class="panel-head"><span>HOW WE TEST IT</span></div>
-    <p class="dim">A counterfactual audit: hold the résumé, job and model fixed, change one demographic line, and watch the score.</p>
+    <p class="dim">A counterfactual audit. Hold the résumé, job and model fixed, change one demographic line, and watch the score.</p>
     <p class="dim"><strong>Step 1.</strong> Take one real résumé as the baseline and generate variants that each differ from it by a single demographic line. For example, the baseline candidate becomes Maria Rodriguez for a first-name swap, or the address country becomes India, with every other word left identical.</p>
     <p class="dim"><strong>Step 2.</strong> Score the baseline and every variant with the same model on the same job, several times each. For example, all 11 models score the 30 résumé variants across 17 jobs, repeated over multiple runs.</p>
     <p class="dim"><strong>Step 3.</strong> For each variant measure the delta, its mean score minus the baseline's, and check whether that gap clears the run to run noise. For example, a model that scores the baseline 6.2 and the India variant 5.6 has dropped the score by 0.6.</p>
-    <p class="dim"><strong>Step 4.</strong> Pool the deltas two ways: by model, to see which is least even-handed, and by dimension, to see which swapped signal moves scores the most. The two tables below are exactly those two views.</p>
+    <p class="dim"><strong>Step 4.</strong> Pool the deltas two ways. By model, to see which is least even-handed, and by dimension, to see which swapped signal moves scores the most. The two tables below are exactly those two views.</p>
     <p class="dim"><strong>Step 5.</strong> Read it. If demographic swaps leave the score flat, the model is identity-blind and the assumption holds. If the score moves, and moves the same way across runs and across models, the evaluator is not judging the work alone.</p>
   </div>
 <!-- @PRERENDER:premise:END -->
@@ -119,7 +119,7 @@
       <!-- @PRERENDER:hero:START -->
 <div class="panel">
     <div class="panel-head"><span>THE STARKEST DELTA WE HAVE SO FAR</span></div>
-    <p>When the only change is <strong>United States</strong> (axis: <em class="dim">Company Locations</em>), <strong>Gemini 2.5 Flash</strong> shifts its score by <span class="alert">-3.40</span> on the role: <em>Junior / Mid-Level Fullstack Developer</em>.</p>
+    <p>When the only change is <strong>United States</strong> (the <em class="dim">Company Locations</em> axis), <strong>Gemini 2.5 Flash</strong> shifts its score by <span class="alert">-3.40</span> on the role <em>Junior / Mid-Level Fullstack Developer</em>.</p>
     <p><a href="diff.html?variant=companyLocations_us&model=gemini-2.5-flash&jd=jd_junior_fullstack">See this counterfactual →</a></p>
   </div>
 <!-- @PRERENDER:hero:END -->
@@ -339,8 +339,8 @@
 <div class="stats"><div class="stat"><div class="label">Resume variants tested</div><div class="value">30</div><div class="sub">baseline + 29 résumé variants</div></div>
 <div class="stat"><div class="label">Models evaluated</div><div class="value">11</div><div class="sub">Claude Fable 5 · Claude Haiku · Claude Opus · Claude Sonnet · Gemini 2.5 Flash · Gemini 2.5 Pro · Gemini 3.1 Pro · Preview · Llama 4 Maverick · Mistral Large · Mistral Small · Qwen 3 Next 80B</div></div>
 <div class="stat"><div class="label">Job descriptions</div><div class="value">17</div><div class="sub">from junior fullstack to CTO</div></div>
-<div class="stat"><div class="label">Inference runs collected</div><div class="value">28,242</div><div class="sub">of 28,050 planned (100.7%)</div></div>
-<div class="stat"><div class="label">API spend so far</div><div class="value">$836.07</div><div class="sub">OpenAI/Anthropic/Google/Alibaba/Meta APIs</div></div>
+<div class="stat"><div class="label">Inference runs collected</div><div class="value">28,050</div><div class="sub">of 28,050 planned (100.0%)</div></div>
+<div class="stat"><div class="label">API spend so far</div><div class="value">$834.94</div><div class="sub">OpenAI/Anthropic/Google/Alibaba/Meta APIs</div></div>
 <div class="stat"><div class="label">Bias dimensions</div><div class="value">8</div><div class="sub">Address Country · Anonymize · Career Gap · Company Locations · Company Names · First Name · Graduation Year · School</div></div></div>
 <!-- @PRERENDER:stats:END -->
     </div>

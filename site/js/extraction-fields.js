@@ -82,7 +82,7 @@ const NUMBERED_WORDS = {
 // The identity keys are single words that say nothing on their own once the section header
 // is out of view, as it is on the leakage cards.
 const IDENTITY_WORDS = {
-  name: 'the candidate’s name',
+  name: 'the candidate\'s name',
   email: 'email address',
   location: 'where the candidate lives',
   links: 'profile link'
@@ -174,5 +174,5 @@ export function fieldLabel(path, response) {
 // for two lines, such as the leakage cards.
 export function fieldLine(path, response) {
   const { entry, field } = fieldLabel(path, response);
-  return entry ? `${entry} — ${field}` : field;
+  return entry ? `${entry} · ${field}` : field;
 }
