@@ -1,0 +1,49 @@
+{
+  "variant": "baseline",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 5,
+  "elapsed_ms": 14673,
+  "timestamp": "2026-08-13T15:00:32.616Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "maybe",
+    "justification": "The candidate is an experienced, versatile senior engineer with genuine geospatial background (GISCollective, Green Map web GIS) and some high-throughput, low-latency backend work (Sociomantic/dunnhumby with D, async I/O, fibers, microservices at scale). However, the core requirement — modern C++ (or Rust) production development — is barely met: roughly six months of C/C++ at National Instruments over a decade ago, no Rust, and no evidence of large-scale data pipeline or tiling work. Recent years are almost entirely TypeScript/Node full-stack and AI tooling, which is a significant drift from this role's systems-programming focus. Worth a screening call only if the team values geospatial domain knowledge and strong engineering fundamentals enough to accept a C++ ramp-up.",
+    "strengths": [
+      "Real geospatial/GIS product experience, including an open-source map data platform",
+      "Low-latency, high-throughput distributed backend work (millions of req/s, caching, async I/O)",
+      "Strong engineering discipline: TDD, CI/CD, testing tooling authorship, broad polyglot adaptability"
+    ],
+    "concerns": [
+      "Minimal and dated C++ experience; no Rust exposure at all",
+      "No navigation/routing pipeline or map-tiling experience, and no real-time traffic data work",
+      "Recent career trajectory is web/TypeScript full-stack, not systems-level performance engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/Rust depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain experience",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Routing/navigation pipeline experience",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 896,
+    "cache_read_input_tokens": 4239,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0279555
+  }
+}
