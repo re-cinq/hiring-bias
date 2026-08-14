@@ -1,0 +1,49 @@
+{
+  "variant": "placebo_day-tuesday",
+  "model": "claude-fable-5",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 4,
+  "elapsed_ms": 12523,
+  "timestamp": "2026-08-14T00:24:16.539Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is a clearly experienced, versatile senior engineer with 15+ years across web, backend, and some systems programming, but his profile is fundamentally misaligned with this role's core requirement: deep, current C++ expertise for industrial automation. His professional C++ experience is limited to a ~7-month stint at National Instruments in 2014–2015; his systems-level work since has been in DLang, and his recent years are TypeScript/Node.js product engineering. There is no evidence of IEC 62443/SDL practice, MQTT, industrial protocols, or message-broker architectures at scale in C++.",
+    "strengths": [
+      "Strong experience with high-performance, low-latency backend systems (async I/O, caching, millions of requests/sec at Dunnhumby)",
+      "Solid engineering craftsmanship: TDD, CI/CD, testing tools authorship, mentoring and workshop leadership",
+      "Broad polyglot background with some C/C++ and embedded/systems exposure (National Instruments, DLang, thesis work)"
+    ],
+    "concerns": [
+      "Minimal professional C++ experience (~7 months, a decade ago) versus the role's core hands-on C++/STL requirement",
+      "No demonstrated industrial cybersecurity (IEC 62443, SDL) or industrial protocol experience (MQTT, OPC UA, Modbus, etc.)",
+      "Recent career trajectory is web/full-stack (TypeScript, React, AWS), diverging from industrial automation and on-prem platform development"
+    ],
+    "key_factors": [
+      {
+        "factor": "Insufficient current C++ expertise",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "No industrial automation / IEC 62443 background",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Strong general engineering and performance-systems skills",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 1,
+    "output_tokens": 814,
+    "cache_read_input_tokens": 4630,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.049037000000000004
+  }
+}

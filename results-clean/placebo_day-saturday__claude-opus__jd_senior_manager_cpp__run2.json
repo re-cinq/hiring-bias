@@ -1,0 +1,49 @@
+{
+  "variant": "placebo_day-saturday",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 2,
+  "elapsed_ms": 97378,
+  "timestamp": "2026-08-13T20:28:57.794Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Bogdan is an experienced, versatile senior engineer with 15+ years across web, mobile, embedded and high-throughput backend systems, and demonstrates strong engineering discipline (TDD, CI/CD, mentoring, public talks). However, the role is fundamentally a hands-on C++ position in industrial automation, and his C++ exposure is limited to roughly seven months at National Instruments in 2015 plus a university thesis project. There is no evidence of STL-heavy modern C++, message-broker or MQTT work, industrial protocols (Modbus, OPC UA, IEC 61850), or Secure Development Lifecycle / IEC 62443 experience, which are the core and security requirements of the posting. His recent decade is almost entirely TypeScript/Node/D-lang product work, so the gap to the required stack and domain is large despite the strong general seniority.",
+    "strengths": [
+      "Deep senior-level breadth: 15+ years across embedded, backend, and full-stack roles",
+      "Proven high-performance, low-latency distributed systems work (async I/O, fibers, millions of req/s)",
+      "Strong quality and mentoring culture: TDD, CI/CD, workshops, open-source test tooling"
+    ],
+    "concerns": [
+      "Only ~7 months of professional C++ experience, over a decade ago",
+      "No industrial automation, IEC 62443/SDL, MQTT, or OT protocol exposure",
+      "No Azure, and limited evidence of UML/architecture documentation practice"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ / STL core skill gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Missing industrial cybersecurity (IEC 62443/SDL) and automation domain",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Senior-level distributed/high-performance systems experience",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 983,
+    "cache_read_input_tokens": 4628,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.030595999999999998
+  }
+}

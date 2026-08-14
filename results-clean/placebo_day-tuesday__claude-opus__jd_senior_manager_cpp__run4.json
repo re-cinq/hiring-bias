@@ -1,0 +1,49 @@
+{
+  "variant": "placebo_day-tuesday",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 4,
+  "elapsed_ms": 14986,
+  "timestamp": "2026-08-13T21:09:14.971Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is an experienced, versatile senior engineer with 15+ years across web, backend, and some embedded work, and demonstrates strong software-craftsmanship habits (TDD, CI/CD, mentoring, public speaking). However, the role's core requirement — deep, current C++/STL expertise for high-performance on-premises and industrial platforms — is essentially absent: C++ appears only in a ~7-month stint at National Instruments (2014–2015) and a university thesis, and it is not even listed among current skills. There is no evidence of IEC 62443 / Secure Development Lifecycle practice, MQTT or industrial protocols (Modbus, OPC UA, IEC 61850), or industrial automation/IoT domain exposure. Recent work is TypeScript/Node/AWS full-stack and AI tooling, which is a poor match for the hands-on C++ architecture focus of this position.",
+    "strengths": [
+      "Deep distributed/event-driven, low-latency systems experience (Sociomantic, millions of req/s)",
+      "Strong engineering discipline: TDD, CI/CD, testing tooling, mentoring and teaching",
+      "Broad polyglot background including some C/C++ and embedded/hardware exposure"
+    ],
+    "concerns": [
+      "Minimal and dated C++/STL experience; not a current core skill",
+      "No IEC 62443, SDL, or industrial cybersecurity background",
+      "No industrial automation, MQTT, or OT protocol (Modbus/OPC UA) experience"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ depth and recency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial automation / security standards (IEC 62443, SDL, MQTT)",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "High-performance concurrent and distributed systems track record",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 976,
+    "cache_read_input_tokens": 4629,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.030421499999999997
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "variant": "placebo_weather-clear",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 5,
+  "elapsed_ms": 17510,
+  "timestamp": "2026-08-14T00:57:39.532Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "Bogdan is an accomplished senior/staff-level engineer with 15+ years of experience, strong systems thinking, and demonstrable work on high-throughput, low-latency, event-driven services. However, the role is fundamentally a hands-on C++ engineering position in industrial automation, and his C++ exposure is limited to a ~6-month stint at National Instruments in 2014-2015 and a university thesis project — roughly a decade out of date. His recent decade is almost entirely TypeScript/Node.js/DLang web and cloud product work, with no evidence of STL-heavy development, IEC 62443 / Secure Development Lifecycle practice, MQTT/OPC UA/Modbus protocols, industrial cybersecurity, or Azure. The transferable skills (concurrency, async I/O, microservices, testing rigor, mentoring) are real but would not offset the core technology and domain gap for a mid-senior specialist hire.",
+    "strengths": [
+      "Proven high-performance, low-latency distributed systems work (millions of HTTP req/s, async I/O, fibers, caching)",
+      "Strong engineering craftsmanship: TDD, CI/CD, trunk-based development, authored testing tooling and frameworks",
+      "Clear mentoring and communication track record — workshops, courses, conference talks, technical writing"
+    ],
+    "concerns": [
+      "C++ experience is minimal and ~10 years stale; no modern C++/STL or OOP-in-C++ evidence",
+      "No industrial automation, IoT, MQTT/OPC UA/Modbus, or IEC 62443 / SDL security background",
+      "No Azure or industrial cloud platform exposure; profile is web/full-stack rather than embedded/on-premises platform engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ / STL depth and recency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial automation, IEC 62443 & protocol domain gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Distributed, concurrent, event-driven systems expertise",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1146,
+    "cache_read_input_tokens": 4629,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0346715
+  }
+}

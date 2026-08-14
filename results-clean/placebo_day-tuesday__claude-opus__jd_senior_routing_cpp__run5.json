@@ -1,0 +1,49 @@
+{
+  "variant": "placebo_day-tuesday",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 5,
+  "elapsed_ms": 17643,
+  "timestamp": "2026-08-13T21:09:48.267Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "maybe",
+    "justification": "Bogdan is an experienced, versatile senior engineer with genuine geospatial credentials (GISCollective, Green Map web GIS, FOSS4G talk) and some high-throughput, low-latency backend work at Sociomantic/Dunnhumby (async I/O, fibers, caching, millions of req/s). However, the role's primary hard requirement — modern C++ (or Rust) in commercial or open-source settings — is only weakly met: his C/C++ exposure is a ~7-month stint at National Instruments in 2014–2015 plus a university thesis, with no evidence of modern C++ (C++17/20) or Rust. The last decade has been predominantly TypeScript/Node.js and D, and there is no experience with routing tiles, navigation guidance, or map data pipelines. He could plausibly ramp up given his systems-level D work and stated appetite for learning across the stack, but he would not be a mid-senior hire who is productive on the core codebase quickly. Worth a screening call only if the team is open to a strong generalist who must learn modern C++ on the job.",
+    "strengths": [
+      "Real geospatial/GIS product experience (GISCollective, Open Green Map, FOSS4G speaker)",
+      "Low-latency, high-throughput distributed backend work at Sociomantic (async I/O, fibers, caching)",
+      "Strong engineering discipline: TDD, CI/CD, own test tooling, Linux and DevOps depth"
+    ],
+    "concerns": [
+      "Modern C++ experience is minimal and ~10 years stale; no Rust at all",
+      "No navigation, routing, or map-tiling pipeline experience",
+      "Recent decade is web/full-stack TypeScript, not systems-level performance engineering"
+    ],
+    "key_factors": [
+      {
+        "factor": "Modern C++/Rust proficiency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain background",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Distributed/low-latency systems experience",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1099,
+    "cache_read_input_tokens": 4259,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.0330545
+  }
+}

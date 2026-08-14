@@ -1,0 +1,49 @@
+{
+  "variant": "placebo_day-saturday",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 3,
+  "elapsed_ms": 17563,
+  "timestamp": "2026-08-13T20:29:10.740Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "maybe",
+    "justification": "The candidate is a versatile, experienced senior engineer with genuine geospatial credentials (GISCollective, Green Map web GIS) and one strong stint building low-latency, high-throughput microservices at Sociomantic — both relevant to a routing data pipeline. However, the core requirement of modern C++ (or Rust) is essentially unmet: C/C++ appears only in a six-month role at National Instruments over a decade ago and a university thesis project, and C++/Rust are absent from the stated skill list. Recent years have been TypeScript/Node full-stack and AI tooling, which is a poor match for a systems-level tiling pipeline role. Their D-language systems work (fibers, async I/O, performance libraries) suggests the low-level aptitude and 'willingness to expand across the stack' the role asks for, so a screening call could be justified if the team is open to ramping someone into C++, but they would not clear a bar that treats modern C++ as a hard requirement.",
+    "strengths": [
+      "Real geospatial/GIS product experience, including an open-source map data platform",
+      "Low-latency, high-volume distributed systems work (millions of req/s) with async I/O and caching",
+      "Strong engineering discipline: TDD, CI/CD, test tooling authorship, and broad full-stack adaptability"
+    ],
+    "concerns": [
+      "No recent or substantial modern C++ or Rust experience (C/C++ limited to ~6 months in 2014-2015)",
+      "Recent 3-5 years focused on TypeScript/Node web and AI tooling, not systems programming",
+      "No navigation/routing-guidance domain experience or large-scale data pipeline operations"
+    ],
+    "key_factors": [
+      {
+        "factor": "Missing modern C++/Rust core skill",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial and GIS domain background",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "Low-latency distributed systems experience",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1101,
+    "cache_read_input_tokens": 4258,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.033098999999999996
+  }
+}

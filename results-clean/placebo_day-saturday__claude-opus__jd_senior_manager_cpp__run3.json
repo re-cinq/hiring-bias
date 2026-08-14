@@ -1,0 +1,49 @@
+{
+  "variant": "placebo_day-saturday",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 3,
+  "elapsed_ms": 14396,
+  "timestamp": "2026-08-13T20:29:12.190Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is an experienced, versatile senior engineer (13+ years) with strong distributed-systems, low-latency, and testing credentials, but the core requirement of this role — hands-on modern C++/STL development for industrial automation platforms — is essentially absent. C++ appears only in a ~6-month role at National Instruments (2014–2015) and a university thesis; the last decade has been JavaScript/TypeScript, Node.js, and DLang web work. There is no evidence of IEC 62443/SDL security practice, MQTT or industrial protocols (Modbus, OPC UA, IEC 61850), message-broker-based C++ systems, or Azure. Domain and language mismatch outweigh the general seniority signal.",
+    "strengths": [
+      "13+ years of broad senior/staff-level engineering experience, including low-latency, high-throughput microservices",
+      "Strong software craftsmanship: TDD, CI/CD, testing tooling, mentoring, workshops and public talks",
+      "Systems-adjacent depth (async I/O, fibers, caching, event-driven Geo-Data platform, Kubernetes deployments)"
+    ],
+    "concerns": [
+      "Minimal and dated C++/STL experience (~6 months in 2014–2015); no recent modern C++ work",
+      "No industrial automation, IoT, MQTT, or OT protocol experience (Modbus, OPC UA, IEC 61850)",
+      "No evidence of secure development lifecycle or IEC 62443 cybersecurity practice; no Azure exposure"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++ depth and recency",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial automation / IoT protocol and IEC 62443 security gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Senior engineering breadth, distributed systems and mentoring",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 909,
+    "cache_read_input_tokens": 4628,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.028745999999999997
+  }
+}
