@@ -1,0 +1,49 @@
+{
+  "variant": "placebo_weather-rain",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_routing_cpp",
+  "run": 4,
+  "elapsed_ms": 16059,
+  "timestamp": "2026-08-17T22:02:18.674Z",
+  "response": {
+    "score": 4,
+    "recommend_interview": "maybe",
+    "justification": "Bogdan is a broadly experienced senior/staff-level engineer with genuine geospatial depth (GISCollective, Green Map web GIS, FOSS4G talk) and demonstrated low-latency, high-throughput backend work at Sociomantic using D with async I/O, fibers and caching — both relevant analogues for a routing tiling pipeline. However, the core requirement of modern C++ (or Rust) is not met: his only C/C++ professional exposure was roughly seven months at National Instruments in 2014–2015, with no Rust and no C++ in the last decade. His recent work is overwhelmingly TypeScript/Node.js product engineering, and there is no navigation guidance or routing-tile/map-data pipeline experience, nor evidence of distributed-systems fundamentals like consistency or service discovery at production scale. He is a plausible long-shot for a team willing to invest in ramp-up on C++, but not a direct match.",
+    "strengths": [
+      "Real geospatial/GIS platform experience, including an open-source map-data platform",
+      "Proven low-latency, high-volume systems work (millions of req/s, async I/O, fibers)",
+      "Strong engineering discipline: TDD, CI/CD, testing tooling, Linux/Docker/Kubernetes"
+    ],
+    "concerns": [
+      "Modern C++ experience is minimal and over 10 years old; no Rust",
+      "No navigation/routing or map-tile pipeline experience",
+      "Recent roles are web/full-stack TypeScript, not systems-level infrastructure"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/Rust proficiency gap",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Geospatial domain experience",
+        "direction": "positive",
+        "weight": "medium"
+      },
+      {
+        "factor": "No navigation/routing pipeline background",
+        "direction": "negative",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 975,
+    "cache_read_input_tokens": 4260,
+    "cache_creation_input_tokens": 0,
+    "cost_usd_reported": 0.029951
+  }
+}

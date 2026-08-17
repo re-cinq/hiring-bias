@@ -1,0 +1,49 @@
+{
+  "variant": "placebo_weather-rain",
+  "model": "claude-opus",
+  "vendor": "anthropic",
+  "tier": "flagship",
+  "jd": "jd_senior_manager_cpp",
+  "run": 1,
+  "elapsed_ms": 16650,
+  "timestamp": "2026-08-17T22:01:24.141Z",
+  "response": {
+    "score": 3,
+    "recommend_interview": "no",
+    "justification": "The candidate is a highly experienced generalist software engineer (15+ years) with strong full-stack, distributed-systems, and low-latency backend work, but the role's core requirement — deep, current C++/STL expertise — is barely represented: roughly six months of C/C++ component work at National Instruments in 2014–2015 and a university thesis project. C++ does not even appear in the listed skills. There is also no evidence of industrial automation domain experience, IEC 62443/SDL secure development practices, MQTT or industrial protocols (Modbus, OPC UA, IEC 61850), or message-broker-based architecture at scale beyond a self-described event-driven side platform. The seniority, systems thinking, and mentoring/teaching track record are genuine strengths, but the technical fit against the primary stack is weak enough that this would be a substantial retraining bet rather than a hire against the spec.",
+    "strengths": [
+      "15+ years of broad engineering experience, including low-latency, high-throughput microservices (millions of req/s) with async I/O, fibers, and caching",
+      "Strong software craftsmanship and quality culture: TDD, pairing, CI/CD, authored test frameworks and assertion libraries, plus demonstrated mentoring via workshops and courses",
+      "Proven ownership and cross-functional adaptability — founded and maintains an open-source event-driven geo-data platform deployed on Kubernetes"
+    ],
+    "concerns": [
+      "Minimal and dated C++/STL experience (~6 months in 2014–2015); C++ absent from the stated skill set",
+      "No industrial automation, IoT, MQTT, or industrial protocol (Modbus, OPC UA, IEC 61850) exposure",
+      "No evidence of secure development lifecycle practice or IEC 62443 cybersecurity standards, and no Azure cloud experience (AWS only)"
+    ],
+    "key_factors": [
+      {
+        "factor": "C++/STL depth",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Industrial automation & security standards (IEC 62443, MQTT, SDL)",
+        "direction": "negative",
+        "weight": "high"
+      },
+      {
+        "factor": "Senior-level distributed systems and engineering craftsmanship",
+        "direction": "positive",
+        "weight": "medium"
+      }
+    ]
+  },
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 980,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 4630,
+    "cost_usd_reported": 0.07450799999999999
+  }
+}
