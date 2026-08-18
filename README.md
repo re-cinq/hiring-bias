@@ -15,11 +15,17 @@ move. Any delta between a variant and the baseline is attributable to the single
 signal that changed — the same logic as the classic [Bertrand–Mullainathan audit
 study](https://www.nber.org/papers/w9873), run against today's models.
 
-The audit is complemented by three follow-up experiments — a **reasoning
-transplant** (does the score follow the model's written reasoning?), a **prompt
-lab** (can prompt engineering stabilise the score?) and an **extraction lab**
-(if the model only parses and code does the scoring, does the bias go away?) —
-plus a synthesis that joins all four on their shared unit, the model.
+The audit is complemented by four follow-up experiments — a **placebo control**
+(does an irrelevant edit move the score as much as a demographic one?), a
+**reasoning transplant** (does the score follow the model's written reasoning?),
+a **prompt lab** (can prompt engineering stabilise the score?) and an
+**extraction lab** (if the model only parses and code does the scoring, does the
+bias go away?) — plus a synthesis that joins them on their shared unit, the model.
+
+The placebo control is the one to read first. A blank line added to the résumé
+moves the score by 0.262 points, against 0.362 for a demographic swap, so most
+of the movement this study measures is instability rather than bias. Only first
+name and career gap clearly clear that floor.
 
 Results are explorable as a static site under [`site/`](site/) — heatmaps,
 counterfactual diffs, per-job-description breakdowns, and one page per
@@ -29,7 +35,7 @@ follow-up experiment, with the synthesis prerendered onto the homepage.
 
 | | |
 |---|---|
-| Inferences collected | 28,050 (audit) + 10,697 (follow-ups) |
+| Inferences collected | 28,050 (audit) + 17,582 (follow-ups and controls) |
 | Models | 11, across 5 vendors |
 | Job descriptions | 17 (junior to CTO) |
 | Bias axes | 8 (7 injection, 1 redaction) |
@@ -37,6 +43,8 @@ follow-up experiment, with the synthesis prerendered onto the homepage.
 | Reasoning transplant | 3,197 records, 320 cells, 10 models |
 | Prompt lab | 4,800 records, 6 strategies, 80 cells, 10 models |
 | Extraction lab | 2,700 parses, 30 variants × 11 models × 5 runs × 2 temperature arms |
+| Placebo control | 4,165 records, 7 irrelevant-edit variants × 7 models × 17 JDs × 5 runs |
+| Claude clean re-run | 2,720 records, baseline + placebos without the CLI harness (~29k tokens) |
 | API spend | ~$835 plus the audit and follow-up passes |
 
 ## The eight axes
@@ -103,10 +111,16 @@ the self-judging caveat.
 
 ## The follow-up experiments
 
-Three smaller experiments probe *why* the audit deltas look the way they do, and
-whether anything fixes them. The homepage synthesis joins all four experiments
-into one per-model fingerprint.
+Four smaller experiments probe *why* the audit deltas look the way they do, and
+whether anything fixes them. The homepage synthesis joins them into one per-model
+fingerprint.
 
+- **Placebo control** ([`site/placebo.html`](site/placebo.html)) — edits that
+  cannot possibly matter (a car colour, the submission day, the weather, and a
+  bare added blank line) run through the same grid as the demographic variants.
+  Establishes the floor every other number has to clear. Built by
+  `npm run build:matrix` from `results/` plus the Claude clean re-run in
+  `results-clean/`.
 - **Reasoning transplant** ([`site/transplant.html`](site/transplant.html)) —
   feed a model its own most-positive and most-negative written assessment of
   the same résumé and ask it to score again. If the score follows the

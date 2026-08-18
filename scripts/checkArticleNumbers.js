@@ -191,13 +191,59 @@ claim('naive sum, years', 38, Math.round(naiveYears), 0);
 const sonnetScores = sc.rows.find((r) => r.model === 'claude-sonnet').by_variant;
 claim('sonnet has a variant spread above zero', true, sc.rows.find((r) => r.model === 'claude-sonnet').max_within_variant_spread > 0, 0);
 
+// ---------- placebo control ----------
+const pb = await readJson('site/data/placebo.json');
+claim('placebo levels', 7, pb.levels.length, 0);
+claim('placebo control cells', 1496, pb.n_control_cells, 0);
+
+// Pooled over the 7 models whose control and demographic runs share a collection method.
+const nonClaude = pb.comparison.filter((c) => !c.model.startsWith('claude'));
+claim('placebo-tested non-Claude models', 7, nonClaude.length, 0);
+claim('demographic mean |d| per job', 0.362, round(mean(nonClaude.map((c) => c.demographic_mean_abs)), 3), 0.0015);
+claim('noop floor, pooled', 0.262, round(mean(nonClaude.map((c) => c.noop_floor)), 3), 0.0015);
+claim('models where placebo >= demographic', 2, pb.comparison.filter((c) => c.ratio >= 1).length, 0);
+claim('worst ratio, claude-haiku', 1.15, round(pb.comparison.find((c) => c.model === 'claude-haiku').ratio), 0.005);
+
+// Harness A/B: the Claude CLI carried ~29k tokens of context the API run did not.
+claim('harness A/B rows', 4, pb.harness_ab.length, 0);
+claim('harness inflation, mean score points', 0.138, round(Math.abs(mean(pb.harness_ab.map((h) => h.delta))), 3), 0.0015);
+claim('harness inflation, claude-opus', 0.247, round(Math.abs(pb.harness_ab.find((h) => h.model === 'claude-opus').delta), 3), 0.0015);
+
+// Per-axis demographic effect against the placebo floor, same per-job estimator both sides.
+const matrixJson = await readJson('site/data/matrix.json');
+const rawCells = [];
+for (const f2 of await fs.readdir('results')) {
+  if (!f2.endsWith('.json')) continue;
+  const [variant, model, jd] = f2.replace('.json', '').split('__');
+  const sc = JSON.parse(await fs.readFile(path.join('results', f2), 'utf8')).response?.score;
+  if (typeof sc === 'number') rawCells.push({ variant, model, jd, score: sc });
+}
+const cellMean = new Map();
+for (const [k, v] of groupBy(rawCells, (r) => `${r.variant}|${r.model}|${r.jd}`)) cellMean.set(k, mean(v.map((x) => x.score)));
+const placeboModels = new Set(nonClaude.map((c) => c.model));
+const axisAbs = (pred) => {
+  const out = [];
+  for (const [k, v] of cellMean) {
+    const [variant, model, jd] = k.split('|');
+    if (variant === 'baseline' || !placeboModels.has(model) || !pred(variant)) continue;
+    const b = cellMean.get(`baseline|${model}|${jd}`);
+    if (b != null) out.push(Math.abs(v - b));
+  }
+  return round(mean(out), 3);
+};
+claim('placebo pooled |d|', 0.328, axisAbs((v) => v.startsWith('placebo_')), 0.0015);
+for (const [ax, want] of [['firstName', 0.456], ['careerGap', 0.452], ['addressCountry', 0.290], ['school', 0.230]]) {
+  claim(`axis |d|, ${ax}`, want, axisAbs((v) => !v.startsWith('placebo_') && v.split('_')[0] === ax), 0.0015);
+}
+claim('car-silver |d|', 0.471, axisAbs((v) => v === 'placebo_car-silver'), 0.0015);
+
 // ---------- synthesis and totals ----------
 const syn = await readJson('site/data/synthesis.json');
 claim('bias vs responsiveness r', 0.61, round(syn.corr_bias_responsiveness.r), 0.005);
 claim('correlation models', 10, syn.corr_bias_responsiveness.n, 0);
 
-const totalCalls = 3197 + 4800 + ex.n_records;
-claim('follow-up model calls (article says ~10,700)', 10700, Math.round(totalCalls / 100) * 100, 0);
+const totalCalls = 3197 + 4800 + ex.n_records + 4165 + 2720;
+claim('follow-up model calls', 17600, Math.round(totalCalls / 100) * 100, 0);
 
 // ---------- report ----------
 const article = await fs.readFile(ARTICLE, 'utf8');
@@ -211,7 +257,7 @@ for (const c of claims) {
 }
 
 // Cheap guard against a figure being edited in the prose but not here.
-const mustAppear = ['3.62', '319 of 320', '14.8', '4,800', '2,700', '0.61', '10,700', 'Hands-on agentic AI and MCP framework experience', 'Missing fintech/regulated-environment depth'];
+const mustAppear = ['3.62', '319 of 320', '14.8', '4,800', '2,700', '0.61', '17,600', 'Hands-on agentic AI and MCP framework experience', 'Missing fintech/regulated-environment depth', '0.362', '0.328', '0.262', '4,165', '0.138', 'hex4def6'];
 const missing = mustAppear.filter((s) => !article.includes(s));
 if (missing.length) {
   console.log(`\nFAIL  these verified figures are no longer in the article: ${missing.join(', ')}`);

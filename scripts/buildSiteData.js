@@ -337,6 +337,20 @@ function valueEffects(controlCells, models) {
   return rows;
 }
 
+// The demographic side of the comparison, measured with the SAME estimator as the control:
+// absolute delta per job, then pooled. The published bias index averages across jobs first
+// and only then takes the absolute value, which cancels opposite-signed movement and comes
+// out 1.1x to 3.9x smaller depending on the model. Comparing that against a per-job control
+// overstates the placebo effect, so the comparison below recomputes it consistently.
+function demographicPerJd(cells, models) {
+  return Object.fromEntries(models.map((model) => {
+    const deltas = cells
+      .filter((c) => c.model === model && !isControlVariant(c.variant) && c.variant !== 'baseline' && c.delta != null)
+      .map((c) => Math.abs(c.delta));
+    return [model, deltas.length ? mean(deltas) : null];
+  }));
+}
+
 // The floor: the same estimator applied to an edit that changed bytes and nothing else.
 function noopFloor(controlCells, models) {
   return Object.fromEntries(models.map((model) => {
@@ -374,7 +388,7 @@ function harnessAbTest(records, cleanRecords) {
   return rows.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
 }
 
-function buildPlacebo(controlCells, controlRows, models, biasByModel, records, cleanRecords) {
+function buildPlacebo(controlCells, controlRows, models, biasByModel, records, cleanRecords, cells) {
   const controlMatrix = buildMatrix(controlCells, [PLACEBO_AXIS], models, {}, {}, {}, {}, {});
   const presence = [];
   for (const level of AXIS_LEVELS[PLACEBO_AXIS].map((l) => l.id)) {
@@ -387,7 +401,8 @@ function buildPlacebo(controlCells, controlRows, models, biasByModel, records, c
 
   const value = valueEffects(controlCells, models);
   const floor = noopFloor(controlCells, models);
-  const demographic = Object.fromEntries(biasByModel.map((row) => [row.model, row.mean_abs]));
+  const demographic = demographicPerJd(cells, models);
+  const demographicIndex = Object.fromEntries(biasByModel.map((row) => [row.model, row.mean_abs]));
 
   // The headline: for each model, its largest irrelevant-value effect against the mean
   // demographic effect the study reports. A ratio at or above 1 means the demographic
@@ -402,6 +417,8 @@ function buildPlacebo(controlCells, controlRows, models, biasByModel, records, c
       placebo_value_effect: worst?.mean_abs ?? null,
       worst_pair: worst?.pair ?? null,
       demographic_mean_abs: demo,
+      demographic_bias_index: demographicIndex[model] ?? null,
+      noop_ratio: floor[model] != null && demo ? floor[model] / demo : null,
       ratio: worst?.mean_abs != null && demo ? worst.mean_abs / demo : null
     };
   }).sort((a, b) => (b.ratio ?? -1) - (a.ratio ?? -1));
@@ -1153,7 +1170,7 @@ async function main() {
   applyDeltas(controlCells, indexBaselines(controlCells));
   if (controlCells.some((c) => axisOf(c.variant) === PLACEBO_AXIS)) {
     const biasByModel = computeBiasIndexSnapshot(matrixJson);
-    outputs.push(await writeJson('placebo.json', buildPlacebo(controlCells, controlRows, models, biasByModel, records, cleanRecords)));
+    outputs.push(await writeJson('placebo.json', buildPlacebo(controlCells, controlRows, models, biasByModel, records, cleanRecords, cells)));
     outputs.push(await writeJson('placebo/index.json', buildPlaceboIndex(controlCells, jdLabels)));
     outputs.push(...await writePlaceboCells(controlCells, controlRows));
   }
