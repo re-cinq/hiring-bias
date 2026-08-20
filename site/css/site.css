@@ -498,6 +498,13 @@ svg.volcano { width: 100%; display: block; background: var(--bg); border: 1px so
 .delta-bar .marker.iter.yes { color: var(--accent); }
 .delta-bar .marker.iter.no { color: var(--alert); }
 .delta-bar .marker.iter.maybe { color: var(--warn); }
+/* Diamond, so the score a cell's key factors implied never reads as one more run dot. */
+.delta-bar .marker.implied {
+  width: 9px;
+  height: 9px;
+  border-radius: 1px;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
 .delta-bar .marker.clickable { cursor: pointer; }
 .delta-bar .marker.clickable:hover { transform: translate(-50%, -50%) scale(1.3); }
 .delta-bar .marker.selected { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--text); }
@@ -842,4 +849,44 @@ footer.bottom a:hover {
   margin-top: 4px;
   color: var(--dim);
   font-size: 0.92em;
+}
+
+/* Two bars on one ruler: how far the injected reasoning swung, and how far the score
+   followed. Both are shares of the same 9 points a 1-10 score can travel, so the
+   difference in bar length is the finding. */
+.reach { margin: 14px 0; }
+.reach-row {
+  display: grid;
+  grid-template-columns: 170px 1fr 52px;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.reach-label { color: var(--dim); }
+.reach-track {
+  position: relative;
+  height: 18px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.reach-fill { position: absolute; left: 0; top: 0; height: 100%; }
+.reach-fill.reasoning { background: var(--dim); }
+.reach-fill.score { background: var(--accent); }
+.reach-val { font-weight: 700; text-align: right; }
+
+/* The score a cell's own key factors implied, tucked under the score the model gave. */
+.implied {
+  display: block;
+  color: var(--warn);
+  font-size: 0.85em;
+  font-weight: 400;
+  white-space: nowrap;
+}
+td.implied-num { color: var(--warn); }
+
+@media (max-width: 800px) {
+  .reach-row { grid-template-columns: 1fr 44px; }
+  .reach-label { grid-column: 1 / -1; margin-bottom: -4px; }
 }

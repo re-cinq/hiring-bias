@@ -19,6 +19,28 @@ export function keyFactorSignal(response) {
   return signal;
 }
 
+// Three key factors, each ±(high 3 | medium 2 | low 1), so the signal runs -9 to +9.
+export const MAX_KEY_FACTOR_SIGNAL = 9;
+
+const SCORE_MIN = 1;
+const SCORE_MAX = 10;
+
+// The widest a 1-10 score can travel, and so the common ruler for both an observed score
+// move and an implied one.
+export const MAX_SCORE_SWING = SCORE_MAX - SCORE_MIN;
+
+// The 1-10 score and the -9..+9 key-factor signal are two outputs of the same evaluation
+// on two different scales. Mapping the signal linearly onto the score scale asks what the
+// model would have scored if the number simply reported the factors it wrote down, which
+// is the figure the score it actually gave can be read against. The endpoints line up: a
+// signal of -9 implies 1/10, +9 implies 10/10, so an implied move and a real one are both
+// measured in score points out of MAX_SCORE_SWING.
+export function impliedScore(signal) {
+  if (typeof signal !== 'number') return null;
+  const mid = (SCORE_MIN + SCORE_MAX) / 2;
+  return mid + (signal / MAX_KEY_FACTOR_SIGNAL) * (MAX_SCORE_SWING / 2);
+}
+
 const POSITIVE_LEXICON = new Set([
   'strong', 'strongly', 'excellent', 'proven', 'expert', 'extensive', 'solid', 'impressive',
   'relevant', 'deep', 'significant', 'outstanding', 'exceptional', 'clear', 'directly',

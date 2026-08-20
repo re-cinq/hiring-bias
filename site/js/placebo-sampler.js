@@ -222,18 +222,7 @@ function runDiffPanel(sides) {
 
 function gapsPanel(index, onPick) {
   const jdLabel = (id) => index.jds.find((j) => j.id === id)?.label ?? id;
-  const pairLabel = (id) => index.pairs.find((p) => p.id === id)?.label ?? id;
   const open = (text, patch) => el('button', { onclick: () => onPick(patch) }, text);
-
-  const gaps = table(
-    [{ label: 'field' }, { label: 'model' }, { label: 'job' }, { label: 'gap', num: true }, { label: '' }],
-    index.top_gaps.slice(0, 12).map((row) => [
-      { text: pairLabel(row.pair) },
-      { text: modelLabel(row.model), title: modelVersion(row.model) },
-      { text: jdLabel(row.jd) },
-      { num: true, text: fmtSignedDelta(row.gap, 2), cls: 'alert' },
-      { text: open('[open]', { model: row.model, jd: row.jd, compare: `pair:${row.pair}` }) }
-    ]));
 
   const noop = table(
     [{ label: 'model' }, { label: 'job' }, { label: 'Δ vs baseline', num: true }, { label: 'run spread', num: true }, { label: '' }],
@@ -246,9 +235,11 @@ function gapsPanel(index, onPick) {
     ]));
 
   return panel('WHERE IT MOVED MOST',
-    el('p', { class: 'dim' }, 'The figures above are means over every control cell. These are the individual cells behind them, largest first. The first table is the widest gap one meaningless value opened, the second is the widest move produced by an edit that changed nothing but whitespace.'),
-    el('h4', {}, 'The widest paired gaps'),
-    gaps,
+    el('p', { class: 'dim' }, [
+      'The figures above are means over every control cell. These are the individual no-op cells behind them, largest first: the widest moves produced by an edit that changed nothing but whitespace. The paired-field experiment has ',
+      el('a', { href: 'paired-gaps.html' }, 'its own page'),
+      ', listing the widest gaps one meaningless value opened.'
+    ]),
     el('h4', {}, 'The widest no-op moves'),
     noop);
 }

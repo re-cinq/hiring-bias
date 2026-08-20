@@ -1886,7 +1886,7 @@ async function prerenderHtml({ status, matrixData, topDiffs, axes, models, jds, 
 }
 
 async function writeSitemap() {
-  const pages = ['index.html', 'heatmap.html', 'diff.html', 'resume-diff.html', 'jds.html', 'placebo.html', 'methodology.html', 'downloads.html', 'about.html'];
+  const pages = ['index.html', 'heatmap.html', 'diff.html', 'resume-diff.html', 'jds.html', 'placebo.html', 'paired-gaps.html', 'methodology.html', 'downloads.html', 'about.html'];
   const today = new Date().toISOString().slice(0, 10);
   const urls = pages.map((p) => `  <url>
     <loc>${p === 'index.html' ? '/' : `/${p}`}</loc>

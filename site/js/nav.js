@@ -10,6 +10,7 @@ const PAGES = [
   { href: 'transplant.html', label: 'transplant' },
   { href: 'extraction.html', label: 'extraction' },
   { href: 'placebo.html', label: 'control' },
+  { href: 'paired-gaps.html', label: 'paired-gaps' },
   { href: 'methodology.html', label: 'methodology' },
   { href: 'downloads.html', label: 'downloads' },
   { href: 'about.html', label: 'about' }

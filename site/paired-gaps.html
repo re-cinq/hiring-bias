@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Paired Gaps, Bias Research</title>
+  <meta name="description" content="Three meaningless fields, two values each: Tuesday against Saturday, red against silver, clear against rain. The widest score gaps one irrelevant word opened, cell by cell.">
+  <meta property="og:title" content="The Paired Gaps, Bias Research">
+  <meta property="og:description" content="The widest score gaps opened by swapping one meaningless value for another, cell by cell.">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="css/site.css">
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://analytics.giscollective.com/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '15']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+
+  </head>
+<body>
+  <main class="container">
+    <h1 class="sr-only">The Paired Gaps</h1>
+    <div id="header"></div>
+    <div id="page">
+<div class="panel">
+  <div class="panel-head"><span>THE EXPERIMENT</span></div>
+  <p><strong>Three meaningless fields, two values each.</strong> The submission day (Tuesday against Saturday), the colour of the car on file (red against silver), the weather when the application arrived (clear against rain). Each pair differs by exactly one word, and neither word could justify any hiring decision. The difference between the two scores is the exact shape of a demographic swap — same document, same length, one value replaced by another — applied to a change that cannot possibly mean anything.</p>
+  <p class="dim">This ran as its own experiment, through the identical pipeline as the audit: same prompt, same models, same seventeen job descriptions, same five runs per cell. Its aggregates feed the verdict on <a href="placebo.html">the control page</a>; this page lists the individual cells where the gap opened widest.</p>
+</div>
+<div class="panel">
+  <div class="panel-head"><span>HOW TO READ IT</span></div>
+  <p class="dim">The gap is the first value's mean score minus the second's, out of 10. A gap of +2.00 on the submission day means the model scored the Tuesday résumé two full points above the Saturday one — the same candidate, the same skills, a different day of the week. [open] drills into the cell on the control page: the two documents, the two verdicts, and whether the model ever mentioned the thing that changed.</p>
+</div>
+    </div>
+    <div id="lab"></div>
+  </main>
+  <script type="module" src="js/paired-gaps.js"></script>
+</body>
+</html>

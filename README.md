@@ -15,12 +15,14 @@ move. Any delta between a variant and the baseline is attributable to the single
 signal that changed — the same logic as the classic [Bertrand–Mullainathan audit
 study](https://www.nber.org/papers/w9873), run against today's models.
 
-The audit is complemented by four follow-up experiments — a **placebo control**
+The audit is complemented by five follow-up experiments — a **placebo control**
 (does an irrelevant edit move the score as much as a demographic one?), a
 **reasoning transplant** (does the score follow the model's written reasoning?),
 a **prompt lab** (can prompt engineering stabilise the score?) and an
 **extraction lab** (if the model only parses and code does the scoring, does the
-bias go away?) — plus a synthesis that joins them on their shared unit, the model.
+bias go away?) — plus a **harness A/B** (did the Claude CLI's own 29k-token context
+inflate every Claude score in the study?) and a synthesis that joins them on their
+shared unit, the model.
 
 The placebo control is the one to read first. A blank line added to the résumé
 moves the score by 0.262 points, against 0.362 for a demographic swap, so most
@@ -111,7 +113,7 @@ the self-judging caveat.
 
 ## The follow-up experiments
 
-Four smaller experiments probe *why* the audit deltas look the way they do, and
+Five smaller experiments probe *why* the audit deltas look the way they do, and
 whether anything fixes them. The homepage synthesis joins them into one per-model
 fingerprint.
 
@@ -121,6 +123,11 @@ fingerprint.
   Establishes the floor every other number has to clear. Built by
   `npm run build:matrix` from `results/` plus the Claude clean re-run in
   `results-clean/`.
+- **Harness A/B** (on [`site/placebo.html`](site/placebo.html)) — the Claude models
+  run through the Claude CLI, which loads ~29k tokens of coding-agent context before
+  the prompt. Re-running their baselines clean shows the harness inflates scores by
+  0.138 points on average and 0.247 for Opus. Within-model comparisons are unaffected
+  (every variant carried the same harness); absolute Claude scores run high.
 - **Reasoning transplant** ([`site/transplant.html`](site/transplant.html)) —
   feed a model its own most-positive and most-negative written assessment of
   the same résumé and ask it to score again. If the score follows the

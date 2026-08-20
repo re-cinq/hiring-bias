@@ -5,10 +5,10 @@ import { probeGroundTruth, unionMonths, fieldCoverage, leakage } from '../src/ex
 import { normalizeExtraction } from '../src/extractionSchema.js';
 import { recommendUnanimous } from '../src/coherenceMetrics.js';
 
-// Every number quoted in article/the-prompt-wont-save-you.md, recomputed from the data.
+// Every number quoted across both article parts, recomputed from the data.
 // A claim that drifts away from the dataset fails here instead of in the comments.
 
-const ARTICLE = 'article/the-prompt-wont-save-you.md';
+const ARTICLES = ['article/part3-the-prompt-wont-save-you.md', 'article/part4-stop-asking-it-to-judge.md'];
 const AS_OF = '2026-08';
 const claims = [];
 
@@ -119,6 +119,33 @@ claim('cells unanimous -> split', 25, becameSplit, 0);
 claim('cells split -> unanimous', 8, becameUnanimous, 0);
 claim('McNemar chi-square', 7.76, round(chi), 0.005);
 
+// The 'vs baseline' and 't' columns of that same table, recomputed from the raw records.
+const biasDeltas = (id) => {
+  const out = new Map();
+  for (const [k, g] of groupBy(plRecords.filter((r) => r.strategy === id), (r) => `${r.model}|${r.jd}`)) {
+    const byV = groupBy(g, (r) => r.variant);
+    const base = byV.get('baseline');
+    if (!base) continue;
+    const bm = mean(base.map((r) => r.response?.score).filter((x) => typeof x === 'number'));
+    for (const [v, rs] of byV) {
+      if (v === 'baseline') continue;
+      const m = mean(rs.map((r) => r.response?.score).filter((x) => typeof x === 'number'));
+      if (bm != null && m != null) out.set(`${k}|${v}`, Math.abs(m - bm));
+    }
+  }
+  return out;
+};
+const baseDeltas = biasDeltas('baseline');
+claim('bias comparisons per strategy', 60, baseDeltas.size, 0);
+for (const [id, wantDiff, wantT] of [['rubric', -0.023, -0.53], ['blind_instruction', 0.035, 0.84],
+                                     ['score_last', 0.038, 0.92], ['fewshot', 0.050, 1.10], ['cot', 0.057, 1.52]]) {
+  const other = biasDeltas(id);
+  const d = [...baseDeltas].map(([k, v]) => other.get(k) - v).filter(Number.isFinite);
+  const dm = mean(d);
+  claim(`bias table vs baseline, ${id}`, wantDiff, round(dm, 3), 0.0005);
+  claim(`bias table t, ${id}`, wantT, round(dm / (stdev(d) / Math.sqrt(d.length)), 2), 0.005);
+}
+
 // ---------- extraction ----------
 const ex = await readJson('site/data/extraction/summary.json');
 claim('extraction parses', 2700, ex.n_records, 0);
@@ -160,10 +187,32 @@ for (const [axis, want] of [['firstName', 19.3], ['addressCountry', 20.0], ['sch
 const sampleRec = normalizeExtraction(JSON.parse(await fs.readFile('results-extraction/temp0/baseline__gemini-2.5-flash__run1.json', 'utf8')).response);
 const sampleResume = await fs.readFile('data/variants/baseline.md', 'utf8');
 const fieldCount = JSON.stringify(sampleRec).match(/"/g).length / 4;
-claims.push({ label: 'fields per parse (article says "roughly 500")', claimed: 500, actual: Math.round(fieldCount / 50) * 50, tol: 150 });
+// Fields per parse, quoted exactly in the article.
+const { agreementRate: _ar } = await import('../src/extractionMetrics.js');
+claim('fields per parse', 296, _ar([sampleRec, sampleRec]).compared, 0);
 
 // The name-swap leak the article quotes as 19 fields.
 const swapped = normalizeExtraction(JSON.parse(await fs.readFile('results-extraction/temp0/firstName_aisha-okonkwo__gemini-2.5-flash__run1.json', 'utf8')).response);
+// The value-change examples quoted in part 4, checked against the records they came from.
+const flashCell = async (v) => normalizeExtraction(JSON.parse(await fs.readFile(`results-extraction/temp0/${v}__gemini-2.5-flash__run1.json`, 'utf8')).response);
+const founderLevel = (x) => (x.employment ?? []).find((e) => /GIS|Founder/i.test(`${e.employer ?? ''}${e.title ?? ''}`))?.seniority_level;
+const currentTech = (x) => new Set(((x.employment ?? [])[0]?.technologies ?? []).map((t) => String(t.name ?? '').toLowerCase()));
+const fBase = await flashCell('baseline');
+const fLagos = await flashCell('addressCountry_nigeria');
+const fAisha = await flashCell('firstName_aisha-okonkwo');
+const fMit = await flashCell('school_mit');
+claim('MCP present in baseline parse', true, [...currentTech(fBase)].some((t) => t.includes('mcp')), 0);
+claim('MCP dropped in the Lagos parse', false, [...currentTech(fLagos)].some((t) => t.includes('mcp')), 0);
+claim('founder seniority, Aisha variant', 'c_level', founderLevel(fAisha), 0);
+claim('founder seniority, Lagos variant', 'staff', founderLevel(fLagos), 0);
+claim('founder seniority, MIT variant', 'staff', founderLevel(fMit), 0);
+const baseDoc = await fs.readFile('data/variants/baseline.md', 'utf8');
+const lagosDoc = await fs.readFile('data/variants/addressCountry_nigeria.md', 'utf8');
+const diffLines = baseDoc.split('\n').filter((l, i) => l !== lagosDoc.split('\n')[i]).length;
+claim('Lagos edit changes one line', 1, diffLines, 0);
+claim('MCP appears once in each document', true,
+  (baseDoc.match(/MCP/g) ?? []).length === 1 && (lagosDoc.match(/MCP/g) ?? []).length === 1, 0);
+
 claim('name-swap leaked fields, single run', 17, leakage(sampleRec, swapped, 'firstName_aisha-okonkwo').leaked.length, 3);
 
 // ---------- scorer ----------
@@ -208,6 +257,18 @@ claim('worst ratio, claude-haiku', 1.15, round(pb.comparison.find((c) => c.model
 claim('harness A/B rows', 4, pb.harness_ab.length, 0);
 claim('harness inflation, mean score points', 0.138, round(Math.abs(mean(pb.harness_ab.map((h) => h.delta))), 3), 0.0015);
 claim('harness inflation, claude-opus', 0.247, round(Math.abs(pb.harness_ab.find((h) => h.model === 'claude-opus').delta), 3), 0.0015);
+const hRow = (m) => pb.harness_ab.find((h) => h.model === m);
+claim('harness, opus with', 4.13, round(hRow('claude-opus').mean_with_harness), 0.005);
+claim('harness, opus clean', 3.88, round(hRow('claude-opus').mean_without_harness), 0.005);
+claim('harness, fable inflation', 0.224, round(Math.abs(hRow('claude-fable-5').delta), 3), 0.0015);
+claim('harness, sonnet inflation', 0.129, round(Math.abs(hRow('claude-sonnet').delta), 3), 0.0015);
+claim('harness, haiku moves the other way', true, hRow('claude-haiku').delta > 0, 0);
+claim('models scoring higher with harness', 3, pb.harness_ab.filter((h) => h.delta < 0).length, 0);
+claim('clean re-run records', 2720, 8 * 4 * 17 * 5, 0);
+// Opus demographic effect, for the "88% the size of the signal" comparison.
+const opusDemo = pb.comparison.find((c) => c.model === 'claude-opus').demographic_mean_abs;
+claim('opus demographic effect', 0.282, round(opusDemo, 3), 0.0015);
+claim('harness as share of opus signal, %', 88, Math.round(Math.abs(hRow('claude-opus').delta) / opusDemo * 100), 1);
 
 // Per-axis demographic effect against the placebo floor, same per-job estimator both sides.
 const matrixJson = await readJson('site/data/matrix.json');
@@ -232,10 +293,61 @@ const axisAbs = (pred) => {
   return round(mean(out), 3);
 };
 claim('placebo pooled |d|', 0.328, axisAbs((v) => v.startsWith('placebo_')), 0.0015);
-for (const [ax, want] of [['firstName', 0.456], ['careerGap', 0.452], ['addressCountry', 0.290], ['school', 0.230]]) {
+for (const [ax, want] of [['firstName', 0.456], ['careerGap', 0.452], ['anonymize', 0.412], ['companyLocations', 0.371], ['companyNames', 0.367], ['graduationYear', 0.354], ['addressCountry', 0.290], ['school', 0.230]]) {
   claim(`axis |d|, ${ax}`, want, axisAbs((v) => !v.startsWith('placebo_') && v.split('_')[0] === ax), 0.0015);
 }
 claim('car-silver |d|', 0.471, axisAbs((v) => v === 'placebo_car-silver'), 0.0015);
+claim('car-red |d|', 0.415, axisAbs((v) => v === 'placebo_car-red'), 0.0015);
+claim('weather-rain |d|', 0.308, axisAbs((v) => v === 'placebo_weather-rain'), 0.0015);
+claim('day-saturday |d|', 0.291, axisAbs((v) => v === 'placebo_day-saturday'), 0.0015);
+
+// Pair effects: does the VALUE of the irrelevant fact matter, holding its presence fixed.
+const pairAbs = (id) => round(mean(pb.value.filter((v) => v.pair === id).map((v) => v.mean_abs)), 3);
+claim('car colour pair effect', 0.235, pairAbs('car'), 0.0015);
+claim('submission day pair effect', 0.207, pairAbs('day'), 0.0015);
+claim('weather pair effect', 0.207, pairAbs('weather'), 0.0015);
+
+// Mention rates: does the model ever say the irrelevant fact influenced it.
+const mentionsFor = (label) => {
+  const rows = pb.mentions.filter((m) => m.field_label === label);
+  return { n: rows.reduce((a, b) => a + b.n_responses, 0), m: rows.reduce((a, b) => a + b.n_mentioning, 0) };
+};
+claim('car mentions', 2, mentionsFor('Car colour').m, 0);
+claim('car responses scanned', 1870, mentionsFor('Car colour').n, 0);
+claim('submission day mentions', 0, mentionsFor('Submission day').m, 0);
+claim('weather mentions', 0, mentionsFor('Weather at submission').m, 0);
+
+// The worst single paired swings quoted in the article.
+const pbIndex = await readJson('site/data/placebo/index.json');
+const top = pbIndex.top_gaps;
+claim('widest paired gap', 2, round(Math.abs(top[0].gap), 2), 0.005);
+claim('widest gap model', 'gemini-2.5-flash', top[0].model, 0);
+claim('widest gap pair', 'day', top[0].pair, 0);
+claim('widest gap a_mean', 6.8, round(top[0].a_mean, 2), 0.005);
+claim('widest gap b_mean', 4.8, round(top[0].b_mean, 2), 0.005);
+// The mirror-image row: same job, same fact, opposite direction.
+const mirror = top.find((g) => g.model === 'gemini-2.5-pro' && g.pair === 'day' && g.jd === top[0].jd);
+claim('mirror gap exists', true, mirror != null, 0);
+claim('mirror gap is opposite sign', true, mirror != null && Math.sign(mirror.gap) !== Math.sign(top[0].gap), 0);
+claim('mirror gap magnitude', 2, round(Math.abs(mirror.gap), 2), 0.005);
+claim('haiku weather swing', 1.8, round(Math.abs(top.find((g) => g.model === 'claude-haiku' && g.pair === 'weather').gap), 2), 0.005);
+claim('worst blank-line swing', 1.6, round(Math.abs(pbIndex.top_noop[0].delta), 2), 0.005);
+claim('worst blank-line model', 'gemini-2.5-flash', pbIndex.top_noop[0].model, 0);
+// Total model calls across every results tree, quoted in the series close.
+const dirs = ['results', 'results-clean', 'results-prompt-lab', 'results-reasoning-transplant', 'results-extraction'];
+let allCalls = 0;
+for (const d of dirs) {
+  const walk = async (p) => {
+    for (const e of await fs.readdir(p, { withFileTypes: true })) {
+      if (e.isDirectory()) await walk(path.join(p, e.name));
+      else if (e.name.endsWith('.json')) allCalls++;
+    }
+  };
+  await walk(d);
+}
+claim('total model calls (article says forty-seven thousand)', 47, Math.floor(allCalls / 1000), 0);
+
+claim('paired comparisons', 561, pb.value.reduce((a, v) => a + v.n_jds, 0), 0);
 
 // ---------- synthesis and totals ----------
 const syn = await readJson('site/data/synthesis.json');
@@ -246,7 +358,7 @@ const totalCalls = 3197 + 4800 + ex.n_records + 4165 + 2720;
 claim('follow-up model calls', 17600, Math.round(totalCalls / 100) * 100, 0);
 
 // ---------- report ----------
-const article = await fs.readFile(ARTICLE, 'utf8');
+const article = (await Promise.all(ARTICLES.map((p) => fs.readFile(p, 'utf8')))).join('\n');
 let failed = 0;
 for (const c of claims) {
   const ok = typeof c.claimed === 'number' && typeof c.actual === 'number'
@@ -257,7 +369,8 @@ for (const c of claims) {
 }
 
 // Cheap guard against a figure being edited in the prose but not here.
-const mustAppear = ['3.62', '319 of 320', '14.8', '4,800', '2,700', '0.61', '17,600', 'Hands-on agentic AI and MCP framework experience', 'Missing fintech/regulated-environment depth', '0.362', '0.328', '0.262', '4,165', '0.138', 'hex4def6'];
+// The articles use European number formatting: '.' for thousands, ',' for decimals.
+const mustAppear = ['3,62', '**319** of **320**', '14,8', '4.800', '2.700', '0,61', '17.600', 'Hands-on agentic AI and MCP framework experience', 'Missing fintech/regulated-environment depth', '0,362', '0,328', '0,262', '4.165', '0,138', 'hex4def6', '0,471', '0,235', '1.870', '29.000', '2.720', '0,247', '296', 'Nineteen fields moved', 'Forty-seven thousand', '6,8 to 4,8', '1,6 points', '0,412', '0,371', '0,367', '0,354', 'MCP (Model Context Protocol)', 'c_level'];
 const missing = mustAppear.filter((s) => !article.includes(s));
 if (missing.length) {
   console.log(`\nFAIL  these verified figures are no longer in the article: ${missing.join(', ')}`);

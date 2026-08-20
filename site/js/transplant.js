@@ -76,6 +76,7 @@ function conditionCard(title, cond, signClass) {
   ]));
   card.append(el('div', {}, [
     'Resulting score · Mean: ', el('strong', {}, fmtNum(cond.mean, 2)),
+    cond.implied_score == null ? '' : el('span', { class: 'warn' }, ` (its key factors imply ${fmtNum(cond.implied_score, 2)})`),
     ' · Recommend rate: ', el('strong', {}, cond.recommend_rate != null ? `${(cond.recommend_rate * 100).toFixed(0)}%` : '–')
   ]));
   const strip = el('div');
@@ -122,6 +123,7 @@ async function render() {
   summaryPanel.append(el('div', {}, [
     'Effect (score given positive − score given negative): ',
     el('span', { class: effect == null ? 'dim' : (effect > 0.3 ? 'accent' : 'alert') }, fmtSignedDelta(effect, 2)),
+    cell.implied_effect == null ? '' : el('span', { class: 'warn' }, `  · the two assessments' key factors asked for ${fmtSignedDelta(cell.implied_effect, 2)}`),
     el('span', { class: 'dim' }, `  · reasoning-signal gap ${fmtSignedDelta(cell.signal_gap, 0)}`)
   ]));
   const cls = classifyCell(cell);
@@ -206,11 +208,14 @@ function renderConclusion(cell) {
   host.append(panel);
 }
 
-// Leaderboard score cell: the pooled mean on top, a 0–10 strip under it with one hollow
-// dot per résumé×job cell mean and the filled green dot at the pooled value.
-function scoreCell(value, dist) {
+// Leaderboard score cell: the score the model gave on top, the score its own key factors
+// asked for underneath, and a 0–10 strip carrying both — one hollow dot per résumé×job
+// cell mean, the green dot at the pooled value, the amber diamond at the implied one.
+// The distance between diamond and dot is how far the number sits from the reasoning.
+function scoreCell(value, dist, implied) {
   const td = el('td', { class: 'num strip-cell' });
   td.append(el('div', {}, fmtNum(value, 2)));
+  if (implied != null) td.append(el('span', { class: 'implied' }, `implied ${fmtNum(implied, 2)}`));
   if (value != null) {
     td.append(dotStrip({
       ...SCORE_SCALE,
@@ -220,6 +225,7 @@ function scoreCell(value, dist) {
           cls: 'iter',
           title: `${indexes.length} résumé×job cell${indexes.length > 1 ? 's' : ''} at ${fmtNum(v, 2)}`
         })),
+        { value: implied, filled: true, cls: 'implied', title: `its own key factors imply ${fmtNum(implied, 2)}` },
         { value, filled: true, cls: 'mean', title: `pooled mean ${fmtNum(value, 2)}` }
       ]
     }));
@@ -227,19 +233,31 @@ function scoreCell(value, dist) {
   return td;
 }
 
+const LEADERBOARD_COLUMNS = [
+  { label: 'Model' },
+  { label: 'score · neg', num: true },
+  { label: 'score · pos', num: true },
+  { label: 'effect (Δ)', num: true },
+  { label: 'implied Δ', num: true },
+  { label: 'responsiveness', num: true },
+  { label: 'moved right %', num: true },
+  { label: 'verdict' }
+];
+
 function renderLeaderboard() {
   const panel = el('div', { class: 'panel' });
   panel.append(el('div', { class: 'panel-head' }, el('span', {}, 'LEADERBOARD · how much each model bends to transplanted reasoning')));
-  panel.append(el('p', { class: 'dim' }, 'effect = mean(score given positive assessment − score given negative). Bigger = the score follows the reasoning. responsiveness = points of score per unit of reasoning signal. ○ = one résumé×job cell, ● = pooled mean.'));
+  panel.append(el('p', { class: 'dim' }, 'Each score column carries two numbers: the mean score the model gave, and under it the score that assessment\'s own three key factors call for on the same 1-10 scale. effect = the gap between the two scores it gave, implied Δ = the gap between the two its reasoning asked for, responsiveness = one divided by the other. ○ = one résumé×job cell, ● = pooled mean, ◆ = implied by the key factors.'));
   const table = el('table', { class: 'data' });
-  table.append(el('thead', {}, el('tr', {}, ['Model', 'score · neg', 'score · pos', 'effect (Δ)', 'responsiveness', 'moved right %', 'verdict'].map((h, i) => el('th', i > 0 && i < 6 ? { class: 'num' } : {}, h)))));
+  table.append(el('thead', {}, el('tr', {}, LEADERBOARD_COLUMNS.map((c) => el('th', c.num ? { class: 'num' } : {}, c.label)))));
   const tbody = el('tbody');
   for (const m of summary.by_model) {
     tbody.append(el('tr', m.model === state.model ? { class: 'row-hi' } : {}, [
       el('td', { title: modelVersion(m.model) }, modelLabel(m.model)),
-      scoreCell(m.score_neg_mean, m.score_neg_dist),
-      scoreCell(m.score_pos_mean, m.score_pos_dist),
+      scoreCell(m.score_neg_mean, m.score_neg_dist, m.implied_neg_mean),
+      scoreCell(m.score_pos_mean, m.score_pos_dist, m.implied_pos_mean),
       el('td', { class: `num ${m.mean_effect > 0.3 ? 'accent' : 'alert'}` }, fmtSignedDelta(m.mean_effect, 2)),
+      el('td', { class: 'num warn' }, fmtSignedDelta(m.mean_implied_effect, 2)),
       el('td', { class: 'num' }, fmtNum(m.responsiveness, 2)),
       el('td', { class: 'num' }, m.directional_rate != null ? `${Math.round(m.directional_rate * 100)}%` : '–'),
       el('td', {}, m.verdict)
